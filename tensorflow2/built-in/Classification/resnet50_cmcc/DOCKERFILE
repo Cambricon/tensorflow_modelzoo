@@ -1,0 +1,6 @@
+ARG FROM_IMAGE_NAME=yellow.hub.cambricon.com/tensorflow/tensorflow2:v1.13.0-x86_64-ubuntu18.04
+FROM ${FROM_IMAGE_NAME}
+
+COPY ./scripts/*.sh /tensorflow_modelzoo/tensorflow2/buildin/Classification/resnet50_cmcc
+
+WORKDIR /tensorflow_modelzoo/tensorflow2/buildin/Classification/resnet50_cmcc
