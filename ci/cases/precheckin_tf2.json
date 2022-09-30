@@ -1,0 +1,9 @@
+{
+    "resnet50_cmcc": {
+        "directory": "tensorflow2/built-in/Classification/resnet50_cmcc",
+        "testcases": [
+            "python3 -m resnet_trainer --model_dir=./resnet50_cmcc_model --data_dir=/data/tensorflow/training/datasets/ILSVRC2012/ilsvrc12_tfrecord/ --num_mlus=1 --num_gpus=0 --distribution_strategy=off --batch_size=128 --train_steps=10",
+            "horovodrun -np 4 python3 -m resnet_trainer --model_dir=./resnet50_cmcc_model --data_dir=/data/tensorflow/training/datasets/ILSVRC2012/ilsvrc12_tfrecord/ --num_mlus=1 --num_gpus=0 --distribution_strategy=off --batch_size=128 --train_steps=10 --use_horovod=True"
+        ]
+    }
+}

@@ -1,0 +1,70 @@
+library "cambricon-pipe-lib@master"
+cnpipe {
+    checkUTReport false
+    checkMRUpvotes false
+    
+    def triggerPhase = env.gitlabTriggerPhrase.split(" ")
+    def docker_image_tf1 = package.properties("http://daily.software.cambricon.com/daily/tensorflow/docker/master/latest").get("x86_64-ubuntu18.04-py3")
+    def docker_image_tf2 = package.properties("http://daily.software.cambricon.com/daily/tensorflow2/docker/18.04/master/latest").get("docker")
+    def test_mode = ""
+    def network_list = ""
+    if (triggerPhase.size() == 1) {
+        test_mode = "precheckin_tf2"
+        docker_image = docker_image_tf2
+    }else if (triggerPhase.size() == 2 && triggerPhase[1] == "tf2") {
+        test_mode = "precheckin_tf2"
+        docker_image = docker_image_tf2
+    }else if (triggerPhase.size() == 2 && triggerPhase[1] == "tf1") {
+        test_mode = "precheckin_tf1"
+        docker_image = docker_image_tf1
+    }else if (triggerPhase.size() == 3) {
+        test_mode = "precheckin_" + triggerPhase[1]
+        network_list = triggerPhase[2]
+        docker_image = docker_image_tf2
+    }
+
+    // run precheckin test cases
+    task('test_train', test_precheckin(this.CARD_TYPE.split(','), docker_image, test_mode, network_list))
+}
+
+def test_precheckin(card_type, docker_image, test_mode, network_list) {
+    return {
+        stage 'test'
+        envVariable 'TEST_MODE', test_mode
+        envVariable 'NETWORK_LIST', network_list
+        node{
+            cardType card_type
+        }
+        container{
+            image docker_image
+        }
+        resReq{
+            reqMlus 4
+            lmtMlus 4
+            reqMemory '20Gi'
+            lmtMemory '20Gi'
+        }
+        unstash 'CI_MR_PROJ' //unzip tensorflow_modelzoo repo in current directory CI_WORK_DIR
+        script '''
+            set -eox pipefail
+
+            # modify pip source
+            mkdir -p ${HOME}/.pip
+            PIP_CONFIG=${HOME}/.pip/pip.conf
+            rm -f ${PIP_CONFIG}
+            echo "[global]" >> ${PIP_CONFIG}
+            echo "index-url = http://mirrors.cambricon.com/pypi/web/simple/" >> ${PIP_CONFIG}
+            echo "trusted-host = mirrors.cambricon.com" >> ${PIP_CONFIG}
+
+            echo "================= ${TEST_MODE} start ================="
+            pushd ${CI_WORK_DIR}/tensorflow_modelzoo
+                mkdir test_log
+                bash ci/ci_pipeline.sh ${TEST_MODE} ${NETWORK_LIST} 2>&1 | tee test_log/precheckin_test.log
+                RESULT=$?
+            popd
+            exit ${RESULT}
+            echo "================= ${TEST_MODE} end ================="
+        '''
+        archiveLog '${CI_WORK_DIR}/tensorflow_modelzoo/test_log'
+    }
+}
