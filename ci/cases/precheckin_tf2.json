@@ -36,5 +36,53 @@
             "cd run_scripts/ci;bash LPCNet_Train_Horovod_AMP.sh",
             "cd run_scripts/ci;bash LPCNet_Train_Horovod_Float32.sh"
         ]
+    },
+    "densenet201": {
+        "directory": "tensorflow2/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash DenseNet201_Float32.sh",
+            "cd run_scripts/ci;bash Horovod_DenseNet201_AMP.sh",
+            "cd run_scripts/ci;bash Horovod_DenseNet201_Float32.sh"
+        ]
+    },
+    "resnet101": {
+        "directory": "tensorflow2/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash ResNet101_Float32.sh",
+            "cd run_scripts/ci;bash Horovod_ResNet101_AMP.sh",
+            "cd run_scripts/ci;bash Horovod_ResNet101_Float32.sh"
+        ]
+    },
+    "resnet18": {
+        "directory": "tensorflow2/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash ResNet18_Float32.sh",
+            "cd run_scripts/ci;bash Horovod_ResNet18_AMP.sh",
+            "cd run_scripts/ci;bash Horovod_ResNet18_Float32.sh"
+        ]
+    },
+    "resnet50": {
+        "directory": "tensorflow2/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash ResNet50_Float32.sh",
+            "cd run_scripts/ci;bash Horovod_ResNet50_AMP.sh",
+            "cd run_scripts/ci;bash Horovod_ResNet50_Float32.sh"
+        ]
+    },
+    "vgg16": {
+        "directory": "tensorflow2/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Vgg16_Float32.sh",
+            "cd run_scripts/ci;bash Horovod_Vgg16_AMP.sh",
+            "cd run_scripts/ci;bash Horovod_Vgg16_Float32.sh"
+        ]
+    },
+    "vgg19": {
+        "directory": "tensorflow2/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Vgg19_Float32.sh",
+            "cd run_scripts/ci;bash Horovod_Vgg19_AMP.sh",
+            "cd run_scripts/ci;bash Horovod_Vgg19_Float32.sh"
+        ]
     }
 }
