@@ -5,7 +5,7 @@ cur_path=$(pwd)
 work_dir="${cur_path}/../../"
 pushd $work_dir
  source env.sh
- horovodrun -np 8  python lpcnet_train.py \
+ horovodrun -np 4  python lpcnet_train.py \
  --num_mlus=1 \
  --num_gpus=0 \
  --batch_size=16 \

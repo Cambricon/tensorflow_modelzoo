@@ -8,14 +8,17 @@
 * [1.模型概述](#1.模型概述)
 * [2.模型支持情况](#2.支持情况)
   * [2.1训练模型支持情况](#2.1训练模型支持情况)
+  * [2.2推理模型支持情况](#2.2推理模型支持情况)
 * [3.默认参数说明](#3.默认参数说明)
   * [3.1模型训练参数说明](#3.1模型训练参数说明)
+  * [3.2模型推理参数说明](#3.2模型推理参数说明)
 * [4.快速使用](#4.快速使用)
   * [4.1依赖项检查](#4.1依赖项检查)
   * [4.2环境准备](#4.2环境准备)
   * [4.3运行Run脚本](#4.3运行Run脚本)
 * [5.结果展示](#5.结果展示)
   * [5.1训练结果](#5.1训练结果)
+  * [5.2推理结果](#5.2推理结果)
 * [6.免责声明](#6.免责声明) 
 * [7.Release notes](#7.Release_Notes)
 
@@ -30,6 +33,15 @@ LPCNet网络的原生代码实现可参考：[这里](https://github.com/xiph/LP
 Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes
 ----- | ----- | ----- | ----- | ----- | ----- |
 LPCNet | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
+
+## 2.2 **推理模型支持情况**
+
+Models  | Framework  | Supported MLU   | Supported Data Precision  | Jit/Eager Support
+----- | ----- | ----- | ----- | ----- | 
+LPCNet | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32  | Jit & Eager
+
+注意，此处Jit表示使用TFMM的方式进行推理，即是用TensorFlow2-MagicMind作为底层实现后端进行推理。
+
 
 
 # 3. 默认参数配置
@@ -59,6 +71,14 @@ LPCNet | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 </details>
 
 
+## 3.2 **模型推理参数说明**
+
+| 参数 | 作用 |默认值|
+|------|------|------|
+| checkpoint | 训练得到的模型文件，文件格式需为(.h5)， | 无默认值，需单独指定，形如 lpcnet_model_384_99.h5即可|
+| features | 二进制特征文件，用作模型的输入 | 无默认值，需单独指定，形如test_features.f32|
+| output_dir |  存放推理产生的音频文件的文件夹| 无默认值，需单独指定，形如 lpcnet_output_dir即可|
+| output | 推理产生的音频文件，格式为(.s16) | 无默认值，需单独指定，形如 lpcnet_infer.s16即可 |
   
 # 4.快速使用
 下面将详细展示如何在 Cambricon TensorFlow2上完成LPCNet的训练与推理。
@@ -182,12 +202,13 @@ bash run_docker.sh
 
 
 ### 4.2.2 **数据集准备**
-正式训练之前，需要准备相应的训练数据集。原始训练材料可从[此处](http://www-mmsp.ece.mcgill.ca/Documents/Data/)获得。下载`16k-LP7.zip`并解压，随后使用本仓库内的`src/concat.sh`将`16k-LP7`内的wav文件拼接成`input.s16`：
+**(1)训练数据集准备**
+正式训练之前，需要准备相应的训练数据集。原始训练材料可从[此处](http://www-mmsp.ece.mcgill.ca/Documents/Data/)获得。下载`16k-LP7.zip`并解压，随后使用本仓库内的`models/src/concat.sh`将`16k-LP7`内的wav文件拼接成`input.s16`：
 ```bash
 cd 16k-LP7
-bash YOUR_PATH/src/concat.sh
+bash YOUR_PATH/models/src/concat.sh
 ```
-在上一步的源码编译后，在仓库根目录下将产生一个`dump_data`的二进制工具，使用`./dump_data -h`可查看具体用法。
+在上一步的源码编译后，在`models`目录下将产生一个`dump_data`的二进制工具，该工具可从原始音频文件产出音频特征文件，供LPCNet网络使用。该工具的具体用法可通过`./dump_data -h`查看：
 ```bash
 usage: ./dump_data -train <speech> <features out> <pcm out>
   or   ./dump_data -test <speech> <features out>
@@ -198,6 +219,13 @@ usage: ./dump_data -train <speech> <features out> <pcm out>
 ```
 
 **注意**：假设生成的`features.f32` 与`data.u8`路径为`YOUR_DATA_PATH`，则此时还需将`env.sh`内的`DATA_DIR`的值改为`YOUR_DATA_PATH`。
+
+**(2)推理数据集准备**
+由前文可知，LPCNet的输入是声学特征文件，因此推理时，需先使用`dump_data`工具从原始音频文件(.wav)提取音频特征文件(.f32)，随后与训练得到的checkpoint文件一并送入LPCNet进行推理，得到合成后的音频文件。
+[原生代码仓库](https://github.com/xiph/LPCNet)并未指定推理数据集，您只需自行准备一份`wav`文件即可。可从上一步得到的`16k-LP7`中选取一份`wav`文件：
+```bash
+./dum_data -test path/to/16k-LP7/YOUR_SELECTED_FILE.wav test_features.f32
+```
 
 ## 4.3 **运行Run脚本**
 
@@ -230,6 +258,18 @@ horovodrun -np 8  python lpcnet_train.py  \
 ```
 **注意**：使用预训练模型进行finetune训练时，`batch_size`，`np`，`use_amp`需与from_scratch得到该预训练模型的参数一致，否则无法正常训练。
 
+### 4.3.1 **一键执行推理脚本**
+`run_scripts/`目录下提供了推理脚本。
+
+Models  | Framework  | MLU   | Data Precision  | Cards  | Run
+----- | ----- | ----- | ----- | ----- | ----- |
+LPCNet| TensorFlow2  | MLU370-S4/X4/X8  | Float32  | 1  |Infer_LPCNet_Float32_1MLU.sh
+
+您需根据前文指引得到推理所需的音频特征文件以及训练得到的checkpoint文件，再修改`Infer_LPCNet_Float32_1MLU.sh`内的`ckpt`与`features`的路径，随后运行
+```bash
+bash Infer_LPCNet_Float32_1MLU.sh
+```
+结束运行后，即可得到合成的音频文件(.wav)。
 
 # 5. **结果展示**
 
@@ -254,11 +294,11 @@ LPCNet  | 8  |128| 19.06  | 17.03
 
 
 
-
 # 6.免责声明
 您明确了解并同意，以下链接中的软件、数据或者模型由第三方提供并负责维护。在以下链接中出现的任何第三方的名称、商标、标识、产品或服务并不构成明示或暗示与该第三方或其软件、数据或模型的相关背书、担保或推荐行为。您进一步了解并同意，使用任何第三方软件、数据或者模型，包括您提供的任何信息或个人数据（不论是有意或无意地），应受相关使用条款、许可协议、隐私政策或其他此类协议的约束。因此，使用链接中的软件、数据或者模型可能导致的所有风险将由您自行承担。
 
 # 7.Release_Notes
 @TODO
+
 
 
