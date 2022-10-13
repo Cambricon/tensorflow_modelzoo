@@ -308,7 +308,7 @@ horovodrun -np 8 python3 classifier_trainer.py \
     --use_horovod=True \
     --run_eagerly=False \
     --skip_eval=False \
-    --finetune_steps=0 \
+    --finetune_steps=1000 \
     --finetune_checkpoint=$ckpt_file \
     --enable_tensorboard=False \
     --datasets_num_private_threads=0
