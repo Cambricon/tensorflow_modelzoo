@@ -11,7 +11,7 @@ cur_path=$(pwd)
 work_dir="${cur_path}/../.."
 pushd "${work_dir}"
 source env.sh
- horovodrun -np 8 python conformer_train.py \
+ horovodrun -np 4 python conformer_train.py \
  --data_dir=$DATA_DIR \
  --steps=10 \
  --batch_size=4 \

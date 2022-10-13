@@ -34,7 +34,7 @@ tf.keras.backend.clear_session()
 
 def get_flags():
     flags.DEFINE_bool(
-        "use_horovod", default=False, help="Whether to use horovod to train network"
+        "use_horovod", default=False, help="Whether to use horovod to train network.Although this is infer mode, we still needs this parameter in that some called scripts needs it."
     )
     flags.DEFINE_string(
         "config", default=DEFAULT_YAML, help="The file path of model configuration file"
@@ -44,9 +44,7 @@ def get_flags():
         default=None,
         help="The file path of checkpoint file generated from train process",
     )
-    flags.DEFINE_bool("tfrecords", default=False, help="Whether to use tfrecords")
     flags.DEFINE_string("data_dir", default=None, help="Path to test data")
-    flags.DEFINE_bool("mxp", default=False, help="Enable mixed precision")
     flags.DEFINE_integer("batch_size", default=1, help="Test batch size.")
     flags.DEFINE_bool(
         "sentence_piece", default=False, help="Whether to use `SentencePiece` model"
@@ -57,6 +55,7 @@ def get_flags():
         "use_gpu", default=False, help="Whether to run training on GPU devices."
     )
     flags.DEFINE_string("output", default="test.tsv", help="Result filepath")
+    flags.DEFINE_bool("get_rtf", default=False, help="Generate infer performance(RTF) data.")
     FLAGS = flags.FLAGS
     return FLAGS
 
@@ -65,7 +64,7 @@ def main(argv):
     FLAGS = get_flags()
     FLAGS(sys.argv)
     assert FLAGS.saved
-    tf.config.optimizer.set_experimental_options({"auto_mixed_precision": FLAGS.mxp})
+    #tf.config.optimizer.set_experimental_options({"auto_mixed_precision": FLAGS.mxp})
 
     env_util.setup_devices([FLAGS.device], gpu=FLAGS.use_gpu)
 
@@ -117,21 +116,41 @@ def main(argv):
 
     batch_size = FLAGS.batch_size or config.learning_config.running_config.batch_size
     test_data_loader = test_dataset.create(batch_size)
+    if FLAGS.get_rtf:
+        infer_duration = 0.0
+        predict_duration = 0.0
+        decode_duration = 0.0
+        import time
+
+    wav_duration = 0.0
 
     with file_util.save_file(file_util.preprocess_paths(FLAGS.output)) as filepath:
+        infer_begin = time.time()
         results = conformer.predict(test_data_loader, verbose=1)
+        infer_end = time.time()
+        predict_duration += infer_end - infer_begin
         logger.info(f"Saving result to {FLAGS.output} ...")
         with open(filepath, "w") as openfile:
             openfile.write("PATH\tDURATION\tGROUNDTRUTH\tGREEDY\tBEAMSEARCH\n")
             progbar = tqdm(total=test_dataset.total_steps, unit="batch")
             for i, pred in enumerate(results):
+                decode_begin = time.time()
                 groundtruth, greedy, beamsearch = [x.decode("utf-8") for x in pred]
+                decode_end = time.time()
+                decode_duration += decode_end - decode_begin
                 path, duration, _ = test_dataset.entries[i]
+                wav_duration += float(duration)
                 openfile.write(
                     f"{path}\t{duration}\t{groundtruth}\t{greedy}\t{beamsearch}\n"
                 )
                 progbar.update(1)
             progbar.close()
+        infer_duration = predict_duration + decode_duration
+        rtf = infer_duration*1.0/wav_duration
+        logger.info(f"predict duration is:{predict_duration} ")
+        logger.info(f"decode duration is:{decode_duration} ")
+        logger.info(f"Infer duration is:{infer_duration} ")
+        logger.info(f"Infer RTF is:{rtf} ")
         app_util.evaluate_results(filepath)
 
 
