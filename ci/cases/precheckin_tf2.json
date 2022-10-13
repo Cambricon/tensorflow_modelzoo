@@ -84,5 +84,13 @@
             "cd run_scripts/ci;bash Horovod_Vgg19_AMP.sh",
             "cd run_scripts/ci;bash Horovod_Vgg19_Float32.sh"
         ]
+    },
+    "centernet_train":{
+        "directory": "tensorflow2/built-in/Detection/centernet",
+        "testcases": [
+            "cd scripts;bash prepare_dataset.sh",
+            "cd scripts/ci;bash Centernet_Train_Horovod_Float32.sh",
+            "cd scripts/ci;bash Centernet_Train_Horovod_AMP.sh"
+        ]
     }
 }
