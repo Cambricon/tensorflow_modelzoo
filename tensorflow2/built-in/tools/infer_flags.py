@@ -3,6 +3,42 @@ from absl import flags
 
 # cambricon-note begin:flags used for TFMM
 flags.DEFINE_string(
+      "model",
+      default=None,
+      help="model name",
+)
+
+flags.DEFINE_string(
+      "pretrained_filepath",
+      default=None,
+      help="the pretrained model file path.",
+)
+
+flags.DEFINE_string(
+      "model_dir",
+      default=None,
+      help="the converted savedmodel file path.",
+)
+
+flags.DEFINE_integer(
+      "run_eagerly",
+      default=1,
+      help="the flag of model running mode, support jit/eager.",
+)
+
+flags.DEFINE_string(
+      "data_dir",
+      default=None,
+      help="the dataset file path.",
+)
+
+flags.DEFINE_integer(
+      "batch_size",
+      default=1,
+      help="model batch size.",
+)
+
+flags.DEFINE_string(
       "opt_config",
       default=None,
       help="the flag of optimize configs, if added more than one flag,split with comma.support conv_scale_fold,type64to32_conversion.",
@@ -38,6 +74,9 @@ flags.DEFINE_string(
 )
 flags.DEFINE_integer(
       "enable_dim_range", default=0, help="Enable dim range if the value >= 1."
+)
+flags.DEFINE_integer(
+      "minimum_segment_size", default=3, help="minimum segment size, value >= 1."
 )
 flags.DEFINE_string("result_path", default="", help="Path for inference result.")
 flags.DEFINE_integer(
