@@ -1,6 +1,9 @@
-ARG FROM_IMAGE_NAME=yellow.hub.cambricon.com/tensorflow/tensorflow2:v1.13.0-x86_64-ubuntu18.04
+ARG FROM_IMAGE_NAME=Cambricon_TensorFlow_Image:Image_tag
+
 FROM ${FROM_IMAGE_NAME}
 
-COPY ./scripts/*.sh /tensorflow_modelzoo/tensorflow2/buildin/Classification/resnet50_cmcc
+COPY ./tensorflow_modelzoo /home/tensorflow_modelzoo
 
-WORKDIR /tensorflow_modelzoo/tensorflow2/buildin/Classification/resnet50_cmcc
+WORKDIR /home/tensorflow_modelzoo/tensorflow2/built-in/Classification/resnet50_cmcc
+
+RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple && cd ../../tools/record_time && pip install .

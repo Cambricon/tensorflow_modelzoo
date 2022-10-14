@@ -12,12 +12,12 @@ import glob
 import copy
 import time
 
-from model.infer_utils import *
-from model.model_convert import *
+from models.infer_utils import *
+from models.model_convert import *
 
 from absl import flags
-from model.resnet import common
-from model.utils.flags import core as flags_core
+from models.resnet import common
+from models.utils.flags import core as flags_core
 cur_path = os.getcwd()
 sys.path.append(cur_path + "/../../tools/")
 import infer_flags

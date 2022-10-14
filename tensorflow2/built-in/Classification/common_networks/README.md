@@ -285,7 +285,7 @@ cur_path=$(pwd)
 work_dir="${cur_path}/.."
 timestamp=$(date +%Y%m%d%H%M)
 model_dir="${work_dir}/densenet201_model_${timestamp}"
-data_dir=YOUR_DATA_PATH/transformer_data
+data_dir=YOUR_DATA_PATH
 ckpt_file=YOUR_PATH/mlu_model
 
 pushd "${work_dir}"

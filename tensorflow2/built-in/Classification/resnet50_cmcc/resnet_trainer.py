@@ -22,15 +22,15 @@ from absl import app
 from absl import flags
 from absl import logging
 import tensorflow as tf
-from model import orbit
-from model.common import distribute_utils
-from model.modeling import performance
-from model.utils.flags import core as flags_core
-from model.utils.misc import keras_utils
-from model.utils.misc import model_helpers
-from model.resnet import common
-from model.resnet import imagenet_preprocessing
-from model.resnet import resnet_runnable
+from models import orbit
+from models.common import distribute_utils
+from models.modeling import performance
+from models.utils.flags import core as flags_core
+from models.utils.misc import keras_utils
+from models.utils.misc import model_helpers
+from models.resnet import common
+from models.resnet import imagenet_preprocessing
+from models.resnet import resnet_runnable
 import time
 
 flags.DEFINE_boolean(name='use_tf_function', default=True,
