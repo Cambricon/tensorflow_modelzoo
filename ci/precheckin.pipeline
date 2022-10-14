@@ -41,8 +41,8 @@ def test_precheckin(card_type, docker_image, test_mode, network_list) {
         resReq{
             reqMlus 4
             lmtMlus 4
-            reqMemory '30Gi'
-            lmtMemory '30Gi'
+            reqMemory '40Gi'
+            lmtMemory '40Gi'
         }
         unstash 'CI_MR_PROJ' //unzip tensorflow_modelzoo repo in current directory CI_WORK_DIR
         script '''

@@ -88,9 +88,9 @@
     "centernet_train":{
         "directory": "tensorflow2/built-in/Detection/centernet",
         "testcases": [
-            "cd scripts;bash prepare_dataset.sh",
-            "cd scripts/ci;bash Centernet_Train_Horovod_Float32.sh",
-            "cd scripts/ci;bash Centernet_Train_Horovod_AMP.sh"
+            "cd run_scripts;bash prepare_dataset.sh",
+            "cd run_scripts/ci;bash Centernet_Train_Horovod_Float32.sh",
+            "cd run_scripts/ci;bash Centernet_Train_Horovod_AMP.sh"
         ]
     },
     "dlrm_train": {
