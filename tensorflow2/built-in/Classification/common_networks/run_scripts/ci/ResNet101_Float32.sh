@@ -22,7 +22,7 @@ python3 classifier_trainer.py \
     --epochs=1 \
     --use_performance=False \
     --use_amp=False \
-    --use_horovod=True \
+    --use_horovod=False \
     --run_eagerly=False \
     --skip_eval=False \
     --finetune_steps=10 \

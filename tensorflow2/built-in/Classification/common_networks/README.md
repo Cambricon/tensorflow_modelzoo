@@ -336,27 +336,25 @@ Models  | Framework  | MLU   | Data Precision  |  Jit/Eager |
 
 ## 5.1 **训练结果**
 
-** Training accuracy results: MLU370-X8**
-
-Models  | MLUs | Total Batch Size  |  Mixed Precision Top1   | FP32 Top1 
------ | ----- | ----- | ----- | ----- |
-ResNet18 | 8  | MLU370-X8  |   | 
-ResNet50 | 8  | MLU370-X8  |   | 
-ResNet101 | 8  | MLU370-X8  |   | 
-DenseNet201 | 8  | MLU370-X8  |   | 
-Vgg16 | 8  | MLU370-X8  |   | 
-Vgg19 | 8  | MLU370-X8  |   | 
+在运行时传入`--use_performance=True --epochs=1 --finetune_steps=60 --skip_eval=True`参数。
+以下性能结果基于cambricon-tensorflow2(v1.13.2)取得。下表中的Total Batch Size含义为所有MLU卡上的batch_size，例如当使用8卡MLU时，Total Batch Size为1024，因此每张卡的batch_size为1024/8=128。
 
 ** Training performance results: MLU370-X8**
 
 Models   | MLUs   |  Total Batch Size  | Throughput(FP32)  | Throughput(Mixed Precision) 
------ | ----- | ----- | ----- | ----- | -----
-ResNet18 | 1  | 128  |   |  
-ResNet50 | 1  |   |   |  
-ResNet101 | 1  |   |   |   
-DenseNet201 | 1  |   |   |  
-Vgg16 | 1  |   |   | 
-Vgg19 | 1  |   |   |  
+----- | ----- | ----- | ----- | ----- 
+ResNet18 | 1  | 128  | 594.42  | 1273.40 
+ResNet18 | 8  | 1024  |  4161.75 | 7680.32 
+ResNet50 | 1  |  128 |  196.58 | 384.66 
+ResNet50 | 8  |  1024 | 1491.48 | 2774.55 
+ResNet101 | 1  |  64 | 118.71  | 224.22 
+ResNet101 | 8  |  512 |  903.54 | 1644.42 
+DenseNet201 | 1  | 64  |  96.89 | 155.02 
+DenseNet201 | 8  | 512  |  748.54 | 1160.73 
+Vgg16 | 1  |  64 | 86.31 | 219.31 
+Vgg16 | 8  |  512 |  663.57 | 1560.08 
+Vgg19 | 1  |  64 |  71.55 | 189.70 
+Vgg19 | 8  | 512  |  552.20 | 1358.60
 
 
 ## 5.2  **+ 推理结果**

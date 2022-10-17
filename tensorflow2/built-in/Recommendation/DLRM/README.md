@@ -1,36 +1,36 @@
-**DLRM (TensorFlow)**
+**DLRM (TensorFlow2)**
 
-本仓库是在MLU上基于TensorFlow框架实现的DLRM网络，支持训练与推理。
+本仓库是在MLU上基于TensorFlow2框架实现的DLRM网络，支持训练与推理。
 
 ------------
 
 **目录 (Table of Contents)**
-* [1.模型概述](#1.模型概述)
-* [2.模型支持情况](#2.支持情况)
-* [3.默认参数配置](#3.默认参数配置) 
-* [4.快速使用](#4.快速使用)
-  * [4.1依赖项检查](#4.1依赖项检查)
-  * [4.2环境准备](#4.2环境准备)
-  * [4.3运行Run脚本](#4.3运行Run脚本)
-* [5.训练结果展示](#5.训练结果展示)
-* [6.免责声明](#6.免责声明) 
-* [7.Release notes](#7.Release_Notes)
+* [1.模型概述](#1-模型概述)
+* [2.模型支持情况](#2-支持情况)
+* [3.默认参数说明](#3-默认参数说明)
+* [4.快速使用](#4-快速使用)
+  * [4.1依赖项检查](#41-依赖项检查)
+  * [4.2环境准备](#42-环境准备)
+  * [4.3运行Run脚本](#43-运行Run脚本)
+* [5.结果展示](#5-结果展示)
+* [6.免责声明](#6-免责声明) 
+* [7.Release_Notes](#7-Release_Notes)
 
 
-# 1. 模型概述
+# 1. **模型概述**
 DLRM网络是是Facebook在2019年提出的用于处理CTR问题的算法模型，原始论文为[Deep Learning Recommendation Model for
 Personalization and Recommendation Systems](https://arxiv.org/pdf/1906.00091.pdf)。
 
 DLRM网络结构的代码实现可参考：[这里](https://github.com/NVIDIA/DeepLearningExamples/tree/master/TensorFlow2/Recommendation/DLRM)。
 
-# 2. 模型支持情况
+# 2. **模型支持情况**
 
 Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes
 ----- | ----- | ----- | ----- | ----- | ----- |
 DLRM | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 
 
-# 3. 默认参数配置
+# 3. **默认参数说明**
 
 | 参数 | 作用 | 默认值 |
 |------|------|------|
@@ -51,7 +51,7 @@ DLRM | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 | profiled_rank | 使用性能分析工具时，指定保存数据的卡号（默认为0卡，该参数主要用于性能测试） | 0 |
 
   
-# 4.快速使用
+# 4. **快速使用**
 下面将详细展示如何在 Cambricon TensorFlow2上完成DLRM的训练与推理。
 ## 4.1 **依赖项检查**
 * Linux常见操作系统版本(如Ubuntu16.04，Ubuntu18.04，CentOS7.x等)，安装docker(>=v18.00.0)应用程序；
@@ -180,27 +180,22 @@ DLRM  | TensorFlow2  | MLU370-X8  | AMP  | 8  | Horovod_DLRM_AMP_1E_8MLUs.sh
 
 
 
-# 5. **训练结果展示**
+# 5. **结果展示**
 
-** Training accuracy results: MLU370-X8**
-
-Models  | Epochs  | Mixed Precision Top1   | FP32 Top1 
------ | ----- | ----- | ----- | 
-DLRM  | 1  |  | N/A
+在运行时传入`--use_performance=True --max_steps=60 --print_freq=1 --benchmark_warmup_steps=0`参数。
+以下性能结果基于cambricon-tensorflow2(v1.13.2)取得。下表中的Total Batch Size含义为所有MLU卡上的batch_size，例如当使用8卡MLU时，Total Batch Size为65536，因此每张卡的batch_size为65536/8=8192。
 
 ** Training performance results: MLU370-X8**
 
 
 Models   | MLUs   | Total Batch Size  | Throughput(FP32)  | Throughput(Mixed Precision)  
------ | ----- | ----- | ----- | ----- |
-DLRM  | 1  | 65536  | N/A| N/A 
-DLRM  | 4  |   | N/A| N/A 
-DLRM  | 8  |   | N/A| N/A 
+----- | ----- | ----- | ----- | ----- | 
+DLRM  | 8  |  65536 | 240439.50 | 363162.79 
 
 
-# 6.免责声明
+# 6. **免责声明**
 您明确了解并同意，以下链接中的软件、数据或者模型由第三方提供并负责维护。在以下链接中出现的任何第三方的名称、商标、标识、产品或服务并不构成明示或暗示与该第三方或其软件、数据或模型的相关背书、担保或推荐行为。您进一步了解并同意，使用任何第三方软件、数据或者模型，包括您提供的任何信息或个人数据（不论是有意或无意地），应受相关使用条款、许可协议、隐私政策或其他此类协议的约束。因此，使用链接中的软件、数据或者模型可能导致的所有风险将由您自行承担。
 
-# 7.Release_Notes
+# 7. **Release_Notes**
 @TODO
 
