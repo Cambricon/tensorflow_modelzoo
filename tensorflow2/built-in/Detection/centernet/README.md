@@ -6,36 +6,37 @@
 ------------
 
 **目录 (Table of Contents)**
-* [1.模型概述](#1.模型概述)
-* [2.模型支持情况](#2.支持情况)
-  * [2.1训练模型支持情况](#2.1训练模型支持情况)
-* [3.默认参数说明](#3.默认参数说明)
-  * [3.1模型训练参数说明](#3.1模型训练参数说明)
-* [4.快速使用](#4.快速使用)
-  * [4.1依赖项检查](#4.1依赖项检查)
-  * [4.2环境准备](#4.2环境准备)
-  * [4.3运行Run脚本](#4.3运行Run脚本)
-* [5.结果展示](#5.结果展示)
-  * [5.1训练结果](#5.1训练结果)
-* [6.免责声明](#6.免责声明) 
-* [7.Release notes](#7.Release_Notes)
+* [1.模型概述](#1-模型概述)
+* [2.模型支持情况](#2-支持情况)
+  * [2.1训练模型支持情况](#21-训练模型支持情况)
+* [3.默认参数说明](#3-默认参数说明)
+  * [3.1模型训练参数说明](#31-模型训练参数说明)
+* [4.快速使用](#4-快速使用)
+  * [4.1依赖项检查](#41-依赖项检查)
+  * [4.2环境准备](#42-环境准备)
+  * [4.3运行Run脚本](#43-运行Run脚本)
+* [5.结果展示](#5-结果展示)
+  * [5.1训练结果](#51-训练结果)
+* [6.免责声明](#6-免责声明) 
+* [7.Release_Notes](#7-Release_Notes)
 
 
-# 1. 模型概述
+# 1. **模型概述**
 Centernet是一个基于Anchor-free的目标检测算法，输入是图片，输出是带有目标检测框的图片。原始论文为[Object as Points](https://arxiv.org/pdf/1904.07850.pdf)
 
 Centernet网络的TensorFlow原生代码实现可参考：[这里](https://github.com/tensorflow/models/tree/master/official/projects/centernet)。
-# 2. 模型支持情况
+
+# 2. **模型支持情况**
+
 ## 2.1 **训练模型支持情况**
 
 Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes
 ----- | ----- | ----- | ----- | ----- | ----- |
 Centernet | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 
-# 3. 默认参数配置
+# 3. **默认参数说明**
 
 ## 3.1 **模型训练参数说明**
-
 
 Centernet模型的训练参数存在于`model_main_tf2.py`内，同时受到`mlu_centernet_config.config`及run_scripts/内的shell脚本的共同影响。
 
@@ -58,9 +59,12 @@ Centernet模型的训练参数存在于`model_main_tf2.py`内，同时受到`mlu
 
 </details>
 
-# 4.快速使用
+# 4. **快速使用**
+
 下面将详细展示如何在 Cambricon TensorFlow2上完成Centernet的训练。
+
 ## 4.1 **依赖项检查**
+
 * Linux常见操作系统版本(如Ubuntu16.04，Ubuntu18.04，CentOS7.x等)，安装docker(>=v18.00.0)应用程序；
 * 服务器装配好寒武纪计算版本MLU370-X8;
 * Cambricon Driver >=v4.20.6；
@@ -68,6 +72,7 @@ Centernet模型的训练参数存在于`model_main_tf2.py`内，同时受到`mlu
 * 若不具备以上软硬件条件，可前往寒武纪云平台注册并试用@TODO
 
 ## 4.2 **环境准备**
+
 ### 4.2.1 **容器环境搭建**
 容器环境通常有两种搭建方式，一种是基于基础镜像，另一种则是基于DOCKERFILE。
 
@@ -227,17 +232,17 @@ Centernet  | 8 | 8 | 140000 | 29.8 | 24.8
 **Training performance results: MLU370-X8**
 
 在运行`centernet_train.py`时候传入`--use_performance=True` 参数。
-以下性能结果基于cambricon-tensorflow2(v1.12.1)取得。由于Centernet中能以fp16精度运行的算子较少，大量的算子仍以fp32精度运行，因此，数据类型转换（fp32转fp16）导致的耗时增加与算子与算子以fp16精度运行导致的耗时减少基本持平，从性能表现来看，便会出现混合精度训练的fps只比fp32精度训练的fps略高的情况。
+以下性能结果基于cambricon-tensorflow2(v1.13.0)取得。
 
 Models   | MLUs |Batch Size  | Throughput(FP32)  | Throughput(Mixed Precision)
 ----- | ----- | ----- | ----- | -----
 Centernet  | 8  | 10 | 97.71 | 160.08
 Centernet  | 16 | 10 | 183.5 | 290.12
 
-# 6.免责声明
+# 6. **免责声明**
 您明确了解并同意，以下链接中的软件、数据或者模型由第三方提供并负责维护。在以下链接中出现的任何第三方的名称、商标、标识、产品或服务并不构成明示或暗示与该第三方或其软件、数据或模型的相关背书、担保或推荐行为。您进一步了解并同意，使用任何第三方软件、数据或者模型，包括您提供的任何信息或个人数据（不论是有意或无意地），应受相关使用条款、许可协议、隐私政策或其他此类协议的约束。因此，使用链接中的软件、数据或者模型可能导致的所有风险将由您自行承担。
 
-# 7.Release_Notes
+# 7. **Release_Notes**
 @TODO
 
 
