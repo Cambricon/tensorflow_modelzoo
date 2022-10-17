@@ -21,6 +21,13 @@
             "cd run_scripts/ci/;bash Bert_Train_Horovod_Float32.sh"
 	]
     },
+    "bert_infer": {
+        "directory": "tensorflow2/built-in/NaturalLanguageProcessing/google_bert",
+        "testcases": [
+            "cd run_scripts;bash infer_run_eager_fp32_bsz_4.sh",
+            "cd run_scripts;bash infer_run_jit_fp32_bsz_4.sh"
+	]
+    },
     "conformer_train": {
         "directory": "tensorflow2/built-in/ASR/Conformer",
         "testcases": [

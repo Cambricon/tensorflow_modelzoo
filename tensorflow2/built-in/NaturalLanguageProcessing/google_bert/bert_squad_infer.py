@@ -5,12 +5,12 @@ from tensorflow.python.compiler.magicmind import mm_convert as mm
 from tensorflow.python.tools import saved_model_utils
 import numpy as np
 from absl import logging
-import tensorflow as tf
 import glob
 import copy
 import time
-from dataset.wmt14_newstest2014 import *
+from dataset.squad import *
 from utils.infer_utils import *
+import tensorflow as tf
 
 from absl import flags
 cur_path = os.getcwd()
@@ -19,6 +19,23 @@ from saved_model_utils import *
 from model_convert import *
 import infer_flags
 
+input_infos={
+    "input_mask":{
+        "shape":[-1,512],   #[batchsize,max_seq_length]
+        "dtype":np.int32,
+        "range":[0,1.9]
+    },
+    "input_type_ids":{
+         "shape":[-1,512],  #[batchsize,max_seq_length]
+         "dtype":np.int32,
+         "range":[0,1.9]
+    },
+    "input_word_ids":{
+         "shape":[-1,512],  #[batchsize,max_seq_length]
+         "dtype":np.int32,
+         "range":[0,28306]
+    },
+}
 
 def dataset_prepare(dataset_path):
     if not os.path.exists(dataset_path):
@@ -47,7 +64,7 @@ def get_converted_savedmodel(flags_obj):
     res_savedmodel_dir = get_res_savedmodel_dir(flags_obj)
     pb_file = res_savedmodel_dir + "/saved_model.pb"
     if not os.path.exists(pb_file):
-        model_convert(flags_obj, res_savedmodel_dir)
+        model_convert(flags_obj, res_savedmodel_dir, input_infos)
     return
 
 
@@ -81,7 +98,7 @@ def model_infer(flags_obj, signature="serving_default"):
 
     model = tf.saved_model.load(savedmodel_dir, tags=mm.tag_constants.SERVING)
     graph_func = model.signatures["serving_default"]
-    dataset = GetDataSet(flags_obj)
+    dataset = get_dataset(flags_obj)
 
     print("..........inferencing..........")
     e2e_time = AverageMeter("E2e", ":6.5f")
@@ -89,17 +106,17 @@ def model_infer(flags_obj, signature="serving_default"):
     total_e2e_time = 0
     total_hardware_time = 0
 
-    decoder = Newstest2014Decode(data_root_dir = flags_obj.data_dir)
-    results = {}
+    total_results = []
     input_count = 0
-    for i, (x, y) in enumerate(dataset):
+    postprocess = BertBasePostProcess()
+    for x, y in dataset:
         e2e_time_begin = time.perf_counter()
         hardware_time_begin = time.perf_counter()
-        output = graph_func(**x)
+        predicts = graph_func(**x)
+        predicts["unique_ids"] = y
+        batch_results = postprocess(predicts)
+        total_results.extend(batch_results)
         hardware_time_end = time.perf_counter()
-        out_0 = output["model/Transformer/strided_slice_19_new"].cpu().numpy()
-        decoder(out_0, y, None, results)
-        gleu = decoder.summary(results)
         e2e_time_end = time.perf_counter()
 
         input_count += 1
@@ -110,7 +127,7 @@ def model_infer(flags_obj, signature="serving_default"):
         total_e2e_time += cur_e2e_duration
         total_hardware_time += cur_hardware_duration
 
-
+    f1 = calc_hits(flags_obj, total_results)
     avg_e2e_time = total_e2e_time / input_count * 1.0
     avg_hw_time = total_hardware_time / input_count * 1.0
     print(
@@ -137,7 +154,7 @@ def model_infer(flags_obj, signature="serving_default"):
     save_result(
         input_count,
         batch_size,
-        gleu,
+        f1,
         total_hardware_time,
         total_e2e_time,
         result_json,
@@ -147,7 +164,7 @@ def model_infer(flags_obj, signature="serving_default"):
     )
     print("..........inference results..........")
     print("%" * 85)
-    print("gleu is {}".format(gleu))
+    print("f1 is {}".format(f1))
     print("%" * 85)
 
 

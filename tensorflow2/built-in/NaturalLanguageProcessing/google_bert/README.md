@@ -6,19 +6,22 @@
 ------------
 
 **目录 (Table of Contents)**
-* [1.模型概述](#1.模型概述)
-* [2.模型支持情况](#2.支持情况)
-  * [2.1训练模型支持情况](#2.1训练模型支持情况)
-* [3.默认参数说明](#3.默认参数说明)
-  * [3.1模型训练参数说明](#3.1模型训练参数说明)
-* [4.快速使用](#4.快速使用)
-  * [4.1依赖项检查](#4.1依赖项检查)
-  * [4.2环境准备](#4.2环境准备)
-  * [4.3运行Run脚本](#4.3运行Run脚本)
-* [5.结果展示](#5.结果展示)
-  * [5.1训练结果](#5.1训练结果)
-* [6.免责声明](#6.免责声明) 
-* [7.Release notes](#7.Release_Notes)
+* [1.模型概述](#1-模型概述)
+* [2.模型支持情况](#2-支持情况)
+  * [2.1训练模型支持情况](#21-训练模型支持情况)
+  * [2.2推理模型支持情况](#22-推理模型支持情况)
+* [3.默认参数说明](#3-默认参数说明)
+  * [3.1模型训练参数说明](#31-模型训练参数说明)
+  * [3.2模型推理参数说明](#32-模型推理参数说明)
+* [4.快速使用](#4-快速使用)
+  * [4.1依赖项检查](#41-依赖项检查)
+  * [4.2环境准备](#42-环境准备)
+  * [4.3运行Run脚本](#43-运行Run脚本)
+* [5.结果展示](#5-结果展示)
+  * [5.1训练结果](#51-训练结果)
+  * [5.2推理结果](#52-推理结果)
+* [6.免责声明](#6-免责声明) 
+* [7.Release notes](#7-Release_Notes)
 
 
 # 1. 模型概述
@@ -32,6 +35,13 @@ Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs 
 ----- | ----- | ----- | ----- | ----- | ----- |
 Bert | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 
+## 2.2 **推理模型支持情况**
+
+|Models  | Framework  | Supported MLU   | Supported Data Precision   | Eager Support|
+|----- | ----- | ----- | ----- | ----- |
+|Bert   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager|
+
+注意，此处`Jit`表示使用`TFMM`的方式进行推理，即是用`TensorFlow2-MagicMind`作为底层实现后端进行推理。
 
 # 3. 默认参数配置
 
@@ -78,6 +88,44 @@ Bert模型的训练参数主要存在于`run_squad.py`。本仓库基于`squad-v
 | use_profiler| 是否支持tensorboard，若为True则表示| False |
 | finetune_steps| 通常用于控制finetune时的训练步数，默认为0，此时训练步数由batch_size，num_train_epochs，hvd.size等参数共同决定| 0 |
 | learning_rate| 训练时的学习率| 1e-5 |	
+
+
+## 3.2 **模型推理参数说明**
+<span id= "jump1"></span>
+### 3.2.1 **模型推理常用参数说明**
+
+推理的公共参数都在`../../tools/infer_flags.py`内，程序运行时会解析并读取该脚本内的所有参数。
+大部分参数提供了默认值，这些参数的详细含义将在稍后给出。
+我们根据常用的参数组合，在`run_scripts/`下提供了若干个常用的脚本，如`infer_run_eager_fp32_bsz_4.sh`，`infer_run_jit_fp32_bsz_4.sh`，在使用这些脚本之前，您需要根据当前环境修改如下常用参数：
+```bash
+data_dir#推理数据集路径，常用wmt数据集，该数据集的目录结构需按照下文中的[数据集准备]一节的要求布置。
+run_eagerly#是否使用eager模式进行推理。0表示不使用，1表示使用。默认为0。非eager模式也称为jit模式，即使用TFMM（TensorFlow2-MagicMind）进行推理，eager模式即基于TensorFlow框架的推理。支持外界直接传参。
+batch_size#推理时的batch大小，默认为64。支持外界直接传参。
+quant_precision#推理精度类型，默认为fp32，可选值为[fp16,fp32]其中之一。支持外界直接传参。
+enable_dim_range#默认为 1，该参数仅在jit模式下有效。TFMM支持同一份模型使用不同的输入形状进行推理，当模型输入在某些维度长度可变时（例如batch,height,width,channel中的batch可变），开启该选项后可使推理性能达到更优。关于该参数更具体的解释与使用请参阅Cambricon-TensorFlow-MagicMind用户手册。
+```
+完成上述参数修改后，再运行`bash infer_run_eager_fp32_bsz_4.sh`即可开始推理。
+这些脚本也支持通过直接传参的方式修改`batch_size`，`quant_precision`，`run_eagerly`。
+例如运行`bash  infer_run_eager_fp32_bsz_4.sh -b 16`即可将`batch_size`从64改为16，且保持其他参数不变。
+
+### 3.2.2 **模型推理其他参数说明**
+
+除了上述常用参数之外，`infer_run_eager_fp32_bsz_4.sh` （infer_run_jit_fp32_bsz_4.sh与之类似）还有如下参数可供使用与修改：
+```bash
+native_savedmodel_dir#该参数表示原生TensorFlow Keras原始模型（savedmodel格式）的存放路径，需要传入绝对路径
+converted_savedmodel_dir#该参数表示转换为TFMM模型（savemodel格式）的存放路径，需要传入绝对路径
+result_path#推理结果保存路径，需要为绝对路径
+net_name#网络名称，本仓库内为Bert
+visible_devices#对于多卡用户，设置程序运行在哪张卡上，默认为 0
+warmup_count#正式推理之前的热身推理次数。初次推理通常需要进行一定的初始化工作，为使推理时统计的性能数据更精确，通常不会计入第一次推理耗时。默认为1。
+-----------------------------------
+#如下参数只在jit模式时被使用
+
+opt_config#TF2MM模型优化性能选项，目前支持的输入为 [conv_scale_fold,type64to32_conversion] 如果想需要设置多个，用逗号 ',' 隔开
+}
+
+```
+若要在脚本中使用更多的参数，则需在`run_scripts/*.sh`脚本中新增对应的变量，再参照例如`quant_precision`的方式传入`bert_squad_infer.py`.
 
   
   
@@ -149,7 +197,8 @@ fi
 **d)安装模型依赖项**
 
 ```bash
-# bert 仅依赖tensorflow，由于容器内已有tensorflow，因此无需再进行额外安装
+#安装依赖库
+pip install sentencepiece
 # 安装性能测试工具(可选)
 # 若不开启性能测试（use_performance为False），则无需安装。
 cd tensorflow_modelzoo/tensorflow2/built-in/tools/record_time
@@ -291,6 +340,21 @@ Bert  | 1  |22|  17.02|19.25
 Bert  | 4  |88|  61.40|74.26
 Bert  | 8  |176| 120.6  | 149.57  
 
+## 5.2  **推理结果**
+
+###  Infering  results: MLU370-X4
+
+
+Models | mode   | precision  | batch_size| F1 Score | hardware_fps  
+----- | ----- | ----- | ----- | ----- | ----- 
+Bert |jit   | fp16  |32   |   |  
+Bert |jit   | fp32  |32   |   |  
+Bert |jit   | fp16  |64   |   |  
+Bert |jit   | fp32  |64   |   |  
+Bert |eager   | fp16  |32   |   |  
+Bert |eager   | fp32  |32   |   |  
+Bert |eager   | fp16  |64   |    |  
+Bert |eager   | fp32  |64   |    |  
 
 
 # 6.免责声明

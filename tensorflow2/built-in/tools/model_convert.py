@@ -10,7 +10,7 @@ import uuid
 from absl import logging
 from saved_model_utils import *
 
-def load_mm_converter(flags_obj):
+def load_mm_converter(flags_obj, input_infos=None):
     """Loads a saved model using a TF-MM converter, and returns the converter"""
     precision = flags_obj.quant_precision
     params = copy.deepcopy(mm.DEFAULT_MM_CONVERSION_PARAMS)
@@ -98,6 +98,13 @@ def load_mm_converter(flags_obj):
     tmp_folder = os.path.join(TMP_FOLDER,str(uuid.uuid4()))
     target_model_dir = flags_obj.pretrained_filepath
     input_shapes = get_model_inputoutput_shape(target_model_dir)["inputs"].values()
+    if flags_obj.enable_dim_range==False and has_dynamic_dim(input_shapes) and input_infos != None:
+        input_shapes={}
+        for key in input_infos.keys():
+            input_shapes[key]=copy.copy(input_infos[key]["shape"])
+            if input_shapes[key][0] == -1:
+                input_shapes[key][0]=flags_obj.batch_size
+        target_model_dir = savedmodel_fix_dynamicmodel(target_model_dir, tmp_folder, input_shapes)
     if flags_obj.enable_dim_range==False and has_dynamic_dim(input_shapes) and flags_obj.model != "Transformer":
         #need to fix batchsize dim
         target_model_dir = savedmodel_dynamicbatch_to_fixbatch(target_model_dir, tmp_folder, flags_obj.batch_size)
@@ -120,7 +127,7 @@ def load_mm_converter(flags_obj):
     return converter
 
 
-def model_convert(flags_obj, res_savedmodel_dir):
+def model_convert(flags_obj, res_savedmodel_dir, input_infos=None):
     print("..........getting model input output shapes..........")
     native_savedmodel_dir = flags_obj.pretrained_filepath
 
@@ -131,7 +138,7 @@ def model_convert(flags_obj, res_savedmodel_dir):
     print("%" * 85)
     print("..........loading MM converter..........")
 
-    converter = load_mm_converter(flags_obj)
+    converter = load_mm_converter(flags_obj, input_infos)
 
     input_shape = list(modelinfo["inputs"].values())[0]
 
