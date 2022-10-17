@@ -87,4 +87,9 @@ flags.DEFINE_string(
       default="fp32",
       help="Precision, optional val int8_fp16/int8_fp32/int16_fp16/int16_fp16/fp16/fp32,if the precision is int8_fp16/int8_fp32/int16_fp16/int16_fp32,converter will do calibration to the native savedmodel.",
 )
+flags.DEFINE_float(
+      "data_ratio",
+      default="1.0",
+      help="Inference uses data as a percentage of the total dataset"
+)
 # cambricon-note end:flags used for TFMM

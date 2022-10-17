@@ -126,5 +126,23 @@
         "testcases": [
             "cd run_scripts/ci;bash prepare_env.sh && bash Conformer_Infer_1MLU.sh"
         ]
+    },
+    "resnet50_infer": {
+        "directory": "tensorflow2/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash ResNet50_Infer.sh"
+        ]
+    },
+    "vgg16_infer": {
+        "directory": "tensorflow2/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Vgg16_Infer.sh"
+        ]
+    },
+    "vgg19_infer": {
+        "directory": "tensorflow2/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Vgg19_Infer.sh"
+        ]
     }
 }
