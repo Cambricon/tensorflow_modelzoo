@@ -56,6 +56,7 @@ def get_flags():
     )
     flags.DEFINE_string("output", default="test.tsv", help="Result filepath")
     flags.DEFINE_bool("get_rtf", default=False, help="Generate infer performance(RTF) data.")
+    flags.DEFINE_bool("mxp", default=False, help="Enable mixed precision")
     FLAGS = flags.FLAGS
     return FLAGS
 
@@ -64,7 +65,7 @@ def main(argv):
     FLAGS = get_flags()
     FLAGS(sys.argv)
     assert FLAGS.saved
-    #tf.config.optimizer.set_experimental_options({"auto_mixed_precision": FLAGS.mxp})
+    tf.config.optimizer.set_experimental_options({"auto_mixed_precision": FLAGS.mxp})
 
     env_util.setup_devices([FLAGS.device], gpu=FLAGS.use_gpu)
 

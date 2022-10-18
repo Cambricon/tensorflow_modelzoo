@@ -21,7 +21,7 @@
   * [5.1训练结果](#51-训练结果)
   * [5.2推理结果](#52-推理结果)
 * [6.免责声明](#6-免责声明) 
-* [7.Release notes](#7-Release_Notes)
+* [7.Release_Notes](#7-Release_Notes)
 
 
 # 1. 模型概述
@@ -265,12 +265,14 @@ horovodrun -np 8 python conformer_train.py \
 **注意**：使用预训练模型进行finetune训练时，`batch_size`，`np`，`mxp`需与from_scratch得到该预训练模型的参数一致，否则无法正常训练。
 
 ### 4.3.2 **一键执行推理脚本**
-`run_scripts/`目录下提供了的单机单卡推理脚本`Infer_Conformer_Float32_1MLU.sh`。运行该脚本之前，您需要将脚本内`ckpt`变量的值改为训练得到的checkpoint文件的实际路径。
+`run_scripts/`目录下提供了单机单卡推理脚本`Infer_Conformer_Float32_1MLU.sh`和`Infer_Conformer_AMP_1MLU.sh`。
 目前支持的精度类型与推理模式组合以及运行环境如下所示：
 
 Models  | Framework  | MLU   | Data Precision  |  Jit/Eager 
 ----- | ----- | ----- | ----- | ----- | 
-Conformer  | TensorFlow2  | MLU370  | FP32  |  Eager 
+Conformer  | TensorFlow2  | MLU370  | FP32/FP16  |  Eager 
+
+运行推理脚本之前，您需要将脚本内`ckpt`变量的值改为训练得到的checkpoint文件的实际路径。
 
 
 
@@ -305,12 +307,12 @@ Conformer  | 8  |32| 33.89  | 34.57
 
 ## 5.2  **推理结果**
 
-在单机单卡上使用训练了50个epoch的checkpoint进行推理，其精度与性能表现如下表所示，其中`RTF`为实时率(real time factor)，是一个常用于度量语音识别系统解码速度的值。如果某系统对一段时长为a的音频进行识别需要花费时间b，则实时率为b/a。例如某系统处理一段时长为2小时的音频花费了4小时，则实时率为4/2=2，当实时率小于1时，我们称该系统的处理是实时的。
-**Infering  accuracy results: MLU370-X4**
+在单机单卡上使用MLU370-X4对训练了50个epoch的checkpoint进行推理，其精度与性能表现如下表所示，其中`RTF`为实时率(real time factor)，是一个常用于度量语音识别系统解码速度的值。如果某系统对一段时长为a的音频进行识别需要花费时间b，则实时率为b/a。例如某系统处理一段时长为2小时的音频花费了4小时，则实时率为4/2=2，当实时率小于1时，我们称该系统的处理是实时的。
 
 Models |  Jit/Eager   | Supported Data Precision  | Batch Size|greedy_wer/greedy_cer | RTF
 ----- | ----- | ----- | ----- | ----- | -----  
    Conformer | Eager   | FP32  |32  | 0.17/0.08   | 0.03
+   Conformer | Eager   | FP16  |32  | 0.17/0.08   | 0.03
 
 
 

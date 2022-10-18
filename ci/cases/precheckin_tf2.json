@@ -124,7 +124,8 @@
     "conformer_infer": {
         "directory": "tensorflow2/built-in/ASR/Conformer",
         "testcases": [
-            "cd run_scripts/ci;bash prepare_env.sh && bash Conformer_Infer_1MLU.sh"
+            "cd run_scripts/ci;bash prepare_env.sh && bash Conformer_Infer_1MLU.sh",
+            "cd run_scripts/ci;bash prepare_env.sh && bash Conformer_Infer_1MLU_AMP.sh"
         ]
     },
     "resnet50_infer": {

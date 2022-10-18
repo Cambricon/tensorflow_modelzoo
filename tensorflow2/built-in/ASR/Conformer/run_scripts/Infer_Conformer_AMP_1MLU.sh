@@ -7,7 +7,7 @@ export TF_MLU_THREAD_COUNT=8
 cur_path=$(pwd)
 work_dir="${cur_path}/.."
 bsz=32
-output_file="${work_dir}/test_${bsz}.tsv"
+output_file="${work_dir}/test_${bsz}_amp.tsv"
 # generate ckpt from conformer train process.
 ckpt="${work_dir}/mlu_model/50.h5"
 
@@ -18,6 +18,6 @@ python conformer_test.py \
  --batch_size=$bsz \
  --output=$output_file \
  --get_rtf=True \
- --mxp=False \
+ --mxp=True \
  --saved=$ckpt
 popd
