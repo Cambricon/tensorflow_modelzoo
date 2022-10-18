@@ -144,5 +144,12 @@
         "testcases": [
             "cd run_scripts/ci;bash Vgg19_Infer.sh"
         ]
+    },
+    "centernet_infer":{
+        "directory": "tensorflow2/built-in/Detection/centernet",
+        "testcases": [
+            "cd run_scripts;bash infer_run_eager_fp32_bsz_4.sh",
+            "cd run_scripts;bash infer_run_jit_fp32_bsz_4.sh"
+        ]
     }
 }

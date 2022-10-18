@@ -8,7 +8,84 @@ import numpy as np
 import copy
 import uuid
 from absl import logging
+import subprocess
+from typing import List
 from saved_model_utils import *
+
+
+def invoke(command_line: List[str]) -> str:
+    """ Usual way of using subprocess.run for invoking any command line tools.
+
+    Args:
+        command_line(List[str]): command_line of list to exec.
+
+    Returns:
+        - Return all of the output from stdout and stderr as string type.
+    """
+    run_args = {
+        "stdout": subprocess.PIPE,
+        "stderr": subprocess.STDOUT,
+        "shell": True,
+        "bufsize": -1
+    }
+    try:
+        process = subprocess.Popen(command_line, **run_args)
+        msg, _ = process.communicate()
+        msg = str(msg, encoding="utf-8")
+        if process.returncode != 0:
+            raise RuntimeError("Error in run:\n {} \n".format("".join(command_line)) +
+                               "msg: \n {}".format(msg))
+        return msg
+    except RuntimeError as e:
+        print("RuntimeError,command:\n", command_line, " ERROR:", e)
+        return msg
+    finally:
+        pass
+
+
+def detect_cluster_num():
+    query_cmd = "cnmon info -t|grep 'Product Name'|awk -F: '{print $2}'"
+    card_type = invoke(query_cmd).strip()
+    if card_type == "MLU370-S4":
+        return 6
+    elif card_type == "MLU370-X4":
+        return 8
+    elif card_type == "MLU370-X8":
+        return 4
+    elif card_type == "MLU370-EVB_S":
+        return 4
+    elif card_type == "MLU370-EVB_D":
+        return 8
+    elif card_type == "MLU370-X4K":
+        return 8
+    elif card_type == "MLU370-M8":
+        return 8
+    elif card_type == "MLU365-D2":
+        return 2
+    elif card_type == "MLU580-H5":
+        return 8
+    elif card_type == "MLU590-M9":
+        return 12
+    elif card_type == "MLU590-H8":
+        return 12
+    else:
+        raise RuntimeError(f"{card_type} not support.")
+
+
+def detect_arch():
+
+    query_cmd = "cnmon info -t|grep 'Product Name'|awk -F: '{print $2}'"
+    card_type = invoke(query_cmd).strip()
+    if "370" in card_type:
+        return "mtp_372"
+    elif "590" in card_type:
+        return "mtp_592"
+    elif "580" in card_type:
+        return "mtp_592"
+    else:
+        raise RuntimeError(f"{card_type} not support.")
+
+
 
 def load_mm_converter(flags_obj, input_infos=None):
     """Loads a saved model using a TF-MM converter, and returns the converter"""
@@ -116,6 +193,10 @@ def load_mm_converter(flags_obj, input_infos=None):
     if len(opt_configs) != 0:
         params = params._replace(optimize_configs=opt_configs)
     params = params._replace(minimum_segment_size=flags_obj.minimum_segment_size)
+
+    params = params._replace(archs=[detect_arch()])
+    params = params._replace(cluster_num=detect_cluster_num())
+
     print("%" * 85)
     pprint.pprint(params)
     print("%" * 85)
