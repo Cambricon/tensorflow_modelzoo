@@ -19,7 +19,6 @@
   * [4.3运行Run脚本](#43-运行Run脚本)
 * [5.结果展示](#5-结果展示)
   * [5.1训练结果](#51-训练结果)
-  * [5.2推理结果](#52-推理结果)
 * [6.免责声明](#6-免责声明) 
 * [7.Release_Notes](#7-Release_Notes)
 
@@ -286,34 +285,7 @@ Models   | MLUs |Batch Size  | Steps  |Precision(FP32)  | Precision(Mixed Precis
 Centernet  | 8 | 8 | 140000 | 29.8 | 24.8
 
 
-**Training performance results: MLU370-X8**
 
-在运行`centernet_train.py`时候传入`--use_performance=True` 参数。
-以下性能结果基于cambricon-tensorflow2(v1.13.0)取得。
-
-Models   | MLUs |Batch Size  | Throughput(FP32)  | Throughput(Mixed Precision)
------ | ----- | ----- | ----- | -----
-Centernet  | 8  | 10 | 97.71 | 160.08
-Centernet  | 16 | 10 | 183.5 | 290.12
-
-
-## 5.2  **推理结果**
-
-
-###  Infering  results: MLU370-X4
-
-
-
-models | mode   | precision  | batch_size| mAP | hardware_fps  
------ | ----- | ----- | ----- | ----- | ----- 
- Centernet  |jit   | fp16  |32   |   |  
- Centernet  |jit   | fp32  |32   |   |  
- Centernet  |jit   | fp16  |64   |   |  
- Centernet  |jit   | fp32  |64   |   |  
- Centernet  |eager   | fp16  |32   |   |  
- Centernet  |eager   | fp32  |32   |   |  
- Centernet  |eager   | fp16  |64   |    |  
- Centernet  |eager   | fp32  |64   |    |  
 
 
 # 6. **免责声明**

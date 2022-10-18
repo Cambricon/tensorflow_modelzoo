@@ -18,10 +18,9 @@
   * [4.2环境准备](#42-环境准备)
   * [4.3运行Run脚本](#43-运行Run脚本)
 * [5.结果展示](#5-结果展示)
-  * [5.1训练结果](#51-训练结果)
-  * [5.2推理结果](#52-推理结果)
+  * [5.1训练结果](#51-训练结果)  
 * [6.免责声明](#6-免责声明) 
-* [7.Release notes](#7-Release_Notes)
+* [7.Release_Notes](#7-Release_Notes)
 
 
 # 1. 模型概述
@@ -349,37 +348,6 @@ Models   | MLUs |Total Batch Size  | Bleu Score(uncased)  | Bleu Score(cased)
 ----- | ----- | ----- | ----- | ----- |
 Transformer  | 8 |32768| 27.47  | 26.96
 
-
-
-
-**Training performance results: MLU370-X8**
-
-在运行`transformer_train.py`时候传入`--use_performance=True` 参数。
-以下性能结果基于cambricon-tensorflow2(v1.12.1)取得。下表中的`Total Batch Size`含义为所有MLU卡上的batch_size，例如当使用8卡MLU时，`Total Batch Size`为32768，因此每张卡的`batch_size`为32768/8=4096。
-
-Models   | MLUs |Total Batch Size  | Throughput(FP32)  
------ | ----- | ----- | ----- | 
-Transformer  | 1  |4096| 10829.41 
-Transformer  | 4  |16384| 40527.77  
-Transformer  | 8  |32768| 79682.24  
-
-## 5.2  **推理结果**
-
-
-###  Infering  results: MLU370-X4
-
-
-
-Models | mode   | precision  | batch_size| Bleu Score | hardware_fps  
------ | ----- | ----- | ----- | ----- | ----- 
-  Transformer |jit   | fp16  |32   |   |  
-  Transformer |jit   | fp32  |32   |   |  
-  Transformer |jit   | fp16  |64   |   |  
-  Transformer |jit   | fp32  |64   |   |  
-  Transformer |eager   | fp16  |32   |   |  
-  Transformer |eager   | fp32  |32   |   |  
-  Transformer |eager   | fp16  |64   |    |  
-  Transformer |eager   | fp32  |64   |    |  
 
 
 # 6.免责声明

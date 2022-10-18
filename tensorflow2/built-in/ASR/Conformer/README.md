@@ -290,20 +290,6 @@ Conformer的训练精度可由模型在测试集上的`wer`与`cer`表征。在`
  8  |4/1  | 50|17.36%|8.02%
 
 
-**Training performance results: MLU370-X8**
-
-在运行`conformer_train.py`时候传入`--use_performance=True` 参数。
-以下性能结果基于cambricon-tensorflow2(v1.12.1)取得。由于Conformer中能以fp16精度运行的算子较少，大量的算子仍以fp32精度运行，因此，数据类型转换（fp32转fp16）导致的耗时增加与算子与算子以fp16精度运行导致的耗时减少基本持平，从性能表现来看，便会出现混合精度训练的fps只比fp32精度训练的fps略高的情况。
-
-Models   | MLUs |Batch Size  | Throughput(FP32)  | Throughput(Mixed Precision)  
------ | ----- | ----- | ----- | ----- | 
-Conformer  | 1  |4| 6.00  | 5.97  
-Conformer  | 4  |16| 18.70  | 19.50  
-Conformer  | 8  |32| 33.89  | 34.57  
-
-
-
-
 
 ## 5.2  **推理结果**
 

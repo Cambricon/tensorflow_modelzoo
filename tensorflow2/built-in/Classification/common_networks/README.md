@@ -12,21 +12,18 @@
 - [3. 默认参数配置](#3-默认参数配置)
   - [3.1 模型训练默认参数配置](#31-模型训练默认参数配置)
   - [3.2 模型推理默认参数说明](#32-模型推理默认参数说明)
-- [4.快速使用](#4快速使用)
+- [4.快速使用](#4-快速使用)
   - [4.1 依赖项检查](#41-依赖项检查)
   - [4.2 环境准备](#42-环境准备)
-  - [4.3 运行Run脚本](#43-运行run脚本)
-- [5. 结果展示](#5-结果展示)
-  - [5.1 训练结果](#51-训练结果)
-  - [5.2  推理结果](#52-推理结果)
-- [6.免责声明](#6免责声明)
-- [7.Release_Notes](#7release_notes)
+  - [4.3 运行Run脚本](#43-运行Run脚本)
+- [5.免责声明](#5-免责声明)
+- [6.Release_Notes](#6-Release_Notes)
 
 
 # 1. 模型概述
 
 
-ResNet18、ResNet50和ResNet101网络都是残差卷积神经网络，原始论文为[Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385)。
+ResNet18、ResNet50和ResNet101网络都是残差卷积网络，原始论文为[Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385)。
 ResNet网络结构的代码实现可参考：[这里](https://github.com/tensorflow/models/tree/master/model/legacy/image_classification/resnet)。
 
 DenseNet201网络是密集连接卷积网络，原始论文为[Deep Residual Learning for Image Recognition](https://arxiv.org/pdf/1608.06993.pdf)。
@@ -329,58 +326,10 @@ popd
 
 
 
-
-# 5. **结果展示**
-
-## 5.1 **训练结果**
-
-在运行时传入`--use_performance=True --epochs=1 --finetune_steps=60 --skip_eval=True`参数。
-以下性能结果基于cambricon-tensorflow2(v1.13.2)取得。下表中的Total Batch Size含义为所有MLU卡上的batch_size，例如当使用8卡MLU时，Total Batch Size为1024，因此每张卡的batch_size为1024/8=128。
-
-** Training performance results: MLU370-X8**
-
-Models   | MLUs   |  Total Batch Size  | Throughput(FP32)  | Throughput(Mixed Precision) 
------ | ----- | ----- | ----- | ----- 
-ResNet18 | 1  | 128  | 594.42  | 1273.40 
-ResNet18 | 8  | 1024  |  4161.75 | 7680.32 
-ResNet50 | 1  |  128 |  196.58 | 384.66 
-ResNet50 | 8  |  1024 | 1491.48 | 2774.55 
-ResNet101 | 1  |  64 | 118.71  | 224.22 
-ResNet101 | 8  |  512 |  903.54 | 1644.42 
-DenseNet201 | 1  | 64  |  96.89 | 155.02 
-DenseNet201 | 8  | 512  |  748.54 | 1160.73 
-Vgg16 | 1  |  64 | 86.31 | 219.31 
-Vgg16 | 8  |  512 |  663.57 | 1560.08 
-Vgg19 | 1  |  64 |  71.55 | 189.70 
-Vgg19 | 8  | 512  |  552.20 | 1358.60
-
-
-## 5.2  **推理结果**
-
-
-###  Infering  results: MLU370-X4
-
-Models | mode   | precision  | batch_size|top1/top5  | hardware_fps  
------ | ----- | ----- | ----- | ----- | ----- 
-  ResNet50 |jit   | fp16  |   |           |
-  ResNet50 |jit   | fp32  |            |           |
- ResNet50 | eager | fp16      |            |           |
- ResNet50 | eager | fp32      |            |           |
- Vgg16 | jit   | fp16      |            |           |
- Vgg16    | jit   | fp32      |            |           |
- Vgg16    | eager | fp16      |            |           |
- Vgg16    | eager | fp32      |            |           |
- Vgg19 | jit   | fp16      |            |           |
- Vgg19   | jit   | fp32      |            |           |
- Vgg19   | eager | fp16      |            |           |
- Vgg19   | eager | fp32      |            |           |
-
-
-
-# 6.免责声明
+# 5. 免责声明
 您明确了解并同意，以下链接中的软件、数据或者模型由第三方提供并负责维护。在以下链接中出现的任何第三方的名称、商标、标识、产品或服务并不构成明示或暗示与该第三方或其软件、数据或模型的相关背书、担保或推荐行为。您进一步了解并同意，使用任何第三方软件、数据或者模型，包括您提供的任何信息或个人数据（不论是有意或无意地），应受相关使用条款、许可协议、隐私政策或其他此类协议的约束。因此，使用链接中的软件、数据或者模型可能导致的所有风险将由您自行承担。
 
-# 7.Release_Notes
+# 6. Release_Notes
 @TODO
 
 

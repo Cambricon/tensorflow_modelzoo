@@ -12,9 +12,8 @@
   * [4.1依赖项检查](#41-依赖项检查)
   * [4.2环境准备](#42-环境准备)
   * [4.3运行Run脚本](#43-运行Run脚本)
-* [5.结果展示](#5-结果展示)
-* [6.免责声明](#6-免责声明) 
-* [7.Release_Notes](#7-Release_Notes)
+* [5.免责声明](#5-免责声明) 
+* [6.Release_Notes](#6-Release_Notes)
 
 
 # 1. **模型概述**
@@ -180,22 +179,9 @@ DLRM  | TensorFlow2  | MLU370-X8  | AMP  | 8  | Horovod_DLRM_AMP_1E_8MLUs.sh
 
 
 
-# 5. **结果展示**
-
-在运行时传入`--use_performance=True --max_steps=60 --print_freq=1 --benchmark_warmup_steps=0`参数。
-以下性能结果基于cambricon-tensorflow2(v1.13.2)取得。下表中的Total Batch Size含义为所有MLU卡上的batch_size，例如当使用8卡MLU时，Total Batch Size为65536，因此每张卡的batch_size为65536/8=8192。
-
-** Training performance results: MLU370-X8**
-
-
-Models   | MLUs   | Total Batch Size  | Throughput(FP32)  | Throughput(Mixed Precision)  
------ | ----- | ----- | ----- | ----- | 
-DLRM  | 8  |  65536 | 240439.50 | 363162.79 
-
-
-# 6. **免责声明**
+# 5. **免责声明**
 您明确了解并同意，以下链接中的软件、数据或者模型由第三方提供并负责维护。在以下链接中出现的任何第三方的名称、商标、标识、产品或服务并不构成明示或暗示与该第三方或其软件、数据或模型的相关背书、担保或推荐行为。您进一步了解并同意，使用任何第三方软件、数据或者模型，包括您提供的任何信息或个人数据（不论是有意或无意地），应受相关使用条款、许可协议、隐私政策或其他此类协议的约束。因此，使用链接中的软件、数据或者模型可能导致的所有风险将由您自行承担。
 
-# 7. **Release_Notes**
+# 6. **Release_Notes**
 @TODO
 

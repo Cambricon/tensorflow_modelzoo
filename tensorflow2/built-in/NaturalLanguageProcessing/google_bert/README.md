@@ -18,10 +18,9 @@
   * [4.2环境准备](#42-环境准备)
   * [4.3运行Run脚本](#43-运行Run脚本)
 * [5.结果展示](#5-结果展示)
-  * [5.1训练结果](#51-训练结果)
-  * [5.2推理结果](#52-推理结果)
+  * [5.1训练结果](#51-训练结果)  
 * [6.免责声明](#6-免责声明) 
-* [7.Release notes](#7-Release_Notes)
+* [7.Release_Notes](#7-Release_Notes)
 
 
 # 1. 模型概述
@@ -328,33 +327,6 @@ Models   | MLUs |Total Batch Size  | f1(FP32)  | f1(Mixed Precision)
 ----- | ----- | ----- | ----- | ----- | 
 Bert  | 8  |176| 89.13  | 88.04  
 
-
-**Training performance results: MLU370-X8**
-
-在运行`run_sqaud.py`时候传入`--use_performance=True` 参数。
-以下性能结果基于cambricon-tensorflow2(v1.12.1)取得。下表中的`Total Batch Size`含义为所有MLU卡上的batch_size，例如当使用8卡MLU时，`Total Batch Size`为176，因此每张卡的`batch_size`为176/8=22。
-
-Models   | MLUs |Total Batch Size  | Throughput(FP32)  | Throughput(Mixed Precision)  
------ | ----- | ----- | ----- | ----- | 
-Bert  | 1  |22|  17.02|19.25
-Bert  | 4  |88|  61.40|74.26
-Bert  | 8  |176| 120.6  | 149.57  
-
-## 5.2  **推理结果**
-
-###  Infering  results: MLU370-X4
-
-
-Models | mode   | precision  | batch_size| F1 Score | hardware_fps  
------ | ----- | ----- | ----- | ----- | ----- 
-Bert |jit   | fp16  |32   |   |  
-Bert |jit   | fp32  |32   |   |  
-Bert |jit   | fp16  |64   |   |  
-Bert |jit   | fp32  |64   |   |  
-Bert |eager   | fp16  |32   |   |  
-Bert |eager   | fp32  |32   |   |  
-Bert |eager   | fp16  |64   |    |  
-Bert |eager   | fp32  |64   |    |  
 
 
 # 6.免责声明
