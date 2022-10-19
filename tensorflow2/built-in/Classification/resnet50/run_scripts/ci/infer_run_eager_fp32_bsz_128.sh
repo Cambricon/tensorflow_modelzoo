@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -x
+#set -ex
 
 function check_or_create_dir(){
     dst_dir="${1}"
@@ -24,6 +24,14 @@ function parameter_validate(){
     return 0
 }
 
+
+function prepare_ci_dataset(){
+    ci_dataset_dir="${1}"
+    check_or_create_dir "${ci_dataset_dir}"
+    cp -r ${IMAGENET_VAL_DIR}/n01751748 "${ci_dataset_dir}"
+    cp -r ${IMAGENET_VAL_DIR}/n01443537 "${ci_dataset_dir}"
+}
+
 while getopts ":e:b:p:" opt
 do
     case $opt in
@@ -43,15 +51,8 @@ do
      esac
 done
 
-cur_path=$(pwd)
-# begin:
-# modify the below parameters according to your own demands
-TF_MODELS_DIR=/tensorflow_benchmark/models/TensorFlow2/tf_models
-export PYTHONPATH=$cur_path:${TF_MODELS_DIR}:${PYTHONPATH}
-data_dir=/home/dataset/imagenet_2012
-
 run_eagerly=1
-batch_size=4
+batch_size=128
 quant_precision="fp32"
 
 if [ -n "${eager_mode}" ];then
@@ -69,29 +70,31 @@ parameter_validate ${run_eagerly} ${quant_precision}
 if [ $? -ne 0 ];then
     exit 1
 fi
-# end
 
+cur_path=$(pwd)
+work_dir="${cur_path}/../../"
 net_name="ResNet50"
-pub_model_path="${cur_path}/../pub_model_path"
+pub_model_path="${work_dir}/pub_model_path"
 native_savedmodel_dir="${pub_model_path}/native_savedmodel_dir"
 converted_savedmodel_dir="${pub_model_path}/converted_savedmodel_dir"
-imagenet_label_file="${data_dir}/val.txt"
-work_dir="${cur_path}/../"
 result_path=${work_dir}/output_dir/result
 base_path=$(dirname ${result_path})
+ci_dataset_dir="${work_dir}/ci_dataset"
 
 check_or_create_dir "${native_savedmodel_dir}"
 check_or_create_dir "${converted_savedmodel_dir}"
 check_or_create_dir "${base_path}"
 
 pushd "${work_dir}"
+source env.sh
+prepare_ci_dataset "${ci_dataset_dir}"
 python resnet_infer.py \
         --model="${net_name}" \
         --pretrained_filepath="${native_savedmodel_dir}" \
         --model_dir="${converted_savedmodel_dir}" \
         --run_eagerly=${run_eagerly} \
-        --data_dir="${data_dir}" \
-        --imagenet_label_file="${imagenet_label_file}" \
+        --data_dir="${ci_dataset_dir}" \
+        --imagenet_label_file="${IMAGENET_VAL_DIR}/val.txt" \
         --result_path="${result_path}" \
         --quant_precision="${quant_precision}" \
         --batch_size=$batch_size

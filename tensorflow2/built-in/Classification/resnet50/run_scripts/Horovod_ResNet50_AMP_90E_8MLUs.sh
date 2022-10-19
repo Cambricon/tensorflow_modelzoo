@@ -9,7 +9,7 @@ pushd "${work_dir}"
 source env.sh
 
 horovodrun -np 8 python3 resnet_trainer.py \
-    --model_dir=$model_dir \
+    --model_dir=$CKPT_DIR \
     --data_dir=$DATA_DIR \
     --num_mlus=1 \
     --num_gpus=0 \
@@ -20,7 +20,7 @@ horovodrun -np 8 python3 resnet_trainer.py \
     --train_epochs=90 \
     --use_synthetic_data=False \
     --use_performance=False \
-    --use_amp=False \
+    --use_amp=True \
     --use_horovod=True \
     --log_steps=1 \
     --run_eagerly=False \
@@ -29,7 +29,6 @@ horovodrun -np 8 python3 resnet_trainer.py \
     --train_steps=0 \
     --use_profiler=False \
     --enable_tensorboard=False \
-    --dtype=fp32 \
     --tf_mlu_thread_mode=mlu_private \
     --tf_gpu_thread_mode=gpu_private \
     --per_mlu_thread_count=2 \
@@ -40,5 +39,7 @@ horovodrun -np 8 python3 resnet_trainer.py \
     --epochs_between_evals=4 \
     --host_tracer_level=2 \
     --device_tracer_level=1 \
-    --profiler_dir=$model_dir
+    --profiler_dir=$CKPT_DIR
+
 popd
+

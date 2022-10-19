@@ -12,12 +12,12 @@ import glob
 import copy
 import time
 
+from absl import flags
 from models.infer_utils import *
 from models.model_convert import *
-
-from absl import flags
 from models.resnet import common
 from models.utils.flags import core as flags_core
+
 cur_path = os.getcwd()
 sys.path.append(cur_path + "/../../tools/")
 import infer_flags
@@ -58,27 +58,26 @@ def get_converted_savedmodel(flags_obj):
 
 def model_prepare(flags_obj):
     native_savedmodel_dir = flags_obj.pretrained_filepath
-    #native_savedmodel_dir = flags_obj.native_savedmodel_dir
     get_native_savedmodel(native_savedmodel_dir)
-    # use TFMM to infer when enable_eager=False
+    # use TFMM to infer when run_eager=False
     if flags_obj.run_eagerly == False:
-    #if flags_obj.enable_eager == False:
         get_converted_savedmodel(flags_obj)
 
 
 def get_savedmodel_dir(flags_obj):
-    #if flags_obj.enable_eager == False:
     if flags_obj.run_eagerly == False:
         savedmodel_dir = get_res_savedmodel_dir(flags_obj)
     else:
         savedmodel_dir = flags_obj.pretrained_filepath
-        #savedmodel_dir = flags_obj.native_savedmodel_dir
     return savedmodel_dir
 
 
 def model_infer(flags_obj, signature="serving_default"):
-    print("..........loading converted model..........")
+    logging.info("..........loading converted model..........")
 
+    if flags_obj.quant_precision == "fp16":
+        from tensorflow.python.framework import config
+        config.set_optimizer_experimental_options({'auto_mixed_precision':True})
     savedmodel_dir = get_savedmodel_dir(flags_obj)
     infer_data_dir = flags_obj.data_dir
     imagenet_label_file = flags_obj.imagenet_label_file
@@ -94,7 +93,7 @@ def model_infer(flags_obj, signature="serving_default"):
     total_img_cnt = len(dataset.image_paths)
     results = {"image_paths": [], "predict_labels": []}
 
-    print("..........inferencing..........")
+    logging.info("..........inferencing..........")
     e2e_time = AverageMeter("E2e", ":6.5f")
     hardware_time = AverageMeter("Hardware", ":6.5f")
     total_e2e_time = 0
@@ -152,7 +151,6 @@ def model_infer(flags_obj, signature="serving_default"):
     result_json = flags_obj.result_path
     net_name = flags_obj.model
     infer_mode = "jit" if flags_obj.run_eagerly == False else "eager"
-    #infer_mode = "jit" if flags_obj.enable_eager == False else "eager"
     precision = flags_obj.quant_precision
     top1_ratio, top5_ratio = calculate_topk_ratio(top1_sum, top5_sum, total_img_cnt)
     save_result(
@@ -176,7 +174,6 @@ def model_infer(flags_obj, signature="serving_default"):
 
 # --- main ---
 
-common.define_keras_flags(True,False,True)
 flags_obj = flags.FLAGS
 flags_obj(sys.argv)
 # dataset prepare
