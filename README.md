@@ -2,9 +2,9 @@
 
 ## 介绍
 
-TensorFlow是时下最流行的深度学习框架，寒武纪对其进行了定制化开发，新增了对寒武纪加速板卡及寒武纪深度学习软件栈的支持，通常称之为Cambricon TensorFlow。相比于原生TensorFlow，用户基本不用做任何代码改动即可快速地将深度学习模型迁移至Cambricon TensorFlow上。
+TensorFlow是时下最流行的AI框架，寒武纪对其进行了定制化开发，新增了对寒武纪加速板卡及寒武纪AI软件栈的支持，通常称之为Cambricon TensorFlow。相比于原生TensorFlow，用户基本不用做任何代码改动即可快速地将AI模型迁移至Cambricon TensorFlow上。
 
-针对CV分类、检测、分割、NLP、语音等场景常用的各类经典和前沿的深度学习模型，本仓库展示了如何对其进行适配，使其可运行在Cambricon TensorFlow上。开发者在进行其他AI应用移植时可参考本仓库。
+针对CV分类、检测、分割、NLP、语音等场景常用的各类经典和前沿的AI模型，本仓库展示了如何对其进行适配，使其可运行在Cambricon TensorFlow上。开发者在进行其他AI应用移植时可参考本仓库。
 
 
 ## 网络支持列表和链接
