@@ -1,0 +1,9 @@
+git+https://github.com/NVIDIA/dllogger
+absl-py>=0.7.0
+numpy
+pyarrow
+pandas
+joblib
+tqdm
+tensorflow_addons
+tensorboard-plugin-profile

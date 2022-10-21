@@ -1,0 +1,6 @@
+ARG FROM_IMAGE_NAME=Cambricon_TensorFlow_Image:Image_tag
+FROM ${FROM_IMAGE_NAME}
+COPY ./tensorflow_modelzoo /home/tensorflow_modelzoo
+WORKDIR /home/tensorflow_modelzoo/tensorflow2/built-in/NaturalLanguageProcessing/google_bert/
+
+RUN pip install sentencepiece -i https://pypi.tuna.tsinghua.edu.cn/simple
