@@ -20,7 +20,7 @@ CV：
 | [resnet50](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL | 
 | [resnet101](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL | 
 | [densenet201](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL | 
-| [centernet](tensorflow2/built-in/Detection/centernet) | TensorFlow2|FP32&&AMP | YES|CNNL | 
+| [centernet](tensorflow2/built-in/Detection/centernet) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL| 
 
 
 NLP:
