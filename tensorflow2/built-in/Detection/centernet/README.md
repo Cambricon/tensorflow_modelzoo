@@ -49,11 +49,7 @@ Centernet | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 
 Centernet模型的训练参数存在于`model_main_tf2.py`内，同时受到`mlu_centernet_config.config`及run_scripts/内的shell脚本的共同影响。
 
-（1）run_scripts/内的shell脚本涉及到的常用参数及含义如下表所示：
-
-<details>
-<summary>展开查看</summary>
-
+run_scripts/内的shell脚本涉及到的常用参数及含义如下表所示：
 
 | 参数 | 作用 | 默认值 |
 |------|------|------|
@@ -66,13 +62,12 @@ Centernet模型的训练参数存在于`model_main_tf2.py`内，同时受到`mlu
 | use_profiler| 是否支持tensorboard，若为True则表示| False |
 | use_performance | 是否开启性能测试，若为True则表示开启，训练结束后可在summary/summary.json内读出throughput与e2e| False |
 
-</details>
 
 ## 3.2 **模型推理参数说明**
 <span id= "jump1"></span>
 ### 3.2.1 **模型推理常用参数说明**
 
-推理的公共参数都在`../../tools/infer_flags.py`内，程序运行时会解析并读取该脚本内的所有参数。
+推理的公共参数都在`tensorflow_modelzoo/tensorflow2/built-in/tools/infer_flags.py`内，程序运行时会解析并读取该脚本内的所有参数。
 大部分参数提供了默认值，这些参数的详细含义将在稍后给出。
 我们根据常用的参数组合，在`run_scripts/`下提供了若干个常用的脚本，如`infer_run_eager_fp32_bsz_4.sh`，`infer_run_jit_fp32_bsz_4.sh`，在使用这些脚本之前，您需要根据当前环境修改如下常用参数：
 ```bash
@@ -136,10 +131,10 @@ opt_config#TF2MM模型优化性能选项，目前支持的输入为 [conv_scale_
 ```bash
 #!/bin/bash
 # Below is a sample of run_docker.sh.
-# Modify the  YOUR_IMAGE_NAME according to your own environment.
+# Modify the  YOUR_DOCKER_IMAGE_NAME according to your own environment.
 # For instance, IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
 
-IMAGE_NAME=YOUR_IMAGE_NAME
+IMAGE_NAME=YOUR_DOCKER_IMAGE_NAME
 IMAGE_TAG=latest
 
 export MY_CONTAINER="tensorflow_modelzoo"
@@ -202,16 +197,16 @@ cd tensorflow_modelzoo/tensorflow2/built-in/Detection/centernet
 # 5. 修改DOCKERFILE内的FROM_IMAGE_NAME的值为cambricon_tensorflow2:vX.Y.Z-x86_64-ubuntu18.04
 
 # 6. 开始基于DOCKERFILE构建镜像
-export IMAGE_NAME=centernet_image
+export IMAGE_NAME=your_docker_image_name
 docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 
 ```
 
 **b)创建并启动容器**
 
-上一步成功运行后，本地便生成了一个名为`centernet_image`的docker镜像，后续即可基于该镜像创建容器。
+上一步成功运行后，本地便根据您的命名生成了一个名为`your_docker_image_name`的docker镜像，后续即可基于该镜像创建容器。
 ```bash
-# 1. 参考前文(1)基于base docker image的容器环境搭建 b) 小节，修改run_docker.sh 内的IMAGE_NAME为centernet_image
+# 1. 参考前文(1)基于base docker image的容器环境搭建 b) 小节，修改run_docker.sh 内的IMAGE_NAME为your_docker_image_name
 # 2. 运行run_docker.sh
 bash run_docker.sh
 
@@ -255,11 +250,11 @@ pip install PATHTO/tensorflow_modelzoo/tensorflow2/built-in/tools/record_time
 
 Models | Framework | MLU | Data Precision | Cards | Run
 ----- | ----- | ----- | ----- | ----- | ----- |
-Centernet | TensorFlow2 | MLU370-X8 | FP32 | 8 |Horovod_Centernet_Float32_8MLUs.sh
-Centernet | TensorFlow2 | MLU370-X8 | AMP  | 8 |Horovod_Centernet_AMP_8MLUs.sh
+Centernet | TensorFlow2 | MLU370-X8 | FP32 | 8 |bash Horovod_Centernet_Float32_8MLUs.sh
+Centernet | TensorFlow2 | MLU370-X8 | AMP  | 8 |bash Horovod_Centernet_AMP_8MLUs.sh
 
 
-根据您的实际环境与需求，修改脚本内数据集的路径及其他参数的值，如`batch_size`，`steps`，`use_amp`等，按照如下命令即可开始from_scratch的分布式训练：
+根据您的实际环境与需求，修改脚本内数据集的路径及其他参数的值，如`batch_size`，`steps`，`use_amp`等，进入`run_scripts`目录后，按照如下命令即可开始from_scratch的分布式训练：
 ```bash
 bash Horovod_Centernet_Float32_8MLUs.sh
 ```

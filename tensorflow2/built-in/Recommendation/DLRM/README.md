@@ -77,10 +77,10 @@ DLRM | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 ```bash
 #!/bin/bash
 # Below is a sample of run_docker.sh.
-# Modify the  YOUR_IMAGE_NAME according to your own environment.
+# Modify the  YOUR_DOCKER_IMAGE_NAME according to your own environment.
 # For instance, IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
 
-IMAGE_NAME=YOUR_IMAGE_NAME
+IMAGE_NAME=YOUR_DOCKER_IMAGE_NAME
 IMAGE_TAG=latest
 
 export MY_CONTAINER="tensorflow_modelzoo"
@@ -144,16 +144,16 @@ cd tensorflow_modelzoo/tensorflow2/built-in/Recommendation/DLRM
 # 5. 修改DOCKERFILE内的FROM_IMAGE_NAME的值为cambricon_tensorflow2:vX.Y.Z-x86_64-ubuntu18.04
 
 # 6. 开始基于DOCKERFILE构建镜像
-export IMAGE_NAME=dlrm_image
+export IMAGE_NAME=your_docker_image_name
 docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 
 ```
 
 **b)创建并启动容器**  
 
-上一步成功运行后，本地便生成了一个名为`dlrm_image`的docker镜像，后续即可基于该镜像创建容器。
+上一步成功运行后，本地便根据您的命名生成了一个名为`your_docker_image_name`的docker镜像，后续即可基于该镜像创建容器。
 ```bash
-# 1. 参考前文(1)基于base docker image的容器环境搭建 b) 小节，修改run_docker.sh 内的IMAGE_NAME为dlrm_image
+# 1. 参考前文(1)基于base docker image的容器环境搭建 b) 小节，修改run_docker.sh 内的IMAGE_NAME为your_docker_image_name
 # 2. 运行run_docker.sh
 bash run_docker.sh
 
@@ -174,10 +174,13 @@ cd models/preproc
 
 Models  | Framework  | MLU   | Data Precision  | Cards  | Run
 ----- | ----- | ----- | ----- | ----- | ----- |
-DLRM  | TensorFlow2  | MLU370-X8  | FP32  | 8  | Horovod_DLRM_Float32_1E_8MLUs.sh
-DLRM  | TensorFlow2  | MLU370-X8  | AMP  | 8  | Horovod_DLRM_AMP_1E_8MLUs.sh
+DLRM  | TensorFlow2  | MLU370-X8  | FP32  | 8  | bash Horovod_DLRM_Float32_1E_8MLUs.sh
+DLRM  | TensorFlow2  | MLU370-X8  | AMP  | 8  | bash Horovod_DLRM_AMP_1E_8MLUs.sh
 
-
+根据您的实际环境与需求，修改脚本内数据集的路径及其他参数的值，如`batch_size`，`max_steps`，`use_amp`等，进入`run_scripts`目录后，按照如下命令即可开始from_scratch的分布式训练：
+```bash
+bash Horovod_DLRM_Float32_1E_8MLUs.sh
+```
 
 # 5. **免责声明**
 您明确了解并同意，以下链接中的软件、数据或者模型由第三方提供并负责维护。在以下链接中出现的任何第三方的名称、商标、标识、产品或服务并不构成明示或暗示与该第三方或其软件、数据或模型的相关背书、担保或推荐行为。您进一步了解并同意，使用任何第三方软件、数据或者模型，包括您提供的任何信息或个人数据（不论是有意或无意地），应受相关使用条款、许可协议、隐私政策或其他此类协议的约束。因此，使用链接中的软件、数据或者模型可能导致的所有风险将由您自行承担。
