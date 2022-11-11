@@ -1,4 +1,4 @@
-**ResNet50 (TensorFlow)**
+**Common_networks (TensorFlow2)**
 
 本仓库是在MLU上基于TensorFlow框架实现的网络，共支持ResNet50、ResNet18、ResNet101、DenseNet201、Vgg16、Vgg19六种模型，支持训练与推理。
 
@@ -16,8 +16,9 @@
   - [4.1 依赖项检查](#41-依赖项检查)
   - [4.2 环境准备](#42-环境准备)
   - [4.3 运行Run脚本](#43-运行Run脚本)
-- [5.免责声明](#5-免责声明)
-- [6.Release_Notes](#6-Release_Notes)
+- [5.结果展示](#5-结果展示)
+- [6.免责声明](#6-免责声明)
+- [7.Release_Notes](#7-Release_Notes)
 
 
 # 1. 模型概述
@@ -322,12 +323,26 @@ popd
 |Vgg16   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager| bash Infer_Vgg16_Multi.sh |
 |Vgg19   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager| bash Infer_Vgg19_Multi.sh |
 
+# 5.结果展示
+
+**Training accuracy results: MLU370-X8**
+
+图像分类任务的训练精度通常用`top1`表征，在本仓库中，最终的训练精度由`accuracy`表征。最终的训练精度如下所示：
+
+Models  | MLUs |  Mixed Precision Top1   | FP32 Top1
+----- | ----- | ----- | ----- |
+ResNet18 | 8  | 0.6882 | 0.6867
+ResNet50 | 8  | 0.7542 | 0.7540
+ResNet101 | 8  | 0.7591 | 0.7662
+DenseNet201 | 8  | 0.6978 | 0.6972
+Vgg16 | 8  | 0.6836 | 0.6814
+Vgg19 | 8  | 0.6934 | 0.6957
 
 
-# 5. 免责声明
+# 6. 免责声明
 您明确了解并同意，以下链接中的软件、数据或者模型由第三方提供并负责维护。在以下链接中出现的任何第三方的名称、商标、标识、产品或服务并不构成明示或暗示与该第三方或其软件、数据或模型的相关背书、担保或推荐行为。您进一步了解并同意，使用任何第三方软件、数据或者模型，包括您提供的任何信息或个人数据（不论是有意或无意地），应受相关使用条款、许可协议、隐私政策或其他此类协议的约束。因此，使用链接中的软件、数据或者模型可能导致的所有风险将由您自行承担。
 
-# 6. Release_Notes
+# 7. Release_Notes
 @TODO
 
 
