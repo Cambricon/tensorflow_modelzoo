@@ -59,7 +59,7 @@ ResNet50 | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32  | Jit & Eager
 ## 3.2 **模型推理参数说明**
 
 ## 3.2.1 **模型推理常用参数说明**
-推理的公共参数大都在`../../tools/infer_flags.py`内，非推理独有的参数则在`models/resnet.py`内的common函数。程序运行时会解析并读取`infer_flags.py`的所有参数。
+推理的公共参数大都在`tensorflow_modelzoo/tensorflow2/built-in/tools/infer_flags.py`内，非推理独有的参数则在`models/resnet/common.py`内。程序运行时会解析并读取`infer_flags.py`的所有参数。
 大部分参数提供了默认值，这些参数的详细含义将在稍后给出。
 我们根据常用的参数组合，在`run_scripts/`下提供了若干个常用的脚本，如`infer_run_eager_fp32_bsz_128.sh`，`infer_run_jit_fp32_bsz_128.sh`，在使用这些脚本之前，您需要根据当前环境修改如下常用参数：
 
@@ -95,7 +95,7 @@ opt_config #TF2MM模型优化性能选项，目前支持的输入为 [conv_scale
 下面将详细展示如何在 Cambricon TensorFlow2上完成ResNet50的训练与推理。
 ## 4.1 **依赖项检查**
 * Linux常见操作系统版本(如Ubuntu16.04，Ubuntu18.04，CentOS7.x等)，安装docker(>=v18.00.0)应用程序；
-* 服务器装配好寒武纪计算版本MLU370-X8;
+* 服务器装配好寒武纪计算板卡MLU370-X8;
 * Cambricon Driver >=v4.20.6；
 * CNTensorFlow >= 2.5.0;
 * 若不具备以上软硬件条件，可前往寒武纪云平台注册并试用@TODO
@@ -108,20 +108,22 @@ opt_config #TF2MM模型优化性能选项，目前支持的输入为 [conv_scale
 
 **a)导入镜像**  
 
-下载Cambricon TensorFlow2 docker镜像并参考如下命令加载镜像：
+下载Cambricon TensorFlow2 镜像并参考如下命令加载镜像：
 ` docker load -i Your_Cambricon_TensorFlow2_Image.tar.gz`
 
 **b)启动容器**  
 
-`run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`变量后再运行`bash run_docker.sh`即可启动容器。
+`run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`和`IMAGE_TAG`变量后再运行`bash run_docker.sh`即可启动容器。
 ```bash
 #!/bin/bash
 # Below is a sample of run_docker.sh.
 # Modify the  YOUR_IMAGE_NAME according to your own environment.
-# For instance, IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
+# For instance:
+# IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
+# IMAGE_TAG=latest
 
 IMAGE_NAME=YOUR_IMAGE_NAME
-IMAGE_TAG=latest
+IMAGE_TAG=YOUR_IMAGE_TAG
 
 export MY_CONTAINER="tensorflow_modelzoo"
 
@@ -192,7 +194,7 @@ docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 
 **b)创建并启动容器**  
 
-上一步成功运行后，本地便生成了一个名为`resnet50_network_image`的docker镜像，后续即可基于该镜像创建容器。
+上一步成功运行后，本地便生成了一个名为`resnet50_network_image`的镜像，后续即可基于该镜像创建容器。
 ```bash
 # 1. 参考前文(1)基于base docker image的容器环境搭建 b) 小节，修改run_docker.sh 内的IMAGE_NAME为resnet50_network_image
 # 2. 运行run_docker.sh
@@ -203,8 +205,10 @@ bash run_docker.sh
 ### 4.2.2 **数据集准备**
 
 **(1)训练数据集准备**
-该ResNet50脚本基于ImageNet2012训练，数据集下载：[https://www.image-net.org/](https://www.image-net.org/)
-需要将数据集转换为tfrecord格式，可参见：[https://github.com/tensorflow/models/tree/master/research/slim/datasets](https://github.com/tensorflow/models/tree/master/research/slim/datasets)
+
+该ResNet50脚本基于ImageNet2012训练，数据集下载：[此处](https://www.image-net.org/)。 
+
+需要将数据集转换为tfrecord格式，可参见[此处](https://github.com/tensorflow/models/tree/master/research/slim/datasets)。
 本地数据集目录结构请与下方保持一致：
 ``` bash
 ├── train-00000-of-01024
@@ -216,6 +220,7 @@ bash run_docker.sh
 └── labels.txt
 ```
 **(2)推理数据集准备**
+
 本仓库使用ImageNet2012的val数据集作为推理数据集，完成数据集下载后，本地数据集目录结构应与下方一致：
 ```bash
 val/
@@ -239,15 +244,18 @@ ILSVRC2012_val_00000004.JPEG n04263257
 
 ### 4.3.1 **一键执行训练脚本**
 
-Models  | Framework  | MLU   | Data Precision  | Cards  | Run
+进入`run_scripts/`，该目录内提供了多个训练脚本：
+
+
+Models  | Framework  | Supported MLU   | Data Precision  | Cards  | Run
 ----- | ----- | ----- | ----- | ----- | ----- |
-ResNet50  | TensorFlow2  | MLU370-X8  | FP32  | 8  | Horovod_ResNet50_Float32_90E_8MLUs.sh
-ResNet50  | TensorFlow2  | MLU370-X8  | AMP | 8  | Horovod_ResNet50_AMP_90E_8MLUs.sh
-ResNet50  | TensorFlow2  | MLU370-X8  | FP32 | 1  | ResNet50_Float32_90E_1MLU.sh
+ResNet50  | TensorFlow2  | MLU370-X8  | FP32  | 8  | bash Horovod_ResNet50_Float32_90E_8MLUs.sh
+ResNet50  | TensorFlow2  | MLU370-X8  | AMP | 8  | bash Horovod_ResNet50_AMP_90E_8MLUs.sh
+ResNet50  | TensorFlow2  | MLU370-X8  | FP32 | 1  | bash ResNet50_Float32_90E_1MLU.sh
 
 根据您的实际环境与需求，修改脚本内数据集的路径及其他参数的值，如`data_dir`，`batch_size`，`train_steps`，`np`等，按照如下命令即可开始from_scratch的分布式训练：
 ```bash
-Horovod_ResNet50_Float32_90E_8MLUs.sh
+bash Horovod_ResNet50_Float32_90E_8MLUs.sh
 ```
 训练完成后，程序会输出训练精度`accuracy`，并将训练过程中产生的模型文件及权重保存至`model_dir`指定的目录内。
 
@@ -305,7 +313,7 @@ popd
 **注意**：使用预训练模型进行finetune训练时，`batch_size`，`np`，`use_amp`等超参需与from_scratch得到该预训练模型的超参一致，否则无法正常训练。
 
 ### 4.3.2 **一键执行推理脚本**
-为了遍历多种输入规模与精度类型以及推理模式，本仓库还提供了一键执行多种参数配置的脚本：`run_scripts/multi_infer_run.sh`，您可根据自己的需求修改该脚本内的`batch_size`，`quant_precision`，完成修改后，按照如下命令运行即可分别以不同的参数与推理模式（eager/jit）推理。
+为了遍历多种输入规模与精度类型以及推理模式，本仓库还提供了一键执行多种参数配置的脚本：`run_scripts/multi_infer_run.sh`，您可根据自己的需求修改该脚本内的`batch_size`，`quant_precision`，完成修改后，在`run_scripts/`目录内按照如下命令运行即可分别以不同的参数与推理模式（eager/jit）推理。
 
 目前支持的精度类型与推理模式组合以及运行环境如下所示：
 

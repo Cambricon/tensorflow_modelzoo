@@ -42,7 +42,7 @@ Transformer | TensorFlow2  | MLU370-X8  | FP32  | Yes  | Not Tested
 |Transformer   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager|
 
 
-注意，此处`Jit`表示使用`TFMM`的方式进行推理，即是用`TensorFlow2-MagicMind`作为底层实现后端进行推理。
+注意，此处`Jit`表示使用`TFMM`的方式进行推理，即使用`TensorFlow2-MagicMind`作为底层实现后端进行推理。
 
 # 3. 默认参数配置
 
@@ -90,7 +90,7 @@ Transformer模型的训练参数主要存在于`transformer_main.py`和`models/o
 <span id= "jump1"></span>
 ### 3.2.1 **模型推理常用参数说明**
 
-推理的公共参数都在`../../tools/infer_flags.py`内，程序运行时会解析并读取该脚本内的所有参数。
+推理的公共参数都在`tensorflow_modelzoo/tensorflow2/built-in/tools/infer_flags.py`内，程序运行时会解析并读取该脚本内的所有参数。
 大部分参数提供了默认值，这些参数的详细含义将在稍后给出。
 我们根据常用的参数组合，在`run_scripts/`下提供了若干个常用的脚本，如`infer_run_eager_fp32_bsz_4.sh`，`infer_run_jit_fp32_bsz_4.sh`，在使用这些脚本之前，您需要根据当前环境修改如下常用参数：
 ```bash
@@ -130,7 +130,7 @@ opt_config#TF2MM模型优化性能选项，目前支持的输入为 [conv_scale_
 下面将详细展示如何在 Cambricon TensorFlow2上完成Transformer的训练与推理。
 ## 4.1 **环境依赖项检查**
 * Linux常见操作系统版本(如Ubuntu16.04，Ubuntu18.04，CentOS7.x等)，安装docker(>=v18.00.0)应用程序；
-* 服务器装配好寒武纪计算版本MLU370-X8;
+* 服务器装配好寒武纪计算板卡MLU370-X8;
 * Cambricon Driver >=v4.20.6；
 * CNTensorFlow >= 2.5.0;
 * 若不具备以上软硬件条件，可前往寒武纪云平台注册并试用@TODO
@@ -143,20 +143,22 @@ opt_config#TF2MM模型优化性能选项，目前支持的输入为 [conv_scale_
 
 **a)导入镜像**  
 
-下载Cambricon TensorFlow2 docker镜像并参考如下命令加载镜像：
+下载Cambricon TensorFlow2 镜像并参考如下命令加载镜像：
 ` docker load -i Your_Cambricon_TensorFlow2_Image.tar.gz`
 
 **b)启动容器**  
 
-`run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`变量后再运行`bash run_docker.sh`即可启动容器。
+`run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`和`IMAGE_TAG`变量后再运行`bash run_docker.sh`即可启动容器。
 ```bash
 #!/bin/bash
 # Below is a sample of run_docker.sh.
-# Modify the  YOUR_IMAGE_NAME according to your own environment.
-# For instance, IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
+# Modify the  YOUR_IMAGE_NAME and IMAGE_TAG according to your own environment.
+# For instance:
+# IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
+# IMAGE_TAG=latest
 
 IMAGE_NAME=YOUR_IMAGE_NAME
-IMAGE_TAG=latest
+IMAGE_TAG=YOUR_IMAGE_TAG
 
 export MY_CONTAINER="tensorflow_modelzoo"
 
@@ -229,7 +231,7 @@ docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 
 **b)创建并启动容器**  
 
-上一步成功运行后，本地便生成了一个名为`transformer_image`的docker镜像，后续即可基于该镜像创建容器。
+上一步成功运行后，本地便生成了一个名为`transformer_image`的镜像，后续即可基于该镜像创建容器。
 ```bash
 # 1. 参考前文(1)基于base docker image的容器环境搭建 b) 小节，修改run_docker.sh 内的IMAGE_NAME为transformer_image
 # 2. 运行run_docker.sh
@@ -254,13 +256,13 @@ python data_download.py --data_dir=your_dataset_saved_path
 ## 4.3 **运行Run脚本**
 
 ### 4.3.1 **一键执行训练脚本**
-`run_scripts/`目录下提供了from_scratch的训练脚本。
+进入`run_scripts/`，该目录内提供了from_scratch的训练脚本。
 
 
-Models  | Framework  | MLU   | Data Precision  | Cards  | Run
+Models  | Framework  | Supported MLU   | Data Precision  | Cards  | Run
 ----- | ----- | ----- | ----- | ----- | ----- |
-Transformer| TensorFlow2  | MLU370-X8  | Float32  | 8  |Horovod_Transformer_Float32_8MLUs.sh
-Transformer  | TensorFlow2  | MLU370-X8  | Float32 | 1  |Transformer_Float32_1MLU.sh
+Transformer| TensorFlow2  | MLU370-X8  | Float32  | 8  |bash Horovod_Transformer_Float32_8MLUs.sh
+Transformer  | TensorFlow2  | MLU370-X8  | Float32 | 1  |bash Transformer_Float32_1MLU.sh
 
 
 根据您的实际环境与需求，修改脚本内数据集的路径及其他参数的值，如`data_dir`，`batch_size`，`train_steps`，`np`等，按照如下命令即可开始from_scratch的分布式训练：
@@ -330,6 +332,7 @@ popd
 ### 4.3.2 **一键执行推理脚本**
 为了遍历多种输入规模与精度类型以及推理模式，本仓库还提供了一键执行多种参数配置的脚本：`run_scripts/multi_infer_run.sh`，您可根据自己的需求修改该脚本内的`batch_size`，`quant_precision`，完成修改后，按照如下命令运行即可分别以不同的参数与推理模式（eager/jit）推理。
 ```bash
+#进入run_scripts目录
 bash multi_infer_run.sh
 
 ```

@@ -13,7 +13,7 @@ CV：
 
 | MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
-| [resnet50](tensorflow2/built-in/Classification/resnet50) | TensorFlow2|FP32&&AMP|YES| TFMM/CNNL |
+| [resnet50_tf_model_official_v2.8.0](tensorflow2/built-in/Classification/resnet50_tf_model_official_v2.8.0) | TensorFlow2|FP32&&AMP|YES| TFMM/CNNL |
 | [vgg16](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP |YES| TFMM/CNNL | 
 | [vgg19](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL| 
 | [resnet18](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL | 

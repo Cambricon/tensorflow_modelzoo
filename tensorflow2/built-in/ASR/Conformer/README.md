@@ -48,12 +48,10 @@ Conformer | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32 | Eager
 
 ## 3.1 **模型训练参数说明**
 
-Conformer模型的训练参数存在于`conformer_train.py`内，同时受到`config.yml`及`run_scripts/`内的shell脚本的共同影响。
+Conformer模型的训练参数存在于`conformer_train.py`内，同时受到`models/config.yml`及`run_scripts/`内的shell脚本的共同影响。
 
 （1）`run_scripts`/内的shell脚本涉及到的常用参数及含义如下表所示：
 
-<details>
-<summary>展开查看</summary>
 
 
 | 参数 | 作用 | 默认值 |
@@ -68,10 +66,9 @@ Conformer模型的训练参数存在于`conformer_train.py`内，同时受到`co
 | use_profiler| 是否支持tensorboard，若为True则表示| False |
 | use_performance | 是否开启性能测试，若为True则表示开启，训练结束后可在summary/summary.json内读出throughput与e2e| False |
 
-</details>
 
 
-（2）在本仓库根目录内还有`config.yml`，该配置文件内存放了大量的模型配置选项，如`epochs`，`checkpoint`文件保存路径等。需要注意的是，由于`config.yml`内的某些参数选项与（1）中的参数有重合，因此实际起作用的参数选项需根据`conformer_train.py`内的代码来判断。例如`epochs`，`config.yml`及`run_scripts/`内的shell脚本均可控制该参数，代码内对该参数的处理如下：
+（2）`models/config.yml`内存放了大量的模型配置选项，如`epochs`，`checkpoint`文件保存路径等。需要注意的是，由于`config.yml`内的某些参数选项与（1）中的参数有重合，因此实际起作用的参数选项需根据`conformer_train.py`内的代码来判断。例如`epochs`，`models/config.yml`及`run_scripts/`内的shell脚本均可控制该参数，代码内对该参数的处理如下：
 ```bash
 epochs=1 if FLAGS.steps > 0 else config.learning_config.running_config.num_epochs
 # 若shell脚本中的steps参数非0，则epochs为1，否则epochs的值由config.yml内的[running_config]的num_epochs选项给出
@@ -102,7 +99,7 @@ steps_per_epoch = FLAGS.steps if FLAGS.steps > 0 else train_dataset_total_steps
 下面将详细展示如何在 Cambricon TensorFlow2上完成Conformer的训练与推理。
 ## 4.1 **环境依赖项检查**
 * Linux常见操作系统版本(如Ubuntu16.04，Ubuntu18.04，CentOS7.x等)，安装docker(>=v18.00.0)应用程序；
-* 服务器装配好寒武纪计算版本MLU370-X8;
+* 服务器装配好寒武纪计算板卡MLU370-X8;
 * Cambricon Driver >=v4.20.6；
 * CNTensorFlow >= 2.5.0;
 * 若不具备以上软硬件条件，可前往寒武纪云平台注册并试用@TODO
@@ -115,20 +112,22 @@ steps_per_epoch = FLAGS.steps if FLAGS.steps > 0 else train_dataset_total_steps
 
 **a)导入镜像**  
 
-下载Cambricon TensorFlow2 docker镜像并参考如下命令加载镜像：
+下载Cambricon TensorFlow2 镜像并参考如下命令加载镜像：
 ` docker load -i Your_Cambricon_TensorFlow2_Image.tar.gz`
 
 **b)启动容器**  
 
-`run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`变量后再运行`bash run_docker.sh`即可启动容器。
+`run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`和`IMAGE_TAG`变量后再运行`bash run_docker.sh`即可启动容器。
 ```bash
 #!/bin/bash
 # Below is a sample of run_docker.sh.
 # Modify the  YOUR_IMAGE_NAME according to your own environment.
-# For instance, IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
+# For instance, 
+# IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
+# IMAGE_TAG=latest
 
 IMAGE_NAME=YOUR_IMAGE_NAME
-IMAGE_TAG=latest
+IMAGE_TAG=YOUR_IMAGE_TAG
 
 export MY_CONTAINER="tensorflow_modelzoo"
 
@@ -202,7 +201,7 @@ docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 
 **b)创建并启动容器**  
 
-上一步成功运行后，本地便生成了一个名为`conformer_image`的docker镜像，后续即可基于该镜像创建容器。
+上一步成功运行后，本地便生成了一个名为`conformer_image`的镜像，后续即可基于该镜像创建容器。
 ```bash
 # 1. 参考前文(1)基于base docker image的容器环境搭建 b) 小节，修改run_docker.sh 内的IMAGE_NAME为conformer_image
 # 2. 运行run_docker.sh
@@ -212,7 +211,17 @@ bash run_docker.sh
 
 
 ### 4.2.2 **数据集准备**
-本仓库使用的训练数据集是[LibriSpeech](https://www.openslr.org/12)。下载并解压到本地（数据集路径由`data_dir`参数指出）后，需保证与如下目录结构一致：
+本仓库使用的训练数据集是[LibriSpeech](https://www.openslr.org/12)，依照如下文件列表下载：
+```bash
+dev-clean.tar.gz
+dev-other.tar.gz
+test-clean.tar.gz
+test-other.tar.gz
+train-clean-100.tar.gz
+train-clean-360.tar.gz
+train-other-500.tar.gz
+```
+解压到本地后，需保证与如下目录结构一致：
 ```bash
 .
 ├── BOOKS.TXT
@@ -234,14 +243,14 @@ bash run_docker.sh
 ## 4.3 **运行Run脚本**
 
 ### 4.3.1 **一键执行训练脚本**
-`run_scripts/`目录下提供了from_scratch的训练脚本。
+进入`run_scripts/`，该目录内提供了from_scratch的训练脚本。
 
 
-Models  | Framework  | MLU   | Data Precision  | Cards  | Run
+Models  | Framework  | Supported MLU   | Data Precision  | Cards  | Run
 ----- | ----- | ----- | ----- | ----- | ----- |
-Conformer| TensorFlow2  | MLU370-X8  | Float32  |  8 |Horovod_Conformer_Float32_50E_8MLUs.sh
-Conformer  | TensorFlow2  | MLU370-X8  | AMP | 8  |Horovod_Conformer_AMP_50E_8MLUs.sh
-Conformer  | TensorFlow2  | MLU370-X8  | Float32 | 1 |Conformer_Float32_50E_1MLU.sh
+Conformer| TensorFlow2  | MLU370-X8  | Float32  |  8 |bash Horovod_Conformer_Float32_50E_8MLUs.sh
+Conformer  | TensorFlow2  | MLU370-X8  | AMP | 8  |bash Horovod_Conformer_AMP_50E_8MLUs.sh
+Conformer  | TensorFlow2  | MLU370-X8  | Float32 | 1 |bash Conformer_Float32_50E_1MLU.sh
 
 
 根据您的实际环境与需求，修改脚本内数据集的路径（`env.sh`内的`DATA_DIR`）及其他参数的值，如`batch_size`，`steps`，`mxp`等，按照如下命令即可开始from_scratch的分布式训练：
@@ -265,12 +274,13 @@ horovodrun -np 8 python conformer_train.py \
 **注意**：使用预训练模型进行finetune训练时，`batch_size`，`np`，`mxp`需与from_scratch得到该预训练模型的参数一致，否则无法正常训练。
 
 ### 4.3.2 **一键执行推理脚本**
-`run_scripts/`目录下提供了单机单卡推理脚本`Infer_Conformer_Float32_1MLU.sh`和`Infer_Conformer_AMP_1MLU.sh`。
-目前支持的精度类型与推理模式组合以及运行环境如下所示：
+进入`run_scripts/`，该目录内提供了单机单卡推理脚本：
 
-Models  | Framework  | MLU   | Data Precision  |  Jit/Eager 
------ | ----- | ----- | ----- | ----- | 
-Conformer  | TensorFlow2  | MLU370  | FP32/FP16  |  Eager 
+Models  | Framework  | Supported MLU   | Data Precision  | Cards|Run 
+----- | ----- | ----- | ----- | ----- |  ----- | 
+Conformer  | TensorFlow2  | MLU370 X4/X8 | FP32  |   1|bash Infer_Conformer_Float32_1MLU.sh
+Conformer  | TensorFlow2  | MLU370 X4/X8 | FP16 |   1|bash 	Infer_Conformer_AMP_1MLU.sh
+
 
 运行推理脚本之前，您需要将脚本内`ckpt`变量的值改为训练得到的checkpoint文件的实际路径。
 

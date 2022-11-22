@@ -93,7 +93,7 @@ Bert模型的训练参数主要存在于`run_squad.py`。本仓库基于`squad-v
 <span id= "jump1"></span>
 ### 3.2.1 **模型推理常用参数说明**
 
-推理的公共参数都在`../../tools/infer_flags.py`内，程序运行时会解析并读取该脚本内的所有参数。
+推理的公共参数都在`tensorflow_modelzoo/tensorflow2/built-in/tools/infer_flags.py`内，程序运行时会解析并读取该脚本内的所有参数。
 大部分参数提供了默认值，这些参数的详细含义将在稍后给出。
 我们根据常用的参数组合，在`run_scripts/`下提供了若干个常用的脚本，如`infer_run_eager_fp32_bsz_4.sh`，`infer_run_jit_fp32_bsz_4.sh`，在使用这些脚本之前，您需要根据当前环境修改如下常用参数：
 ```bash
@@ -132,7 +132,7 @@ opt_config#TF2MM模型优化性能选项，目前支持的输入为 [conv_scale_
 下面将详细展示如何在 Cambricon TensorFlow2上完成Bert的训练与推理。
 ## 4.1 **依赖项检查**
 * Linux常见操作系统版本(如Ubuntu16.04，Ubuntu18.04，CentOS7.x等)，安装docker(>=v18.00.0)应用程序；
-* 服务器装配好寒武纪计算版本MLU370-X8;
+* 服务器装配好寒武纪计算板卡MLU370-X8;
 * Cambricon Driver >=v4.20.6；
 * CNTensorFlow >= 2.5.0;
 * 若不具备以上软硬件条件，可前往寒武纪云平台注册并试用@TODO
@@ -146,20 +146,22 @@ opt_config#TF2MM模型优化性能选项，目前支持的输入为 [conv_scale_
 
 **a)导入镜像**  
 
-下载Cambricon TensorFlow2 docker镜像并参考如下命令加载镜像：
+下载Cambricon TensorFlow2 镜像并参考如下命令加载镜像：
 ` docker load -i Your_Cambricon_TensorFlow2_Image.tar.gz`
 
 **b)启动容器**  
 
-`run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`变量后再运行`bash run_docker.sh`即可启动容器。
+`run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`和`IMAGE_TAG`变量后再运行`bash run_docker.sh`即可启动容器。
 ```bash
 #!/bin/bash
 # Below is a sample of run_docker.sh.
-# Modify the  YOUR_IMAGE_NAME according to your own environment.
-# For instance, IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
+# Modify the  YOUR_IMAGE_NAME and IMAGE_TAG	 according to your own environment.
+# For instance,
+# IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
+# IMAGE_TAG=latest
 
 IMAGE_NAME=YOUR_IMAGE_NAME
-IMAGE_TAG=latest
+IMAGE_TAG=YOUR_IMAGE_TAG
 
 export MY_CONTAINER="tensorflow_modelzoo"
 
@@ -232,7 +234,7 @@ docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 
 **b)创建并启动容器**  
 
-上一步成功运行后，本地便生成了一个名为`bert_image`的docker镜像，后续即可基于该镜像创建容器。
+上一步成功运行后，本地便生成了一个名为`bert_image`的镜像，后续即可基于该镜像创建容器。
 ```bash
 # 1. 参考前文(1)基于base docker image的容器环境搭建 b) 小节，修改run_docker.sh 内的IMAGE_NAME为bert_image
 # 2. 运行run_docker.sh
@@ -242,11 +244,10 @@ bash run_docker.sh
 
 
 ### 4.2.2 **数据集准备**
-本仓库使用的训练数据集是`squad-v1.1`数据集，可从[此处](https://worksheets.codalab.org/worksheets/0xbe2859a20b9e41d2a2b63ea11bd97740)下载。下载至本地后的目录结构可参考下方：
+本仓库使用的训练数据集是`squad-v1.1`数据集，可从[此处](https://deepai.org/dataset/squad)下载。下载至本地后的目录结构可参考下方：
 ```bash
 Bert/SQuAD
 ├── dev-v1.1.json
-├── evaluate-v1.1.py
 └── train-v1.1.json
 
 ```
@@ -276,14 +277,14 @@ uncased_L-12_H-768_A-12
 
 ### 4.3.1 **一键执行训练脚本**
 
-`run_scripts/`目录下提供了用于finetune的训练脚本。
+进入`run_scripts/`，该目录内提供了用于finetune的训练脚本。
 
 
-Models  | Framework  | MLU   | Data Precision  | Cards  | Run
+Models  | Framework  | Supported MLU   | Data Precision  | Cards  | Run
 ----- | ----- | ----- | ----- | ----- | ----- |
-Bert| TensorFlow2  | MLU370-X8  | Float32  | 8  |Horovod_Bert_Float32_2E_8MLUs.sh
-Bert  | TensorFlow2  | MLU370-X8  | AMP | 8  |Horovod_Bert_AMP_2E_8MLUs.sh
-Bert  | TensorFlow2  | MLU370-X8  | Float32 | 1  |Bert_Float32_2E_1MLU.sh
+Bert| TensorFlow2  | MLU370-X8  | Float32  | 8  |bash Horovod_Bert_Float32_2E_8MLUs.sh
+Bert  | TensorFlow2  | MLU370-X8  | AMP | 8  |bash Horovod_Bert_AMP_2E_8MLUs.sh
+Bert  | TensorFlow2  | MLU370-X8  | Float32 | 1  |bash Bert_Float32_2E_1MLU.sh
 
 
 根据您的实际环境与需求，修改脚本内数据集的路径及其他参数的值，如`train_file`，`train_batch_size`，`np`等，按照如下命令即可开始finetune训练：
@@ -307,7 +308,7 @@ horovodrun -np 8 python run_squad.py \
  --init_checkpoint=/YOUR_CKPT_PATH/model.ckpt-497 \
  --train_file=/YOUR_DATA_PATH/SQuAD/train-v1.1.json \
  --predict_file=/YOUR_DATA_PATH/SQuAD/dev-v1.1.json \
- --eval_script=/YOUR_DATA_PATH/SQuAD/evaluate-v1.1.py \
+ --eval_script="${dataset_path}/squad_evaluate_v1_1.py" \
  --train_batch_size=22 --use_profiler=False \
  --output_dir=mlu_model_finetune --use_performance=False
 ```
