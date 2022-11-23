@@ -1,0 +1,82 @@
+{
+    "resnet18": {
+        "directory": "tensorflow/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_ResNet18_AMP_8MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_ResNet18_Float32_8MLUs.sh",
+            "cd run_scripts/ci;bash ResNet18_Float32_1MLU.sh"
+        ]
+    },
+    "resnet50": {
+        "directory": "tensorflow/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_ResNet50_AMP_8MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_ResNet50_Float32_8MLUs.sh",
+            "cd run_scripts/ci;bash ResNet50_Float32_1MLU.sh"
+        ]
+    },
+    "resnet101": {
+        "directory": "tensorflow/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_ResNet101_AMP_8MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_ResNet101_Float32_8MLUs.sh",
+            "cd run_scripts/ci;bash ResNet101_Float32_1MLU.sh"
+        ]
+    },
+    "alexnet": {
+        "directory": "tensorflow/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_AlexNet_AMP_8MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_AlexNet_Float32_8MLUs.sh",
+            "cd run_scripts/ci;bash AlexNet_Float32_1MLU.sh"
+        ]
+    },
+    "vgg16": {
+        "directory": "tensorflow/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_Vgg16_AMP_8MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_Vgg16_Float32_8MLUs.sh",
+            "cd run_scripts/ci;bash Vgg16_Float32_1MLU.sh"
+        ]
+    },
+    "vgg19": {
+        "directory": "tensorflow/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_Vgg19_AMP_8MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_Vgg19_Float32_8MLUs.sh",
+            "cd run_scripts/ci;bash Vgg19_Float32_1MLU.sh"
+        ]
+    },
+    "densenet201": {
+        "directory": "tensorflow/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_DenseNet201_AMP_8MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_DenseNet201_Float32_8MLUs.sh",
+            "cd run_scripts/ci;bash DenseNet201_Float32_1MLU.sh"
+        ]
+    },
+    "inceptionv2": {
+        "directory": "tensorflow/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_InceptionV2_AMP_8MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_InceptionV2_Float32_8MLUs.sh",
+            "cd run_scripts/ci;bash InceptionV2_Float32_1MLU.sh"
+        ]
+    },
+    "inceptionv3": {
+        "directory": "tensorflow/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_InceptionV3_AMP_8MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_InceptionV3_Float32_8MLUs.sh",
+            "cd run_scripts/ci;bash InceptionV3_Float32_1MLU.sh"
+        ]
+    },
+    "mobilenetv2": {
+        "directory": "tensorflow/built-in/Classification/common_networks",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_MobilenetV2_AMP_8MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_MobilenetV2_Float32_8MLUs.sh",
+            "cd run_scripts/ci;bash MobilenetV2_Float32_1MLU.sh"
+        ]
+    }
+}

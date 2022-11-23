@@ -117,7 +117,7 @@ opt_config #TF2MM模型优化性能选项，目前支持的输入为 [conv_scale
 下面将详细展示如何在 Cambricon TensorFlow2上完成分类网络的训练与推理。
 ## 4.1 **依赖项检查**
 * Linux常见操作系统版本(如Ubuntu16.04，Ubuntu18.04，CentOS7.x等)，安装docker(>=v18.00.0)应用程序；
-* 服务器装配好寒武纪计算版本MLU370-X8;
+* 服务器装配好寒武纪计算板卡MLU370-X8;
 * Cambricon Driver >=v4.20.6；
 * CNTensorFlow >= 2.5.0;
 * 若不具备以上软硬件条件，可前往寒武纪云平台注册并试用@TODO

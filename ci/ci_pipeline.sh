@@ -14,6 +14,11 @@ function print_usage() {
   "
 }
 
+function precheckin_tf1() {
+  python ${CI_PROJECT_DIR}/ci/precheckin/main.py \
+    --test_json_file ${CI_PROJECT_DIR}/ci/cases/precheckin_tf1.json \
+    --model_name  ""${@}
+}
 
 function precheckin_tf2() {
   python ${CI_PROJECT_DIR}/ci/precheckin/main.py \
@@ -34,7 +39,7 @@ function main() {
   local cmd=$1
   case $cmd in
     precheckin_tf1)
-      precheckin_tf1
+      precheckin_tf1 ${@:2}
       ;;
     precheckin_tf2)
       precheckin_tf2 ${@:2}

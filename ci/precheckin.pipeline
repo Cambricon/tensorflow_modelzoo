@@ -17,10 +17,14 @@ cnpipe {
     }else if (triggerPhase.size() == 2 && triggerPhase[1] == "tf1") {
         test_mode = "precheckin_tf1"
         docker_image = docker_image_tf1
-    }else if (triggerPhase.size() == 3) {
+    }else if (triggerPhase.size() == 3 && triggerPhase[1] == "tf2") {
         test_mode = "precheckin_" + triggerPhase[1]
         network_list = triggerPhase[2]
         docker_image = docker_image_tf2
+    }else if (triggerPhase.size() == 3 && triggerPhase[1] == "tf1") {
+        test_mode = "precheckin_" + triggerPhase[1]
+        network_list = triggerPhase[2]
+        docker_image = docker_image_tf1
     }
 
     // run precheckin test cases
