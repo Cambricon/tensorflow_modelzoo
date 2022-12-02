@@ -56,8 +56,8 @@ LPCNet | TensorFlow2  | MLU370-S4/X4/X8  | FP32  | Eager
 | batch_size | 训练的batch_size | 16   |
 | model_dir | 保存checkpoint的路径 | ./mlu_model |
 | output | 训练得到的模型文件，默认为h5格式 | ./mlu_model |
-| data | pcm音频文件的路径，用于训练。若无，参考4.2.6小节的指引生成。| data.u8 |
-| features | 声学特征文件的路径，用于训练。若无，参考4.2.6小节的指引生成。| features.f32 |
+| data | pcm音频文件的路径，用于训练。若无，参考4.2.2小节的指引生成。| data.u8 |
+| features | 声学特征文件的路径，用于训练。若无，参考4.2.2小节的指引生成。| features.f32 |
 | epochs | 训练的epoch数目 | 120 |
 | lr | 训练初始学习率 | 0.001 |
 | enable_tensorboard | 为True则开启tensorboard | False |
