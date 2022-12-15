@@ -183,9 +183,7 @@ class SimpleCheckpoint(tf.keras.callbacks.Callback):
 
 def set_session_config(enable_xla=False):
   """Sets the session config."""
-  if enable_xla:
-    tf.config.optimizer.set_jit(True)
-
+  pass
 
 # TODO(hongkuny): remove set_config_v2 globally.
 set_config_v2 = set_session_config

@@ -1,11 +1,10 @@
 #!/bin/bash
 cur_path=$(pwd)
-work_dir="${cur_path}/../"
-
+work_dir="${cur_path}/../../"
 pushd $work_dir
 source env.sh
-horovodrun -np 8  python run_squad.py \
- --finetune_steps=0 \
+horovodrun -np 8 python run_squad.py \
+ --finetune_steps=10 \
  --hvd_device=mlu \
  --max_seq_length=384 \
  --num_train_epochs=2.0 \
@@ -26,5 +25,6 @@ horovodrun -np 8  python run_squad.py \
  --use_horovod=True \
  --use_amp=True \
  --use_performance=False \
- --enable_xla=False
+ --enable_xla=True
+
 popd

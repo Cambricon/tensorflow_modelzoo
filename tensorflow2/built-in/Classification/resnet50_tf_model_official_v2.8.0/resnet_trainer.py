@@ -159,6 +159,14 @@ def run(flags_obj):
     Returns:
       Dictionary of training and eval stats.
     """
+    if flags_obj.enable_xla:
+      os.environ["TF_XLA_FLAGS"] = (os.environ.get(
+        "TF_XLA_FLAGS", "") +
+        " --tf_xla_auto_jit=2" +
+        " --tf_xla_enable_lazy_compilation=false" +
+        " --tf_xla_async_io_level=1")
+      os.environ["XLA_MLU_DISABLE_BITCAST_OPT"] = "True"
+
     if flags_obj.use_horovod:
         import horovod.tensorflow as hvd
 

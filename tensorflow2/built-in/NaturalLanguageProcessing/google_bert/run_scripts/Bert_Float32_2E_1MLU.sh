@@ -26,6 +26,6 @@ source env.sh
  --use_profiler=False \
  --use_horovod=False \
  --use_amp=False \
- --use_performance=False
-
+ --use_performance=False \
+ --enable_xla=False
 popd

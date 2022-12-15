@@ -302,7 +302,7 @@ def train_input_fn(params, ctx=None):
       shuffle=True,
       repeat=params["repeat_dataset"],
       static_batch=params["static_batch"],
-      num_replicas=params["num_gpus"],
+      num_replicas=params["num_mlus"] if params["num_mlus"] != 0 else params["num_gpus"],
       ctx=ctx)
 
 
@@ -319,7 +319,7 @@ def eval_input_fn(params, ctx=None):
       shuffle=False,
       repeat=1,
       static_batch=params["static_batch"],
-      num_replicas=params["num_gpus"],
+      num_replicas=params["num_mlus"] if params["num_mlus"] != 0 else params["num_gpus"],
       ctx=ctx)
 
 

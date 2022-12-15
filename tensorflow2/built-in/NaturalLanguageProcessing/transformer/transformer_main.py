@@ -207,6 +207,13 @@ class TransformerTask(object):
     params["intra_op_parallelism_threads"] = flags_obj.intra_op_parallelism_threads
     params["horovod_fusion_threshold"] = flags_obj.horovod_fusion_threshold
 
+    if  flags_obj.enable_xla:
+      # The input shape must be static when running with XLA.
+      params['static_batch'] = True
+      os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
+          " --tf_xla_auto_jit=2 --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=1 ")
+      os.environ['XLA_MLU_DISABLE_BITCAST_OPT'] = 'true'
+
     if params["use_horovod"]:
        os.environ['HOROVOD_FUSION_THRESHOLD'] = str(flags_obj.horovod_fusion_threshold)
        logging.info('HOROVOD_FUSION_THRESHOLD: %s', os.environ['HOROVOD_FUSION_THRESHOLD'])
@@ -282,7 +289,6 @@ class TransformerTask(object):
         raise ValueError("Only one of mlu and gpu can be greater than 0")
 
     # Sets config options.
-    keras_utils.set_session_config(enable_xla=flags_obj.enable_xla)
 
     _ensure_dir(flags_obj.model_dir)
     with distribute_utils.get_strategy_scope(self.distribution_strategy):

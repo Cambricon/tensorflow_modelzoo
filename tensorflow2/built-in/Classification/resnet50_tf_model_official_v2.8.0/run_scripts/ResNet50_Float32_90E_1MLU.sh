@@ -40,5 +40,6 @@ python3 resnet_trainer.py \
     --epochs_between_evals=4 \
     --host_tracer_level=2 \
     --device_tracer_level=1 \
-    --profiler_dir=$model_dir
+    --profiler_dir=$model_dir \
+    --enable_xla=False
 popd

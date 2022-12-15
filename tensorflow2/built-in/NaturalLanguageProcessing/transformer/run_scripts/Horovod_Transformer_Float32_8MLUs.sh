@@ -38,6 +38,6 @@ horovodrun -np 8 python transformer_main.py \
  --use_amp=False \
  --use_profiler=False \
  --use_horovod=True \
- --use_performance=False
-
+ --use_performance=False \
+ --enable_xla=False
 popd

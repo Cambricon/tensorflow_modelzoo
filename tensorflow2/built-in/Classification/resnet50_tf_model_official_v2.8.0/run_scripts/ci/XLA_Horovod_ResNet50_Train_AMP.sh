@@ -1,22 +1,23 @@
 #!/bin/bash
 cur_path=$(pwd)
-work_dir="${cur_path}/.."
+work_dir="${cur_path}/../.."
 timestamp=$(date +%Y%m%d%H%M)
 model_dir="${work_dir}/resnet50_model_${timestamp}"
 
 pushd "${work_dir}"
+set -e
 
 source env.sh
 
-horovodrun -np 8 python3 resnet_trainer.py \
-    --model_dir=$CKPT_DIR \
+horovodrun -np 4 python3 resnet_trainer.py \
+    --model_dir=$model_dir \
     --data_dir=$DATA_DIR \
+    --mode=train \
     --num_mlus=1 \
     --num_gpus=0 \
-    --mode=train_and_eval \
     --distribution_strategy=off \
     --batch_size=128 \
-    --steps_per_loop=312 \
+    --steps_per_loop=1 \
     --train_epochs=90 \
     --use_synthetic_data=False \
     --use_performance=False \
@@ -26,7 +27,7 @@ horovodrun -np 8 python3 resnet_trainer.py \
     --run_eagerly=False \
     --enable_checkpoint_and_export=True \
     --base_learning_rate=0.1 \
-    --train_steps=0 \
+    --train_steps=10 \
     --use_profiler=False \
     --enable_tensorboard=False \
     --tf_mlu_thread_mode=mlu_private \
@@ -39,7 +40,7 @@ horovodrun -np 8 python3 resnet_trainer.py \
     --epochs_between_evals=4 \
     --host_tracer_level=2 \
     --device_tracer_level=1 \
-    --profiler_dir=$CKPT_DIR \
-    --enable_xla=False
+    --profiler_dir=$model_dir \
+    --enable_xla=True
 popd
 
