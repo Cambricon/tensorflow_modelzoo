@@ -85,6 +85,15 @@
             "cd run_scripts/ci;bash ResNet50_Train_1MLU.sh",
             "cd run_scripts/ci;bash ResNet50_Train_Horovod_Float32.sh",
             "cd run_scripts/ci;bash ResNet50_Train_Horovod_AMP.sh"
+	]
+    },
+    "unet2d": {
+        "directory": "tensorflow/built-in/Segmentation/UNet_Industrial",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_Unet2d_Float32_25E_4MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_Unet2d_AMP_25E_4MLUs.sh",
+            "cd run_scripts/ci;bash Unet2d_Float32_25E_1MLU.sh ",
+            "cd run_scripts/ci;bash Infer_Unet2d_Float32_1MLU.sh"
         ]
     },
     "SSD": {

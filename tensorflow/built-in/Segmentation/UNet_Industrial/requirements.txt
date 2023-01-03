@@ -1,0 +1,5 @@
+git+https://github.com/NVIDIA/dllogger ; python_version>"3"
+
+# python 3.7
+numpy == 1.17.0;python_version=="3.7"
+
