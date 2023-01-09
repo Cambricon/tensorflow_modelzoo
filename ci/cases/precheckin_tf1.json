@@ -165,5 +165,14 @@
 	    "cd run_scripts/ci;bash GraphSAGE_Train_1MLU_AMP.sh",
             "cd run_scripts/ci;bash infer_run_eager_GraphSAGE.sh"
         ]
+    },
+    "transformer_keras": {
+        "directory": "tensorflow/built-in/NaturalLanguageProcessing/Transformer/transformer_keras",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_Transformer_Float32_80S_4MLUs.sh",
+            "cd run_scripts/ci;bash Transformer_Float32_80S_1MLU.sh",
+            "cd run_scripts/ci;bash Infer_Transformer_Float32_1MLU.sh"
+        ]
     }
+
 }
