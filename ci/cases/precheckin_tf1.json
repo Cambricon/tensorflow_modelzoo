@@ -86,5 +86,15 @@
             "cd run_scripts/ci;bash ResNet50_Train_Horovod_Float32.sh",
             "cd run_scripts/ci;bash ResNet50_Train_Horovod_AMP.sh"
         ]
+    },
+    "SSD": {
+        "directory": "tensorflow/built-in/Detection/SSD",
+        "testcases": [
+            "cd run_scripts;bash download_backbone.sh",
+            "cd run_scripts/ci;bash SSD_Float32_1MLU.sh",
+            "cd run_scripts/ci;bash Horovod_SSD_Float32_4MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_SSD_AMP_4MLUs.sh",
+            "cd run_scripts/ci;bash infer_run_eager_SSD.sh"
+        ]
     }
 }
