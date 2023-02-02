@@ -125,6 +125,15 @@
             "cd run_scripts/ci;bash XLA_Horovod_ResNet50_Train_AMP.sh"
         ]
     },
+    "swin-transformer": {
+        "directory": "tensorflow2/built-in/Classification/swin-transformer",
+        "testcases": [
+            "cd run_scripts/ci; bash Swin_Transformer_Train_Horovod_Float32.sh",
+            "cd run_scripts/ci; bash Swin_Transformer_Train_Horovod_AMP.sh",
+            "cd run_scripts/ci; bash Swin_Transformer_Train_1MLU.sh",
+            "cd run_scripts/ci; bash Swin_Transformer_Infer_1MLU.sh"
+        ]
+    },
     "conformer_infer": {
         "directory": "tensorflow2/built-in/ASR/Conformer",
         "testcases": [
