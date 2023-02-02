@@ -138,7 +138,7 @@ fi
 
 **c)下载项目代码**
 
-在容器内使用 `git clone` 下载本仓库代码并进入`tensorflow_modelzoo/tensorflow1/built-in/Classification/common_networks` 目录。
+在容器内使用 `git clone` 下载本仓库代码并进入`tensorflow_modelzoo/tensorflow/built-in/Classification/common_networks` 目录。
 
 **d)安装模型依赖项**
 
@@ -165,7 +165,7 @@ cd dir_for_docker_build
 # 2. 使用git clone下载tensorflow_modelzoo仓库
 
 # 3. 进入该网络目录
-cd tensorflow_modelzoo/tensorflow1/built-in/Classification/common_networks
+cd tensorflow_modelzoo/tensorflow/built-in/Classification/common_networks
 
 # 4. 参考 前文 (1)基于base docker image的容器环境搭建 a)小节，获取基础镜像，假设镜像名字为cambricon_tensorflow:vX.Y.Z-x86_64-ubuntu18.04
 
@@ -291,7 +291,7 @@ popd
 
 
 ### 4.3.2 **一键执行推理脚本**
-为了遍历多种网络与输入规模，本仓库还提供了一键执行多种参数配置的脚本：`run_scripts/infer_run_eager_networks.sh`，需要用户手动传入`model_type`和`model_dir`两个参数，其中`model_dir`默认以`tensorflow_modelzoo/tensorflow1/built-in/Classification/common_networks`为当前目录。具体参见`3. 默认参数配置`，以resnet18为例，具体示例如下：
+为了遍历多种网络与输入规模，本仓库还提供了一键执行多种参数配置的脚本：`run_scripts/infer_run_eager_networks.sh`，需要用户手动传入`model_type`和`model_dir`两个参数，其中`model_dir`默认以`tensorflow_modelzoo/tensorflow/built-in/Classification/common_networks`为当前目录。具体参见`3. 默认参数配置`，以resnet18为例，具体示例如下：
 ```bash
 cd run_scripts
 bash infer_run_eager_networks.sh --model_type resnet18 --model_dir=resnet18_model_dir
