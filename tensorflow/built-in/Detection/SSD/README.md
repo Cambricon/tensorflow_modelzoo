@@ -7,6 +7,8 @@
 **目录 (Table of Contents)**
 - [1. 模型概述](#1-模型概述)
 - [2. 模型支持情况](#2-模型支持情况)
+  * [2.1训练模型支持情况](#21-训练模型支持情况)
+  * [2.2推理模型支持情况](#22-推理模型支持情况)
 - [3. 默认参数配置](#3-默认参数配置)
 - [4. 快速使用](#4-快速使用)
   - [4.1 依赖项检查](#41-依赖项检查)
@@ -24,10 +26,16 @@ SSD是目标检测网络，原始论文为[SSD: Single Shot MultiBox Detector](h
 SSD网络结构的代码实现可参考：[这里](https://github.com/NVIDIA/DeepLearningExamples/tree/master/TensorFlow/Detection/SSD)。
 
 # 2. 模型支持情况
+## 2.1 **训练模型支持情况**
 
 Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes
 ----- | ----- | ----- | ----- | ----- | ----- |
-SSD | TensorFlow1  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
+SSD | TensorFlow1  | MLU370-X8  | FP16/FP32 | Yes  | Not Tested
+
+## 2.2 **推理模型支持情况**
+| Models   | Framework   | Supported MLU | Supported Data Precision | Jit/Eager Support |
+|----------|-------------|---------------|--------------------------|-------------------|
+| SSD | TensorFlow1 | MLU370-X4/X8  | FP32                     | Eager             |
 
 
 # 3. 默认参数配置
@@ -50,7 +58,7 @@ SSD | TensorFlow1  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 下面将详细展示如何在 Cambricon TensorFlow1上完成SSD的训练与推理。
 ## 4.1 **依赖项检查**
 * Linux常见操作系统版本(如Ubuntu16.04，Ubuntu18.04，CentOS7.x等)，安装docker(>=v18.00.0)应用程序；
-* 服务器装配好寒武纪计算板卡MLU370-X8;
+* 服务器装配好寒武纪MLU300系列计算板卡，如需进行训练，则需装配MLU370-X8，若只需推理，则装配MLU370-X4/X8均可；
 * Cambricon Driver >=v4.20.6；
 * CNTensorFlow == 1.15.5;
 * 若不具备以上软硬件条件，可前往寒武纪云平台注册并试用@TODO
@@ -78,7 +86,7 @@ SSD | TensorFlow1  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 IMAGE_NAME=YOUR_IMAGE_NAME
 IMAGE_TAG=YOUR_IMAGE_TAG
 
-export MY_CONTAINER="tensorflow_modelzoo"
+export MY_CONTAINER="tf1_ssd_tensorflow_modelzoo"
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
 echo $num

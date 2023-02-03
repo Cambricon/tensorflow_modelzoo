@@ -96,7 +96,7 @@ opt_config #TF2MM模型优化性能选项，目前支持的输入为 [conv_scale
 下面将详细展示如何在 Cambricon TensorFlow2上完成ResNet50的训练与推理。
 ## 4.1 **依赖项检查**
 * Linux常见操作系统版本(如Ubuntu16.04，Ubuntu18.04，CentOS7.x等)，安装docker(>=v18.00.0)应用程序；
-* 服务器装配好寒武纪计算板卡MLU370-X8;
+* 服务器装配好寒武纪MLU300系列计算板卡，如需进行训练，则需装配MLU370-X8，若只需推理，则装配MLU370-S4/X4/X8均可；
 * Cambricon Driver >=v4.20.6；
 * CNTensorFlow >= 2.5.0;
 * 若不具备以上软硬件条件，可前往寒武纪云平台注册并试用@TODO
@@ -126,7 +126,7 @@ opt_config #TF2MM模型优化性能选项，目前支持的输入为 [conv_scale
 IMAGE_NAME=YOUR_IMAGE_NAME
 IMAGE_TAG=YOUR_IMAGE_TAG
 
-export MY_CONTAINER="tensorflow_modelzoo"
+export MY_CONTAINER="resnet50_tensorflow_modelzoo"
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
 echo $num

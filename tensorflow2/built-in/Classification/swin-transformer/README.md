@@ -38,7 +38,7 @@ Swin-Transformer | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 
 Models  | Framework  | Supported MLU   | Supported Data Precision  | Jit/Eager Support 
 ----- | ----- | ----- | ----- | ----- | 
-Swin-Transformer | TensorFlow2  | MLU370X4/X8/S4  | FP16/FP32  |  Eager
+Swin-Transformer | TensorFlow2  | MLU370X4/X8/S4  | FP32  |  Eager
 
 # 3. 默认参数说明
 
@@ -89,7 +89,7 @@ swin-transformer网络的训练参数在swin_infer.py中均设置了默认值，
 下面将详细展示如何在 Cambricon TensorFlow2上完成Swin-Transformer的训练与推理。
 ## 4.1 **依赖项检查**
 * Linux常见操作系统版本(如Ubuntu16.04，Ubuntu18.04，CentOS7.x等)，安装docker(>=v18.00.0)应用程序；
-* 服务器装配好寒武纪计算版本MLU370-X8;
+* 服务器装配好寒武纪MLU300系列计算板卡，如需进行训练，则需装配MLU370-X8，若只需推理，则装配MLU370-S4/X4/X8均可；
 * Cambricon Driver >=v4.20.6；
 * CNTensorFlow >= 2.5.0;
 * 若不具备以上软硬件条件，可前往寒武纪云平台注册并试用@TODO

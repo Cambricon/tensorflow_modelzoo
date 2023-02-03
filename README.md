@@ -20,15 +20,33 @@ CV：
 | [resnet50](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL | 
 | [resnet101](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL | 
 | [densenet201](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL | 
+| [swin-transformer](tensorflow2/built-in/Classification/swin-transformer/) | TensorFlow2|FP32&&AMP |YES| CNNL | 
 | [centernet](tensorflow2/built-in/Detection/centernet) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL| 
-
+| [Resnet50-v1.5](tensorflow/built-in/Classification/Resnet50-v1.5) | TensorFlow1|FP32&&AMP|YES|CNNL | 
+| [ResNet18](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL | 
+| [ResNet50](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL | 
+| [ResNet101](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL | 
+| [DenseNet201](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL | 
+| [Vgg16](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL | 
+| [Vgg19](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL | 
+| [InceptionV2](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL | 
+| [InceptionV3](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL | 
+| [AlexNet](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL | 
+| [MobilenetV2](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL | 
+| [SSD](tensorflow/built-in/Detection/SSD) | TensorFlow1|FP32&&AMP |YES| CNNL | 
+| [YOLOv3](tensorflow/built-in/Detection/YOLOv3) | TensorFlow1|FP32&&AMP |YES| CNNL | 
+| [retinanet](tensorflow/built-in/Detection/retinanet) | TensorFlow1|FP32&&AMP |YES| CNNL | 
+| [UNet_3D_Medical](tensorflow/built-in/Segmentation/UNet_3D_Medical) | TensorFlow1|FP32&&AMP |YES| CNNL | 
+| [UNet_Industrial](tensorflow/built-in/Segmentation/UNet_Industrial) | TensorFlow1|FP32&&AMP |YES| CNNL | 
 
 NLP:
 
 | MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
 | [transformer](tensorflow2/built-in/NaturalLanguageProcessing/transformer) | TensorFlow2|FP32 | YES | TFMM/CNNL |
-| [google_bert](tensorflow2/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow2|FP32&&AMP | YES | TFMM/CNNL |
+| [google_bert](tensorflow2/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow2|FP32&&AMP | YES | TFMM/CNNL | 
+| [BERT_ngc](tensorflow/built-in/NaturalLanguageProcessing/BERT_ngc) | TensorFlow1|FP32&&AMP | YES | CNNL |
+| [transformer_estimator](tensorflow/built-in/NaturalLanguageProcessing/Transformer/transformer_estimator/) | TensorFlow1|FP32/AMP | YES | CNNL |
 
 Recommendation:
 

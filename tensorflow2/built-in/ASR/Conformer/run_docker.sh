@@ -6,7 +6,7 @@
 IMAGE_NAME=YOUR_IMAGE_NAME
 IMAGE_TAG=latest
 
-export MY_CONTAINER="tensorflow_modelzoo"
+export MY_CONTAINER="conformer_tensorflow_modelzoo"
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
 echo $num
