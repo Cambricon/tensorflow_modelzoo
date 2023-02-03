@@ -79,6 +79,15 @@
             "cd run_scripts/ci;bash MobilenetV2_Float32_1MLU.sh"
         ]
     },
+    "transformer-estimator": {
+        "directory": "tensorflow/built-in/NaturalLanguageProcessing/Transformer/transformer_estimator",
+        "testcases": [
+            "cd run_scripts/ci;bash Transformer_Train_1MLU.sh",
+            "cd run_scripts/ci;bash Transformer_Train_AMP_4MLUs.sh",
+            "cd run_scripts/ci;bash Transformer_Train_Float32_4MLUs.sh",
+            "cd run_scripts/ci;bash Transformer_Infer.sh"
+        ]
+    },
     "resnet50-ngc": {
         "directory": "tensorflow/built-in/Classification/Resnet50-v1.5",
         "testcases": [
