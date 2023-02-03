@@ -6,7 +6,7 @@
 IMAGE_NAME=tensorflow2-X.Y.Z-x86_64-ubuntu18.04
 IMG_TAG=latest
 
-export MY_CONTAINER="tensorflow_modelzoo"
+export MY_CONTAINER="dlrm_tensorflow_modelzoo"
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
 echo $num

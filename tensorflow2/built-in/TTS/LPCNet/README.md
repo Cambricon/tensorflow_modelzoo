@@ -37,9 +37,9 @@ LPCNet | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 
 Models  | Framework  | Supported MLU   | Supported Data Precision  | Jit/Eager Support
 ----- | ----- | ----- | ----- | ----- | 
-LPCNet | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32  | Jit & Eager
+LPCNet | TensorFlow2  | MLU370-S4/X4/X8  | FP32  | Eager
 
-注意，此处Jit表示使用TFMM的方式进行推理，即是用TensorFlow2-MagicMind作为底层实现后端进行推理。
+
 
 
 
@@ -49,8 +49,6 @@ LPCNet | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32  | Jit & Eager
 
 ## 3.1.1 **模型训练常用参数说明**
 
-<details>
-<summary>展开查看</summary>
 
 
 | 参数 | 作用 | 默认值 |
@@ -58,8 +56,8 @@ LPCNet | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32  | Jit & Eager
 | batch_size | 训练的batch_size | 16   |
 | model_dir | 保存checkpoint的路径 | ./mlu_model |
 | output | 训练得到的模型文件，默认为h5格式 | ./mlu_model |
-| data | pcm音频文件的路径，用于训练。若无，参考4.2.6小节的指引生成。| data.u8 |
-| features | 声学特征文件的路径，用于训练。若无，参考4.2.6小节的指引生成。| features.f32 |
+| data | pcm音频文件的路径，用于训练。若无，参考4.2.2小节的指引生成。| data.u8 |
+| features | 声学特征文件的路径，用于训练。若无，参考4.2.2小节的指引生成。| features.f32 |
 | epochs | 训练的epoch数目 | 120 |
 | lr | 训练初始学习率 | 0.001 |
 | enable_tensorboard | 为True则开启tensorboard | False |
@@ -67,7 +65,6 @@ LPCNet | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32  | Jit & Eager
 | use_horovod | 是否使用horovod进行分布式训练 | True |
 | use_performance | 是否开启性能测试，若为True则表示开启，训练结束后可得到throughput与e2e| False |
   
-</details>
 
 
 ## 3.2 **模型推理参数说明**
@@ -83,7 +80,7 @@ LPCNet | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32  | Jit & Eager
 下面将详细展示如何在 Cambricon TensorFlow2上完成LPCNet的训练与推理。
 ## 4.1 **依赖项检查**
 * Linux常见操作系统版本(如Ubuntu16.04，Ubuntu18.04，CentOS7.x等)，安装docker(>=v18.00.0)应用程序；
-* 服务器装配好寒武纪计算版本MLU370-X8;
+* 服务器装配好寒武纪MLU300系列计算板卡，如需进行训练，则需装配MLU370-X8，若只需推理，则装配MLU370-S4/X4/X8均可；
 * Cambricon Driver >=v4.20.6；
 * CNTensorFlow >= 2.5.0;
 * 若不具备以上软硬件条件，可前往寒武纪云平台注册并试用@TODO
@@ -96,22 +93,24 @@ LPCNet | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32  | Jit & Eager
 
 **a)导入镜像**  
 
-下载Cambricon TensorFlow2 docker镜像并参考如下命令加载镜像：
+下载Cambricon TensorFlow2 镜像并参考如下命令加载镜像：
 ` docker load -i Your_Cambricon_TensorFlow2_Image.tar.gz`
 
 **b)启动容器**  
 
-`run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`变量后再运行`bash run_docker.sh`即可启动容器。
+`run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`和`IMAGE_TAG`变量后再运行`bash run_docker.sh`即可启动容器。
 ```bash
 #!/bin/bash
 # Below is a sample of run_docker.sh.
-# Modify the  YOUR_IMAGE_NAME according to your own environment.
-# For instance, IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
+# Modify the  YOUR_IMAGE_NAME and IMAGE_TAG according to your own environment.
+# For instance
+# IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
+# IMAGE_TAG=latest
 
 IMAGE_NAME=YOUR_IMAGE_NAME
-IMAGE_TAG=latest
+IMAGE_TAG=YOUR_IMAGE_TAG
 
-export MY_CONTAINER="tensorflow_modelzoo"
+export MY_CONTAINER="lpcnet_tensorflow_modelzoo"
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
 echo $num
@@ -151,11 +150,12 @@ cd models
 sudo apt-get update
 sudo apt-get install autoconf automake libtool sox ffmpeg
 # 安装性能测试工具，若不设置use_performance=True，则无需安装
-cd ../../tools/record_time/
+cd ../../../tools/record_time/
 pip install .
 ```
 
  **e)编译源代码**
+ 
 编译源代码以便构建模型，**以下步骤只需在首次运行前执行一次**。
 
 ```bash
@@ -191,7 +191,7 @@ docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 
 **b)创建并启动容器**  
 
-上一步成功运行后，本地便生成了一个名为`lpcnet_image`的docker镜像，后续即可基于该镜像创建容器。
+上一步成功运行后，本地便生成了一个名为`lpcnet_image`的镜像，后续即可基于该镜像创建容器。
 ```bash
 # 1. 参考前文(1)基于base docker image的容器环境搭建 b) 小节，修改run_docker.sh 内的IMAGE_NAME为lpcnet_image
 # 2. 运行run_docker.sh
@@ -201,7 +201,8 @@ bash run_docker.sh
 
 
 ### 4.2.2 **数据集准备**
-**(1)训练数据集准备**
+**(1)训练数据集准备** 
+
 正式训练之前，需要准备相应的训练数据集。原始训练材料可从[此处](http://www-mmsp.ece.mcgill.ca/Documents/Data/)获得。下载`16k-LP7.zip`并解压，随后使用本仓库内的`models/src/concat.sh`将`16k-LP7`内的wav文件拼接成`input.s16`：
 ```bash
 cd 16k-LP7
@@ -214,12 +215,15 @@ usage: ./dump_data -train <speech> <features out> <pcm out>
 ```
 为了产生LPCNet实际可用的训练文件`features.f32` 与`data.u8`，需使用如下命令：
 ```bash
+cd models
+# 如下命令需耗时约30min.
 ./dump_data -train path/to/16k-LP7/input.s16 features.f32 data.u8
 ```
 
 **注意**：假设生成的`features.f32` 与`data.u8`路径为`YOUR_DATA_PATH`，则此时还需将`env.sh`内的`DATA_DIR`的值改为`YOUR_DATA_PATH`。
 
-**(2)推理数据集准备**
+**(2)推理数据集准备** 
+
 由前文可知，LPCNet的输入是声学特征文件，因此推理时，需先使用`dump_data`工具从原始音频文件(.wav)提取音频特征文件(.f32)，随后与训练得到的checkpoint文件一并送入LPCNet进行推理，得到合成后的音频文件。
 [原生代码仓库](https://github.com/xiph/LPCNet)并未指定推理数据集，您只需自行准备一份`wav`文件即可。可从上一步得到的`16k-LP7`中选取一份`wav`文件：
 ```bash
@@ -229,14 +233,14 @@ usage: ./dump_data -train <speech> <features out> <pcm out>
 ## 4.3 **运行Run脚本**
 
 ### 4.3.1 **一键执行训练脚本**
-`run_scripts/`目录下提供了from_scratch的训练脚本。
+进入`run_scripts/`目录，该目录内提供了from_scratch的训练脚本。
 
 
-Models  | Framework  | MLU   | Data Precision  | Cards  | Run
+Models  | Framework  | Supported MLU   | Data Precision  | Cards  | Run
 ----- | ----- | ----- | ----- | ----- | ----- |
-LPCNet| TensorFlow2  | MLU370-X8  | Float32  | 8  |Horovod_LPCNet_Float32_120E_8MLUs.sh
-LPCNet  | TensorFlow2  | MLU370-X8  | AMP  | 8  |Horovod_LPCNet_AMP_120E_8MLUs.sh
-LPCNet  | TensorFlow2  | MLU370-X8  | Float32  | 1  |LPCNet_Float32_120E_1MLU.sh
+LPCNet| TensorFlow2  | MLU370-X8  | Float32  | 8  |bash Horovod_LPCNet_Float32_120E_8MLUs.sh
+LPCNet  | TensorFlow2  | MLU370-X8  | AMP  | 8  |bash Horovod_LPCNet_AMP_120E_8MLUs.sh
+LPCNet  | TensorFlow2  | MLU370-X8  | Float32  | 1  |bash LPCNet_Float32_120E_1MLU.sh
 
 
 根据您的实际环境与需求，修改脚本内数据集的路径及其他参数的值，如`batch_size`，`epochs`，`use_amp`等，按照如下命令即可开始from_scratch训练：
@@ -258,11 +262,11 @@ horovodrun -np 8  python lpcnet_train.py  \
 **注意**：使用预训练模型进行finetune训练时，`batch_size`，`np`，`use_amp`需与from_scratch得到该预训练模型的参数一致，否则无法正常训练。
 
 ### 4.3.1 **一键执行推理脚本**
-`run_scripts/`目录下提供了推理脚本。
+进入`run_scripts/`目录，该目录内提供了推理脚本。
 
-Models  | Framework  | MLU   | Data Precision  | Cards  | Run
+Models  | Framework  |Supported MLU    | Data Precision  | Cards  | Run
 ----- | ----- | ----- | ----- | ----- | ----- |
-LPCNet| TensorFlow2  | MLU370-S4/X4/X8  | Float32  | 1  |Infer_LPCNet_Float32_1MLU.sh
+LPCNet| TensorFlow2  | MLU370-S4/X4/X8  | Float32  | 1  |bash Infer_LPCNet_Float32_1MLU.sh
 
 您需根据前文指引得到推理所需的音频特征文件以及训练得到的checkpoint文件，再修改`Infer_LPCNet_Float32_1MLU.sh`内的`ckpt`与`features`的路径，随后运行
 ```bash

@@ -155,7 +155,6 @@ def get_loss_scale(params: base_configs.ExperimentConfig,
     return 1.
   else:
     assert params.train_dataset.dtype == 'float16'
-    #SEE JIRA[TENSORFLOW-2988]
     return 'dynamic'
 
 
@@ -430,7 +429,6 @@ def train_and_eval(
   train_builder, validation_builder = builders  # pylint: disable=unbalanced-tuple-unpacking
   train_dataset, validation_dataset = datasets
 
-  # See JIRA TENSORFLOW-3228
   if params.datasets_num_private_threads:
     options = tf.data.Options()
     options.experimental_threading.private_threadpool_size = (

@@ -1,4 +1,4 @@
-**ResNet50 (TensorFlow)**
+**Common_networks (TensorFlow2)**
 
 本仓库是在MLU上基于TensorFlow框架实现的网络，共支持ResNet50、ResNet18、ResNet101、DenseNet201、Vgg16、Vgg19六种模型，支持训练与推理。
 
@@ -16,8 +16,9 @@
   - [4.1 依赖项检查](#41-依赖项检查)
   - [4.2 环境准备](#42-环境准备)
   - [4.3 运行Run脚本](#43-运行Run脚本)
-- [5.免责声明](#5-免责声明)
-- [6.Release_Notes](#6-Release_Notes)
+- [5.结果展示](#5-结果展示)
+- [6.免责声明](#6-免责声明)
+- [7.Release_Notes](#7-Release_Notes)
 
 
 # 1. 模型概述
@@ -78,7 +79,7 @@ Vgg19 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 <span id= "jump1"></span>
 ### 3.2.1 **模型推理常用参数说明**
 
-推理的公共参数都在`../../tools/infer_flags.py`内，程序运行时会解析并读取该脚本内的所有参数。
+推理的公共参数都在`tensorflow_modelzoo/tensorflow2/built-in/tools/infer_flags.py`内，程序运行时会解析并读取该脚本内的所有参数。
 大部分参数提供了默认值，这些参数的详细含义将在稍后给出。
 我们根据常用的参数组合，在`run_scripts/`下提供了若干个以`Infer`开头的常用脚本，如`Infer_Vgg16_Float32_Bsz_4.sh`，`Infer_Vgg16_Float16_Bsz_4.sh`，在使用这些脚本之前，您需要根据当前环境修改如下常用参数：
 ```bash
@@ -116,7 +117,7 @@ opt_config #TF2MM模型优化性能选项，目前支持的输入为 [conv_scale
 下面将详细展示如何在 Cambricon TensorFlow2上完成分类网络的训练与推理。
 ## 4.1 **依赖项检查**
 * Linux常见操作系统版本(如Ubuntu16.04，Ubuntu18.04，CentOS7.x等)，安装docker(>=v18.00.0)应用程序；
-* 服务器装配好寒武纪计算版本MLU370-X8;
+* 服务器装配好寒武纪MLU300系列计算板卡，如需进行训练，则需装配MLU370-X8，若只需推理，则装配MLU370-S4/X4/X8均可；
 * Cambricon Driver >=v4.20.6；
 * CNTensorFlow >= 2.5.0;
 * 若不具备以上软硬件条件，可前往寒武纪云平台注册并试用@TODO
@@ -138,13 +139,13 @@ opt_config #TF2MM模型优化性能选项，目前支持的输入为 [conv_scale
 ```bash
 #!/bin/bash
 # Below is a sample of run_docker.sh.
-# Modify the  YOUR_IMAGE_NAME according to your own environment.
+# Modify the  YOUR_DOCKER_IMAGE_NAME according to your own environment.
 # For instance, IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
 
-IMAGE_NAME=YOUR_IMAGE_NAME
+IMAGE_NAME=YOUR_DOCKER_IMAGE_NAME
 IMAGE_TAG=latest
 
-export MY_CONTAINER="tensorflow_modelzoo"
+export MY_CONTAINER="classification_common_network_tensorflow_modelzoo"
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
 echo $num
@@ -206,16 +207,16 @@ cd tensorflow_modelzoo/tensorflow2/built-in/Classification/common_networks
 # 5. 修改DOCKERFILE内的FROM_IMAGE_NAME的值为cambricon_tensorflow2:vX.Y.Z-x86_64-ubuntu18.04
 
 # 6. 开始基于DOCKERFILE构建镜像
-export IMAGE_NAME=common_networks_image
+export IMAGE_NAME=your_docker_image_name
 docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 
 ```
 
 **b)创建并启动容器**  
 
-上一步成功运行后，本地便生成了一个名为`common_networks_image`的docker镜像，后续即可基于该镜像创建容器。
+上一步成功运行后，本地便根据您的命名生成了一个名为`your_docker_image_name`的docker镜像，后续即可基于该镜像创建容器。
 ```bash
-# 1. 参考前文(1)基于base docker image的容器环境搭建 b) 小节，修改run_docker.sh 内的IMAGE_NAME为common_networks_image
+# 1. 参考前文(1)基于base docker image的容器环境搭建 b) 小节，修改run_docker.sh 内的IMAGE_NAME为your_docker_image_name
 # 2. 运行run_docker.sh
 bash run_docker.sh
 
@@ -244,30 +245,28 @@ bash run_docker.sh
 
 Models  | Framework  | MLU   | Data Precision  | Cards  | Run
 ----- | ----- | ----- | ----- | ----- | ----- |
-ResNet18  | TensorFlow  | MLU370-X8  | FP32  | 1  | Horovod_ResNet18_Float32_100E_1MLU.sh
-ResNet18  | TensorFlow  | MLU370-X8  | FP32  | 8  | Horovod_ResNet18_Float32_100E_8MLUs.sh
-ResNet18  | TensorFlow  | MLU370-X8  | AMP  | 8  | Horovod_ResNet18_AMP_100E_8MLUs.sh
-ResNet50  | TensorFlow  | MLU370-X8  | FP32  | 1  | Horovod_ResNet50_Float32_90E_1MLU.sh
-ResNet50  | TensorFlow  | MLU370-X8  | FP32  | 8  | Horovod_ResNet50_Float32_90E_8MLUs.sh
-ResNet50  | TensorFlow  | MLU370-X8  | AMP  | 8  | Horovod_ResNet50_AMP_90E_8MLUs.sh
-ResNet101  | TensorFlow  | MLU370-X8  | FP32  | 1  | Horovod_ResNet101_Float32_100E_1MLU.sh
-ResNet101  | TensorFlow  | MLU370-X8  | FP32  | 8  | Horovod_ResNet101_Float32_100E_8MLUs.sh
-ResNet101  | TensorFlow  | MLU370-X8  | AMP | 8  | Horovod_ResNet101_AMP_100E_8MLUs.sh
-Vgg16  | TensorFlow  | MLU370-X8  | FP32  | 1  | Horovod_Vgg16_Float32_100E_1MLU.sh
-Vgg16  | TensorFlow  | MLU370-X8  | FP32  | 8  | Horovod_Vgg16_Float32_100E_8MLUs.sh
-Vgg16  | TensorFlow  | MLU370-X8  | AMP  | 8  | Horovod_Vgg16_AMP_100E_8MLUs.sh
-Vgg19  | TensorFlow  | MLU370-X8  | FP32  | 1  | Horovod_Vgg19_Float32_100E_1MLU.sh
-Vgg19  | TensorFlow  | MLU370-X8  | FP32  | 8  | Horovod_Vgg19_Float32_100E_8MLUs.sh
-Vgg19  | TensorFlow  | MLU370-X8  | AMP  | 8  | Horovod_Vgg19_AMP_100E_8MLUs.sh
-DesNet201  | TensorFlow  | MLU370-X8  | FP32  | 1  | Horovod_DesNet201_Float32_140E_1MLU.sh
-DesNet201  | TensorFlow  | MLU370-X8  | FP32  | 8  | Horovod_DesNet201_Float32_140E_8MLUs.sh
-DesNet201  | TensorFlow  | MLU370-X8  | AMP | 8  | Horovod_DesNet201_AMP_140E_8MLUs.sh
+ResNet18  | TensorFlow  | MLU370-X8  | FP32  | 1  | bash ResNet18_Float32_100E_1MLU.sh
+ResNet18  | TensorFlow  | MLU370-X8  | FP32  | 8  | bash Horovod_ResNet18_Float32_100E_8MLUs.sh
+ResNet18  | TensorFlow  | MLU370-X8  | AMP  | 8  | bash Horovod_ResNet18_AMP_100E_8MLUs.sh
+ResNet50  | TensorFlow  | MLU370-X8  | FP32  | 1  | bash ResNet50_Float32_90E_1MLU.sh
+ResNet50  | TensorFlow  | MLU370-X8  | FP32  | 8  | bash Horovod_ResNet50_Float32_90E_8MLUs.sh
+ResNet50  | TensorFlow  | MLU370-X8  | AMP  | 8  | bash Horovod_ResNet50_AMP_90E_8MLUs.sh
+ResNet101  | TensorFlow  | MLU370-X8  | FP32  | 1  | bash ResNet101_Float32_100E_1MLU.sh
+ResNet101  | TensorFlow  | MLU370-X8  | FP32  | 8  | bash Horovod_ResNet101_Float32_100E_8MLUs.sh
+ResNet101  | TensorFlow  | MLU370-X8  | AMP | 8  | bash Horovod_ResNet101_AMP_100E_8MLUs.sh
+Vgg16  | TensorFlow  | MLU370-X8  | FP32  | 1  | bash Vgg16_Float32_100E_1MLU.sh
+Vgg16  | TensorFlow  | MLU370-X8  | FP32  | 8  | bash Horovod_Vgg16_Float32_100E_8MLUs.sh
+Vgg16  | TensorFlow  | MLU370-X8  | AMP  | 8  | bash Horovod_Vgg16_AMP_100E_8MLUs.sh
+Vgg19  | TensorFlow  | MLU370-X8  | FP32  | 1  | bash Vgg19_Float32_100E_1MLU.sh
+Vgg19  | TensorFlow  | MLU370-X8  | FP32  | 8  | bash Horovod_Vgg19_Float32_100E_8MLUs.sh
+Vgg19  | TensorFlow  | MLU370-X8  | AMP  | 8  | bash Horovod_Vgg19_AMP_100E_8MLUs.sh
+DenseNet201  | TensorFlow  | MLU370-X8  | FP32  | 1  | bash DenseNet201_Float32_140E_1MLU.sh
+DenseNet201  | TensorFlow  | MLU370-X8  | FP32  | 8  | bash Horovod_DenseNet201_Float32_140E_8MLUs.sh
+DenseNet201  | TensorFlow  | MLU370-X8  | AMP | 8  | bash Horovod_DenseNet201_AMP_140E_8MLUs.sh
 
 
-根据您的实际环境与需求，修改脚本内数据集的路径及其他参数的值，如`data_dir`，`batch_size`，`train_steps`，`np`等，按照如下命令即可开始from_scratch的分布式训练：
-```bash
-bash Horovod_ResNet18_Float32_8MLUs.sh
-```
+根据您的实际环境与需求，修改脚本内数据集的路径及其他参数的值，如`data_dir`，`batch_size`，`train_steps`，`np`等，进入`run_scripts`目录下，按照上述命令即可开始from_scratch的分布式训练。
+
 训练完成后，程序会输出训练精度`accuracy`，并将训练过程中产生的模型文件及权重保存至`model_dir`指定的目录内。
 
 若您想基于已有的预训练模型进行训练，则可参考如下命令，修改脚本内的参数（以`Horovod_DenseNet201_Float32_140E_8MLUs.sh`为例）：
@@ -324,12 +323,26 @@ popd
 |Vgg16   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager| bash Infer_Vgg16_Multi.sh |
 |Vgg19   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager| bash Infer_Vgg19_Multi.sh |
 
+# 5.结果展示
+
+**Training accuracy results: MLU370-X8**
+
+图像分类任务的训练精度通常用`top1`表征，在本仓库中，最终的训练精度由`accuracy`表征。最终的训练精度如下所示：
+
+Models  | MLUs |  Mixed Precision Top1   | FP32 Top1
+----- | ----- | ----- | ----- |
+ResNet18 | 8  | 0.6882 | 0.6867
+ResNet50 | 8  | 0.7542 | 0.7540
+ResNet101 | 8  | 0.7591 | 0.7662
+DenseNet201 | 8  | 0.6978 | 0.6972
+Vgg16 | 8  | 0.6836 | 0.6814
+Vgg19 | 8  | 0.6934 | 0.6957
 
 
-# 5. 免责声明
+# 6. 免责声明
 您明确了解并同意，以下链接中的软件、数据或者模型由第三方提供并负责维护。在以下链接中出现的任何第三方的名称、商标、标识、产品或服务并不构成明示或暗示与该第三方或其软件、数据或模型的相关背书、担保或推荐行为。您进一步了解并同意，使用任何第三方软件、数据或者模型，包括您提供的任何信息或个人数据（不论是有意或无意地），应受相关使用条款、许可协议、隐私政策或其他此类协议的约束。因此，使用链接中的软件、数据或者模型可能导致的所有风险将由您自行承担。
 
-# 6. Release_Notes
+# 7. Release_Notes
 @TODO
 
 

@@ -25,6 +25,6 @@ horovodrun -np 8  python run_squad.py \
  --use_profiler=False \
  --use_horovod=True \
  --use_amp=False \
- --use_performance=False
-
+ --use_performance=False \
+ --enable_xla=False
 popd

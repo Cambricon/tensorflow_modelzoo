@@ -182,6 +182,10 @@ flags.DEFINE_bool(
     "use_performance", False,
     "Whether to open performance.")
 
+flags.DEFINE_bool(
+    "enable_xla", False,
+    "Whether to enable xla.")
+
 flags.DEFINE_integer(
     "finetune_steps", 0,
     "Number of steps to control fine-tuning and profiling.")
@@ -1158,6 +1162,13 @@ def validate_flags_or_throw(bert_config):
 
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
+  if FLAGS.enable_xla:
+    os.environ["TF_XLA_FLAGS"] = (os.environ.get(
+      "TF_XLA_FLAGS", "") +
+      " --tf_xla_auto_jit=2" +
+      " --tf_xla_enable_lazy_compilation=false" +
+      " --tf_xla_async_io_level=1")
+    os.environ["XLA_MLU_DISABLE_BITCAST_OPT"] = "True"
 
   if FLAGS.use_horovod:
     import horovod.tensorflow as hvd

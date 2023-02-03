@@ -3,7 +3,8 @@
         "directory": "tensorflow2/built-in/NaturalLanguageProcessing/transformer/",
         "testcases": [
             "cd run_scripts/ci;bash Transformer_Train_1MLU.sh",
-            "cd run_scripts/ci;bash Transformer_Train_Horovod_Float32.sh"
+            "cd run_scripts/ci;bash Transformer_Train_Horovod_Float32.sh",
+            "cd run_scripts/ci;bash XLA_Transformer_Train_Horovod_Float32.sh"
 	]
     },
     "transformer_infer": {
@@ -18,7 +19,9 @@
         "testcases": [
             "cd run_scripts/ci/;bash Bert_Train_Float32_1MLU.sh",
             "cd run_scripts/ci/;bash Bert_Train_Horovod_AMP.sh",
-            "cd run_scripts/ci/;bash Bert_Train_Horovod_Float32.sh"
+            "cd run_scripts/ci/;bash Bert_Train_Horovod_Float32.sh",
+            "cd run_scripts/ci/;bash XLA_Bert_Train_Horovod_AMP.sh"
+
 	]
     },
     "bert_infer": {
@@ -114,11 +117,21 @@
         ]
     },
     "resnet50_cmcc_train": {
-        "directory": "tensorflow2/built-in/Classification/resnet50",
+        "directory": "tensorflow2/built-in/Classification/resnet50_tf_model_official_v2.8.0",
         "testcases": [
             "cd run_scripts/ci;bash ResNet50_Train_1MLU.sh",
             "cd run_scripts/ci;bash Horovod_ResNet50_Train_AMP.sh",
-            "cd run_scripts/ci;bash Horovod_ResNet50_Train_Float32.sh"
+            "cd run_scripts/ci;bash Horovod_ResNet50_Train_Float32.sh",
+            "cd run_scripts/ci;bash XLA_Horovod_ResNet50_Train_AMP.sh"
+        ]
+    },
+    "swin-transformer": {
+        "directory": "tensorflow2/built-in/Classification/swin-transformer",
+        "testcases": [
+            "cd run_scripts/ci; bash Swin_Transformer_Train_Horovod_Float32.sh",
+            "cd run_scripts/ci; bash Swin_Transformer_Train_Horovod_AMP.sh",
+            "cd run_scripts/ci; bash Swin_Transformer_Train_1MLU.sh",
+            "cd run_scripts/ci; bash Swin_Transformer_Infer_1MLU.sh"
         ]
     },
     "conformer_infer": {
@@ -154,7 +167,7 @@
         ]
     },
     "resnet50_cmcc_infer": {
-        "directory": "tensorflow2/built-in/Classification/resnet50",
+        "directory": "tensorflow2/built-in/Classification/resnet50_tf_model_official_v2.8.0",
         "testcases": [
             "cd run_scripts/ci;bash infer_run_eager_fp32_bsz_128.sh",
             "cd run_scripts/ci;bash infer_run_jit_fp32_bsz_128.sh",

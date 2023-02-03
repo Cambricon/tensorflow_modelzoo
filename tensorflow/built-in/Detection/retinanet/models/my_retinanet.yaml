@@ -1,0 +1,9 @@
+# my_retinanet.yaml
+type: 'retinanet'
+train:
+  batch_size: 16
+  train_file_pattern: './path_to/coco_train.record-?????-of-00100'
+eval:
+  eval_file_pattern: './path_to/coco_val.record-?????-of-00010'
+  val_json_file: './path_to/COCO17/annotations/instances_val2017.json'
+use_tpu: False

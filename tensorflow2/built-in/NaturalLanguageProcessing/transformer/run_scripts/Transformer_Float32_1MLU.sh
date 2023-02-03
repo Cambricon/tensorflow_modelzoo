@@ -38,6 +38,6 @@ vocab_file="${DATA_DIR}/vocab.ende.32768"
  --use_amp=False \
  --use_profiler=False \
  --use_horovod=False \
- --use_performance=False
-
+ --use_performance=False \
+ --enable_xla=False
 popd

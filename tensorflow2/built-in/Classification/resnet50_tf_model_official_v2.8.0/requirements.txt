@@ -1,0 +1,7 @@
+dataclasses
+pyyaml
+tensorflow_addons
+gin-config
+tensorflow_datasets
+tensorflow_model_optimization
+numpy
