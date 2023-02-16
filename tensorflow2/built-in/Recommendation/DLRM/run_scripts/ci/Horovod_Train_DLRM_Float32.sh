@@ -2,7 +2,7 @@
 cur_path=$(pwd)
 work_dir="${cur_path}/../.."
 timestamp=$(date +%Y%m%d%H%M)
-model_dir="${work_dir}/dlrm_model_${timestamp}"
+model_dir="${work_dir}/dlrm_model_float32_${timestamp}"
 set -e
 
 pushd "${work_dir}"

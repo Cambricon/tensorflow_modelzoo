@@ -72,6 +72,6 @@ def test_precheckin(card_type, docker_image, test_mode, network_list) {
             exit ${RESULT}
             echo "================= ${TEST_MODE} end ================="
         '''
-        archiveLog '${CI_WORK_DIR}/tensorflow_modelzoo/test_log'
+        archiveLog 'tensorflow_modelzoo/test_log'
     }
 }

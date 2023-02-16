@@ -1,6 +1,15 @@
 import pytest
 import sys
-import subprocess
+import os
+
+
+def read_log(filename):
+  bufsize = 2048
+  file_size = os.path.getsize(filename)
+  logFile = open(filename, 'rb')
+  if file_size > bufsize:
+    logFile.seek(0-bufsize, 2)
+  return (b"".join(logFile.readlines())).decode('utf-8', 'ignore')
 
 
 def test_precheckin(testcase):
@@ -9,25 +18,27 @@ def test_precheckin(testcase):
         print(cmd)
     print()
 
-    command_line = " && ".join(testcase)
-    run_args = {
-        "stdout": subprocess.PIPE,
-        "stderr": subprocess.STDOUT,
-        "shell": True,
-        "bufsize": -1,
-        "executable": "/bin/bash"
-    }
+    run_cmd_path = "run_cmd.sh"
+    with open(run_cmd_path, 'w') as f:
+        f.write("#!/bin/bash\nset -ex\n")
+        for cmd in testcase:
+            f.write(f"{cmd}\n")
+    
+    ci_work_dir = os.environ.get('CI_WORK_DIR')
+    log_path = f"{ci_work_dir}/tensorflow_modelzoo/test_log/run_cmd.log"
+    with open("exec_cmd.sh", "w") as f:
+        exec_cmd = f'''
+            #!/bin/bash
+            set -exo pipefail
+            bash {run_cmd_path} 2>&1 | tee {log_path}
+        '''
+        f.write(exec_cmd)
 
-    process = subprocess.Popen( [command_line], **run_args)
-    msg, _ = process.communicate()
-    msg = str(msg, encoding="utf-8")
-    if process.returncode != 0:
-        raise RuntimeError("Error in run:\n {} \n".format("".join(command_line)) +
-                           "msg: \n {}".format(msg))
-    print(msg)
+    result = os.system("bash exec_cmd.sh")
+    assert 0 == result, "\n[FAILED] log:{}".format(read_log(log_path))
 
 
 if __name__ == "__main__":
     raise SystemExit(
         pytest.main([
-            __file__, "-rP"] + sys.argv[1:]))
+            __file__, "-sv"] + sys.argv[1:]))
