@@ -6,4 +6,4 @@ COPY ./tensorflow_modelzoo /home/tensorflow_modelzoo
 
 WORKDIR /home/tensorflow_modelzoo/tensorflow2/built-in/Classification/resnet50
 
-RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple && cd ../../tools/record_time && pip install .
+RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple && cd ../../../../tools/record_time && pip install .

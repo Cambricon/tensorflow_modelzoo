@@ -149,7 +149,7 @@ if [ 0 -eq $num ];then
      --net=host \
      --privileged=true \
      --cap-add=sys_ptrace \
-     --shm-size="64g" \
+     --shm-size="16g" \
      -v /usr/bin/cnmon:/usr/bin/cnmon \
      -v /data:/data \
      --device=/dev/cambricon_dev0 \
@@ -173,7 +173,7 @@ fi
 pip install -r requirements.txt
 # 安装性能测试工具(可选)
 # 若不开启性能测试（use_performance为False），则无需安装。
-cd ../../tools/record_time/
+cd ../../../../tools/record_time/
 pip install .
 
 ```
@@ -211,21 +211,8 @@ docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 bash run_docker.sh
 
 ```
-### 4.2.3 **下载项目代码**
 
-使用 `git clone` 下载本仓库代码并进入`tensorflow_modelzoo/tensorflow2/built-in/Detection/centernet` 目录。
-
-### 4.2.4 **安装依赖项**
-
-```bash
-# 安装requirements中的依赖库
-pip install -r requirements.txt
-# 安装性能测试工具(可选)
-# 若不开启性能测试（use_performance为False），则无需安装。
-pip install PATHTO/tensorflow_modelzoo/tensorflow2/built-in/tools/record_time
-```
-
-### 4.2.5 **数据集准备**
+### 4.2.2 **数据集准备**
 本仓库使用的是`COCO 2017`数据集。数据集下载：[https://cocodataset.org](https://cocodataset.org)
 需要将数据集转换为tfrecord格式，可参见：[https://github.com/tensorflow/models/blob/master/official/vision/data/create_coco_tf_record.py](https://github.com/tensorflow/models/blob/master/official/vision/data/create_coco_tf_record.py)
 在`run_scripts/`下运行`prepare_dataset.sh`(需要设置`DATASET`及`DATASET_LABEL`环境变量的值为本地对应数据集的路径)即可。
