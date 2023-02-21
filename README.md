@@ -52,6 +52,7 @@ NLP:
 | [transformer](tensorflow2/built-in/NaturalLanguageProcessing/transformer) | TensorFlow2|FP32 | YES | TFMM/CNNL |
 | [google_bert](tensorflow2/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow2|FP32&&AMP | YES | TFMM/CNNL | 
 | [BERT_ngc](tensorflow/built-in/NaturalLanguageProcessing/BERT_ngc) | TensorFlow1|FP32&&AMP | YES | CNNL |
+| [BERT_CRF](tensorflow/built-in/NaturalLanguageProcessing/bert/bert_crf) | TensorFlow1|FP32&&AMP | YES | CNNL |
 | [transformer_estimator](tensorflow/built-in/NaturalLanguageProcessing/Transformer/transformer_estimator/) | TensorFlow1|FP32/AMP | YES | CNNL |
 | [google_bert(tf1)](tensorflow/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow1|FP32&&AMP | YES | CNNL | 
 
