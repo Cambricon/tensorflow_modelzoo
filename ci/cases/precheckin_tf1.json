@@ -138,7 +138,7 @@
             "cd run_scripts/ci;bash Bert_Train_1MLU.sh",
             "cd run_scripts/ci;bash Bert_Train_Horovod_Float32.sh",
             "cd run_scripts/ci;bash Bert_Train_Horovod_AMP.sh",
-	        "cd run_scripts/ci;bash infer_run_eager_bert.sh"
+	    "cd run_scripts/ci;bash infer_run_eager_bert.sh"
         ]
     },
     "retinanet": {
@@ -156,6 +156,14 @@
             "cd run_scripts/ci;bash Horovod_Tacotron2_Float32_4MLUs.sh",
             "cd run_scripts/ci;bash Tacotron2_Float32_1MLU.sh",
             "cd run_scripts/ci;bash Infer_Tacotron2_Float32_1MLU.sh"
+	]
+    },
+    "GraphSAGE": {
+        "directory": "tensorflow/built-in/GCN/GraphSAGE",
+        "testcases": [
+            "cd run_scripts/ci;bash GraphSAGE_Train_1MLU_Float32.sh",
+	    "cd run_scripts/ci;bash GraphSAGE_Train_1MLU_AMP.sh",
+            "cd run_scripts/ci;bash infer_run_eager_GraphSAGE.sh"
         ]
     }
 }

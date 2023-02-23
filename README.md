@@ -39,6 +39,12 @@ CV：
 | [UNet_3D_Medical](tensorflow/built-in/Segmentation/UNet_3D_Medical) | TensorFlow1|FP32&&AMP |YES| CNNL | 
 | [UNet_Industrial](tensorflow/built-in/Segmentation/UNet_Industrial) | TensorFlow1|FP32&&AMP |YES| CNNL | 
 
+Graph Convolutional Network
+
+| MODELS                                         | FRAMEWORK   | Train Mode | Distributed Train | Infer  Mode |
+|------------------------------------------------|-------------|------------|-------------------|-------------| 
+| [GraphSAGE](tensorflow/built-in/GCN/GraphSAGE) | Tensorflow1 | FP32&&AMP  | NO                | CNNL        |
+
 NLP:
 
 | MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
