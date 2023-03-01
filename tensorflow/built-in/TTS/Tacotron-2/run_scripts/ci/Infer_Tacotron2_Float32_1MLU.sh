@@ -25,7 +25,7 @@ python synthesize.py              \
        --tacotron_batch_size=32   \
        --tacotron_synthesis_batch_size=1   \
        --device_type=mlu                   \
-       --taco_checkpoint=${CKPT_TACOTRON}/tacotron2/logs-Tacotron-2/taco_pretrained  \
+       --taco_checkpoint=${CKPT_TACOTRON}  \
        --mels_dir=tacotron_output/eval/
 
 popd

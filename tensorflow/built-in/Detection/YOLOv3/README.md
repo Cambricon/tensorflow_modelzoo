@@ -83,7 +83,7 @@ YOLOv3 | TensorFlow1  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 IMAGE_NAME=YOUR_IMAGE_NAME
 IMAGE_TAG=YOUR_IMAGE_TAG
 
-export MY_CONTAINER="tensorflow_modelzoo"
+export MY_CONTAINER="tf1_yolov3_tensorflow_modelzoo"
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
 echo $num

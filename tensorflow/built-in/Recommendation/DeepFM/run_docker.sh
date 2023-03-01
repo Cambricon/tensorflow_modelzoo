@@ -1,12 +1,12 @@
 #!/bin/bash
 # Below is a sample of run_docker.sh.
-# Modify the  IMAGE_NAME and IMAGE_TAG according to your own environment.
+# Modify the IMAGE_NAME and IMAGE_TAG according to your own environment.
 # For instance, IMAGE_NAME=tensorflow-1.12.1-x86_64-ubuntu18.04
 
 IMAGE_NAME=YOUR_DOCKER_IMAGE_NAME
 IMAGE_TAG=YOUR_DOCKER_IMAGE_TAG
 
-export MY_CONTAINER="tf1_tacotron2_tensorflow_modelzoo"
+export MY_CONTAINER="tf1_deepfm_tensorflow_modelzoo"
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
 echo $num

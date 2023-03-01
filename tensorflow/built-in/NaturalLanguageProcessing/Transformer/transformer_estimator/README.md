@@ -209,7 +209,7 @@ wmt32k-train-00100-of-00100*
 Models                | Framework  | Supported MLU | Data Precision | Cards | Run
 --------------------- | ---------- | ------------- | -------------- | ----- | ----------------------------------------------- |
 Transformer_estimator | TensorFlow | MLU370-X8     | Float32        |  8    | bash Horovod_Transformer_Float32_800000S_8MLUs.sh
-Transformer_estimator | TensorFlow | MLU370-X8     | Float32        |  8    | bash Horovod_Transformer_AMP_800000S_8MLUs.sh
+Transformer_estimator | TensorFlow | MLU370-X8     | AMP            |  8    | bash Horovod_Transformer_AMP_800000S_8MLUs.sh
 Transformer_estimator | TensorFlow | MLU370-X8     | Float32        |  1    | bash Transformer_Float32_800000S_1MLU.sh
 
 根据您的实际环境与需求，修改脚本内数据集的路径（`env.sh`内的`DATA_DIR`）及其他参数的值，如`batch_size`,`use_amp`等，按照如下命令即可开始from_scratch的分布式训练：

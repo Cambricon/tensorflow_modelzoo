@@ -161,9 +161,9 @@
     "tacotron2": {
         "directory": "tensorflow/built-in/TTS/Tacotron-2",
         "testcases": [
-            "cd run_scripts/ci;bash Horovod_Tacotron2_AMP_4MLUs.sh",
-            "cd run_scripts/ci;bash Horovod_Tacotron2_Float32_4MLUs.sh",
-            "cd run_scripts/ci;bash Tacotron2_Float32_1MLU.sh",
+            "cd run_scripts/ci;bash Horovod_Tacotron2_AMP_4MLUs.sh; rm -rf logs-Tacotron-2",
+            "cd run_scripts/ci;bash Horovod_Tacotron2_Float32_4MLUs.sh; rm -rf logs-Tacotron-2",
+            "cd run_scripts/ci;bash Tacotron2_Float32_1MLU.sh; rm -rf logs-Tacotron-2",
             "cd run_scripts/ci;bash Infer_Tacotron2_Float32_1MLU.sh"
 	]
     },
@@ -182,6 +182,13 @@
             "cd run_scripts/ci;bash Transformer_Float32_80S_1MLU.sh",
             "cd run_scripts/ci;bash Infer_Transformer_Float32_1MLU.sh"
         ]
+    },
+    "deepfm": {
+        "directory": "tensorflow/built-in/Recommendation/DeepFM",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_DeepFM_AMP_30E_4MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_DeepFM_Float32_30E_4MLUs.sh",
+            "cd run_scripts/ci;bash DeepFM_Float32_30E_1MLU.sh"
+        ]
     }
-
 }
