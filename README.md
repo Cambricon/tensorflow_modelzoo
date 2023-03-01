@@ -61,15 +61,15 @@ Recommendation:
 | MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
 | [DLRM](tensorflow2/built-in/Recommendation/DLRM) | TensorFlow2|FP32&&AMP | YES | CNNL|
+| [DeepFM](tensorflow/built-in/Recommendation/DeepFM) | TensorFlow1|FP32&&AMP | YES | CNNL|
 
 Speech:
 
 | MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
-| [Conformer](tensorflow2/built-in/ASR/Conformer) | TensorFlow2|FP32&&AMP|YES| CNNL |
-| [LPCNet](tensorflow2/built-in/TTS/LPCNet) | TensorFlow2|FP32&&AMP|YES| CNNL |
-
-
+| [Conformer](tensorflow2/built-in/ASR/Conformer) | TensorFlow2|FP32&&AMP|YES| CNNL | 
+| [LPCNet](tensorflow2/built-in/TTS/LPCNet) | TensorFlow2|FP32&&AMP|YES| CNNL | 
+| [Tacotron2](tensorflow/built-in/TTS/Tacotron-2) | TensorFlow1|FP32&&AMP|YES| CNNL | 
 
 
 ## issues/wiki/forum 跳转链接
