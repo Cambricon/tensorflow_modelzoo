@@ -11,17 +11,18 @@ source env.sh
 bleu_src="${DATA_DIR}/newstest2014.en"
 bleu_ref="${DATA_DIR}/newstest2014.de"
 vocab_file="${DATA_DIR}/vocab.ende.32768"
+ #--model_dir=$model_dir \
  python transformer_main.py \
- --mode=train \
+ --mode=eval \
  --batch_size=4096 \
  --max_length=64 \
  --train_steps=800000 \
  --steps_between_evals=800000 \
- --bleu_source=${bleu_src} \
+ --bleu_source=${bleu_src}\
  --bleu_ref=${bleu_ref} \
  --data_dir=${DATA_DIR} \
  --vocab_file=${vocab_file} \
- --model_dir=${model_dir}\
+ --model_dir=${INFER_MODEL_DIR} \
  --num_gpus=0 \
  --num_mlus=1 \
  --distribution_strategy=off \
