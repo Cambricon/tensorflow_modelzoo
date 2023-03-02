@@ -24,6 +24,12 @@ from absl import app
 from absl import flags
 from absl import logging
 import tensorflow as tf
+
+import sys
+sys.path.append('./models')
+from models.utils.misc import distribution_utils
+from tensorflow.python.keras.utils import losses_utils
+
 from models.common import distribute_utils
 from models.modeling import hyperparams
 from models.modeling import performance
@@ -546,6 +552,124 @@ def train_and_eval(
   return stats
 
 
+def eval(
+    params: base_configs.ExperimentConfig,
+    strategy_override: tf.distribute.Strategy) -> Mapping[str, Any]:
+  """Runs the eval path using compile/fit."""
+  logging.info('Running eval.')
+
+
+  if params.use_horovod:
+    import horovod.tensorflow.keras as hvd
+    global hvd
+    hvd.init()
+
+    """
+  if params.use_qat:
+    import tensorflow_model_optimization as tfmot
+    global tfmot
+    """
+
+  # Note: for TPUs, strategy and scope should be created before the dataset
+  strategy = strategy_override or distribution_utils.get_distribution_strategy(
+      distribution_strategy=params.runtime.distribution_strategy,
+      all_reduce_alg=params.runtime.all_reduce_alg,
+      num_gpus=params.runtime.num_gpus, num_mlus=params.runtime.num_mlus,
+      tpu_address=params.runtime.tpu)
+
+  strategy_scope = distribution_utils.get_strategy_scope(strategy)
+
+  logging.info('Detected %d devices.',
+               strategy.num_replicas_in_sync if strategy else 1)
+
+  label_smoothing = params.model.loss.label_smoothing
+  one_hot = label_smoothing and label_smoothing > 0
+
+  builders = _get_dataset_builders(params, strategy, one_hot)
+  datasets = [builder.build() if builder else None for builder in builders]
+
+  # Unpack datasets and builders based on train/val/test splits
+  train_builder, validation_builder = builders  # pylint: disable=unbalanced-tuple-unpacking
+  train_dataset, validation_dataset = datasets
+
+  train_epochs = params.train.epochs
+  train_steps = params.train.steps or train_builder.num_steps
+  validation_steps = params.evaluation.steps or validation_builder.num_steps
+
+  initialize(params, train_builder)
+
+  logging.info('Global batch size: %d', train_builder.global_batch_size)
+
+  with strategy_scope:
+    model_params = params.model.model_params.as_dict()
+    model = get_models()[params.model.name](**model_params)
+    learning_rate = optimizer_factory.build_learning_rate(
+        params=params.model.learning_rate,
+        batch_size=train_builder.global_batch_size,
+        train_epochs=train_epochs,
+        train_steps=train_steps)
+    optimizer = optimizer_factory.build_optimizer(
+        optimizer_name=params.model.optimizer.name,
+        base_learning_rate=learning_rate,
+        params=params.model.optimizer.as_dict())
+
+    if params.use_horovod:
+       with tf.keras.utils.CustomObjectScope({learning_rate.__class__.__name__: learning_rate}):
+         optimizer = hvd.DistributedOptimizer(optimizer)
+
+    metrics_map = _get_metrics(one_hot)
+    metrics = [metrics_map[metric] for metric in params.train.metrics]
+
+    if one_hot:
+      loss_obj = tf.keras.losses.CategoricalCrossentropy(
+          label_smoothing=params.model.loss.label_smoothing,
+          reduction=losses_utils.ReductionV2.SUM_OVER_BATCH_SIZE)
+          #reduction=tf.keras.losses.Reduction.NONE)
+    else:
+      loss_obj = tf.keras.losses.SparseCategoricalCrossentropy()
+    model.compile(optimizer=optimizer,
+                  loss=loss_obj,
+                  metrics=metrics)
+
+    """
+    if params.use_qat:
+      tfmot_quantize_model = tfmot.quantization.keras.quantize_model
+      # quantize origin model
+      model = tfmot_quantize_model(model)
+      model.compile(optimizer=optimizer,
+                    loss=loss_obj,
+                    metrics=metrics)
+    """
+
+    initial_epoch = 0
+    if params.train.resume_checkpoint:
+      initial_epoch = resume_from_checkpoint(model=model,
+                                             model_dir=params.model_dir,
+                                             train_steps=train_steps,
+                                             finetune_checkpoint=params.finetune_checkpoint
+                                             )
+      """
+      initial_epoch = resume_from_checkpoint(model=model,
+                                             model_dir=params.model_dir,
+                                             train_steps=train_steps,
+                                             finetune_checkpoint=params.finetune_checkpoint,
+                                             params=params)
+      """
+
+  serialize_config(params=params, model_dir=params.model_dir)
+
+  validation_kwargs = {
+      'validation_data': validation_dataset,
+      'validation_steps': validation_steps,
+      'validation_freq': params.evaluation.epochs_between_evals,
+  }
+
+  validation_output = model.evaluate(
+      validation_dataset, steps=validation_steps, verbose=1)
+  print('Run stats:\ntop_1 acc: %s\ttop_5 acc: %s\t eval_loss: %s'%(validation_output[1],validation_output[2], validation_output[0]))
+  with open(params.model_dir + "/" + "Run_stats_eval_%s.txt"%(params.model.name), 'w') as fout:
+    fout.write('Run stats:\ntop_1 acc: %s\ttop_5 acc: %s\t eval_loss: %s'%(validation_output[1],validation_output[2], validation_output[0]))
+
 def export(params: base_configs.ExperimentConfig):
   """Runs the model export functionality."""
   logging.info('Exporting model.')
@@ -590,6 +714,9 @@ def run(flags_obj: flags.FlagValues,
     return train_and_eval(params, strategy_override)
   elif params.mode == 'export_only':
     export(params)
+  # modified by andy, add eval
+  elif params.mode == 'eval':
+    return eval(params,strategy_override)
   else:
     raise ValueError('{} is not a valid mode.'.format(params.mode))
 

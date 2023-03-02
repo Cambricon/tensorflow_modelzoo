@@ -8,7 +8,7 @@ pushd "${work_dir}"
 
 source env.sh
 
-horovodrun -np 8 python3 classifier_trainer.py \
+horovodrun -np 8 python3 classifier.py \
     --dataset=imagenet \
     --model_type=vgg19 \
     --mode=train_and_eval \

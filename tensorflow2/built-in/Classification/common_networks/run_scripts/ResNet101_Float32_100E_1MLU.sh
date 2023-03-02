@@ -8,7 +8,7 @@ pushd "${work_dir}"
 
 source env.sh
 
-python3 classifier_trainer.py \
+python3 classifier.py \
     --dataset=imagenet \
     --model_type=resnet101 \
     --mode=train_and_eval \

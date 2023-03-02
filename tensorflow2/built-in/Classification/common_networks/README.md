@@ -51,15 +51,20 @@ Vgg19 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 
 |Models  | Framework  | Supported MLU   | Supported Data Precision   | Eager Support|
 |----- | ----- | ----- | ----- | ----- |
-|ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager|
-|Vgg16   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager|
-|Vgg19   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager|
+|ResNet18   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager|
+|ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager|
+|ResNet101   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager|
+|Vgg16   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager|
+|Vgg19   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager|
+|Densenet201   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager|
 
-注意，此处`Jit`表示使用`TFMM`的方式进行推理，即是用`TensorFlow2-MagicMind`作为底层实现后端进行推理。
 
-# 3. 默认参数配置
 
-## 3.1 **模型训练默认参数配置**
+# 3. 默认参数说明
+
+## 3.1 **模型训练与推理参数说明**
+
+常用参数均在`classifier.py`内，详细作用如下：
 
 | 参数 | 作用 |
 |------|------|
@@ -68,50 +73,14 @@ Vgg19 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 | data_dir | 指向数据集的路径 |
 | epochs | 更改训练的epoch数目 |
 | use_profiler | 为True则开启tensorboard |
-| use_amp | 控制是否使用amp进行混合精度训练 |
+| use_amp | 控制是否使用amp进行混合精度训练或验证 |
 | skip_eval | 是否跳过推理阶段 |
+| finetune_checkpoint | 预训练模型的路径。若进行推理时，此参数指向用于推理的已训练好的checkpoint文件 |
 | enable_tensorboard | 控制是否开启tensorboard，并记录性能 |
 | distribution_strategy | 控制是否开启原生分布式，原生分布式不能与Horovod分布式同时开启 |
 | num_mlus，num_gpus | 联合控制网络运行的设备，在mlu设备上运行需设置num_mlus=1,num_gpus=0；在gpu设备上运行需设置num_mlus=0,num_gpus=1 |
-  
 
-## 3.2 **模型推理默认参数说明**
-<span id= "jump1"></span>
-### 3.2.1 **模型推理常用参数说明**
 
-推理的公共参数都在`tensorflow_modelzoo/tensorflow2/built-in/tools/infer_flags.py`内，程序运行时会解析并读取该脚本内的所有参数。
-大部分参数提供了默认值，这些参数的详细含义将在稍后给出。
-我们根据常用的参数组合，在`run_scripts/`下提供了若干个以`Infer`开头的常用脚本，如`Infer_Vgg16_Float32_Bsz_4.sh`，`Infer_Vgg16_Float16_Bsz_4.sh`，在使用这些脚本之前，您需要根据当前环境修改如下常用参数：
-```bash
-data_dir #推理数据集路径，常用imagenet数据集，该数据集的目录结构需按照下文中的[数据集准备]一节的要求布置。
-run_eagerly #是否使用eager模式进行推理。0表示不使用，1表示使用。默认为0。非eager模式也称为jit模式，即使用TFMM（TensorFlow2-MagicMind）进行推理，eager模式即基于TensorFlow框架的推理。支持外界直接传参。
-batch_size #推理时的batch大小，默认为4。支持外界直接传参。
-quant_precision #推理精度类型，默认为fp32，可选值为[fp16,fp32]其中之一。支持外界直接传参。
-enable_dim_range #默认为 1，该参数仅在jit模式下有效。TFMM支持同一份模型使用不同的输入形状进行推理，当模型输入在某些维度长度可变时（例如batch,height,width,channel中的batch可变），开启该选项后可使推理性能达到更优。关于该参数更具体的解释与使用请参阅Cambricon-TensorFlow-MagicMind用户手册。
-```
-完成上述参数修改后，再运行`bash Infer_Vgg16_Float16_Bsz_4.sh`即可开始推理。
-这些脚本也支持通过直接传参的方式修改`batch_size`，`quant_precision`，`run_eagerly`。
-例如运行`bash  Infer_Vgg16_Float16_Bsz_4.sh -b 16`即可将`batch_size`从4改为16，且保持其他参数不变。
-
-### 3.2.2 **模型推理其他参数说明**
-
-除了上述常用参数之外，`Infer_Vgg16_Float16_Bsz_4.sh` （其它`Infer*.sh`与之类似）还有如下参数可供使用与修改：
-```bash
-native_savedmodel_dir #该参数表示原生TensorFlow Keras原始模型（savedmodel格式）的存放路径，需要传入绝对路径
-converted_savedmodel_dir #该参数表示转换为TFMM模型（savemodel格式）的存放路径，需要传入绝对路径
-result_path #推理结果保存路径，需要为绝对路径
-net_name #网络名称，本仓库包括VGG16、VGG19、ResNet50
-visible_devices #对于多卡用户，设置程序运行在哪张卡上，默认为 0
-warmup_count #正式推理之前的热身推理次数。初次推理通常需要进行一定的初始化工作，为使推理时统计的性能数据更精确，通常不会计入第一次推理耗时。默认为1。
------------------------------------
-#如下参数只在jit模式时被使用
-
-opt_config #TF2MM模型优化性能选项，目前支持的输入为 [conv_scale_fold,type64to32_conversion] 如果想需要设置多个，用逗号 ',' 隔开
-}
-
-```
-若要在脚本中使用更多的参数，则需在`run_scripts/Infer*.sh`脚本中新增对应的变量，再参照例如`enable_dim_range`的方式传入`classifier_infer.py`.
-  
   
 # 4.快速使用
 下面将详细展示如何在 Cambricon TensorFlow2上完成分类网络的训练与推理。
@@ -143,7 +112,7 @@ opt_config #TF2MM模型优化性能选项，目前支持的输入为 [conv_scale
 # For instance, IMAGE_NAME=tensorflow2-1.12.1-x86_64-ubuntu18.04
 
 IMAGE_NAME=YOUR_DOCKER_IMAGE_NAME
-IMAGE_TAG=latest
+IMAGE_TAG=YOUR_DOCKER_IMAGE_TAG
 
 export MY_CONTAINER="classification_common_network_tensorflow_modelzoo"
 
@@ -286,7 +255,7 @@ pushd "${work_dir}"
 
 source env.sh
 
-horovodrun -np 8 python3 classifier_trainer.py \
+horovodrun -np 8 python3 classifier.py \
     --dataset=imagenet \
     --model_type=densenet201 \
     --mode=train_and_eval \
@@ -312,16 +281,27 @@ popd
 **注意**：使用预训练模型进行finetune训练时，`batch_size`，`np`，`use_amp`等超参需与from_scratch得到该预训练模型的超参一致，否则无法正常训练。
 
 
-### 4.3.2 **一键执行推理脚本**
-为了遍历多种输入规模与精度类型以及推理模式，本仓库还提供了一键执行多种参数配置的脚本：`run_scripts/Infer_${network name}_Multi.sh`，您可根据自己的需求修改该脚本内的`batch_size`，`quant_precision`，完成修改后，按照如下命令运行即可分别以不同的参数与推理模式（eager/jit）推理。
+### 4.3.2 **一键执行推理脚本**  
+
+本仓库提供了常用分类网络的推理脚本：`run_scripts/Infer_${network_name}_*.sh`，您可根据自己的需求修改该脚本内的`batch_size`，`use_amp`，并根据您的本地实际路径，修改`../env.sh`内相关的预训练模型(如`VGG16_CKPT`，`VGG19_CKPT`)路径。完成修改后，按照如下命令运行即可分别以不同的参数推理。
 
 目前支持的精度类型与推理模式组合以及运行环境如下所示：
 
 |Models  | Framework  | Supported MLU   | Supported Data Precision   | Eager Support| RUN |
 |----- | ----- | ----- | ----- | ----- | ----- | 
-|ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager| bash Infer_ResNet50_Multi.sh |
-|Vgg16   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager| bash Infer_Vgg16_Multi.sh |
-|Vgg19   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager| bash Infer_Vgg19_Multi.sh |
+|ResNet18   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_ResNet18_Eager_Float32_Bsz_128.sh |
+|ResNet18   | TensorFlow2  | MLU370-S4/X4/X8  | FP16   | Eager| bash Infer_ResNet18_Eager_AMP_Bsz_128.sh |
+|ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_ResNet50_Eager_Float32_Bsz_128.sh |
+|ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP16   | Eager| bash Infer_ResNet50_Eager_AMP_Bsz_128.sh |
+|ResNet101   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_ResNet101_Eager_Float32_Bsz_128.sh |
+|ResNet101   | TensorFlow2  | MLU370-S4/X4/X8  | FP16   | Eager| bash Infer_ResNet101_Eager_AMP_Bsz_128.sh |
+|Vgg16   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_Vgg16_Eager_Float32_Bsz_128.sh |
+|Vgg16   | TensorFlow2  | MLU370-S4/X4/X8  | FP16   | Eager| bash Infer_Vgg16_Eager_AMP_Bsz_128.sh |
+|Vgg19   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_Vgg19_Eager_Float32_Bsz_128.sh |
+|Vgg19   | TensorFlow2  | MLU370-S4/X4/X8  | FP16   | Eager| bash Infer_Vgg19_Eager_AMP_Bsz_128.sh |
+|Densenet201   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_Densenet201_Eager_Float32_Bsz_64.sh |
+|Densenet201   | TensorFlow2  | MLU370-S4/X4/X8  | FP16   | Eager| bash Infer_Densenet201_Eager_AMP_Bsz_64.sh |
+
 
 # 5.结果展示
 
@@ -344,6 +324,7 @@ Vgg19 | 8  | 0.6934 | 0.6957
 
 # 7. Release_Notes
 @TODO
+
 
 
 
