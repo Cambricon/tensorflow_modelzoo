@@ -9,9 +9,7 @@
 * [2.模型支持情况](#2-模型支持情况)
   * [2.1训练模型支持情况](#21-训练模型支持情况)
   * [2.2推理模型支持情况](#22-推理模型支持情况)
-* [3.默认参数说明](#3-默认参数说明)
-  * [3.1模型训练参数说明](#31-模型训练参数说明)
-  * [3.2模型推理参数说明](#32-模型推理参数说明)
+* [3.模型训练与推理参数说明](#3-模型训练与推理参数说明)
 * [4.快速使用](#4-快速使用)
   * [4.1依赖项检查](#41-依赖项检查)
   * [4.2环境准备](#42-环境准备)
@@ -36,19 +34,18 @@ ResNet50 | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested | Yes |
 
 ## 2.2 **推理模型支持情况**
 
-Models  | Framework  | Supported MLU   | Supported Data Precision  | Jit/Eager Support
+Models  | Framework  | Supported MLU   | Supported Data Precision  | Eager Support
 ----- | ----- | ----- | ----- | ----- |
-ResNet50 | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32  | Jit & Eager
+ResNet50 | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32  | Eager
 
-注意，此处`Jit`表示使用`TFMM`的方式进行推理，即使用`TensorFlow2-MagicMind`作为底层实现后端进行推理。`Eager`则表示使用`CNNL`进行推理。
+注意，此处`Eager`表示使用`CNNL`进行推理。
 
-# 3. 默认参数说明
-
-## 3.1 **模型训练参数说明**
+# 3. 模型训练与推理参数说明
 
 | 参数 | 作用 | 默认值 |
 |------|------|------|
-| batch_size | 更改训练的batch_size | 128 |
+| batch_size | 训练或推理时使用的batch_size | 128 |
+| mode | 指定模型运作模式，可选值为："train_and_eval"，"train"，"eval" | train_and_eval |
 | model_dir | 指向保存checkpoint的路径 | ./mlu_model |
 | data_dir | 指向数据集的路径 | \ |
 | train_epochs | 更改训练的epoch数目 | 90 |
@@ -56,41 +53,8 @@ ResNet50 | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32  | Jit & Eager
 | use_profiler | 为True则开启tensorboard | False |
 | use_amp | 控制是否使用amp进行混合精度训练 | False |
 | enable_xla | 是否使能xla | False |
+| checkpoint_dir | 存有checkpoint的目录，推理或finetune时使用 | ./checkpoint_dir |
 
-## 3.2 **模型推理参数说明**
-
-## 3.2.1 **模型推理常用参数说明**
-推理的公共参数大都在`tensorflow_modelzoo/tensorflow2/built-in/tools/infer_flags.py`内，非推理独有的参数则在`models/resnet/common.py`内。程序运行时会解析并读取`infer_flags.py`的所有参数。
-大部分参数提供了默认值，这些参数的详细含义将在稍后给出。
-我们根据常用的参数组合，在`run_scripts/`下提供了若干个常用的脚本，如`infer_run_eager_fp32_bsz_128.sh`，`infer_run_jit_fp32_bsz_128.sh`，在使用这些脚本之前，您需要根据当前环境修改如下常用参数：
-
-```bash
-data_dir #推理数据集路径，常用imagenet数据集，该数据集的目录结构需按照下文中的[数据集准备]一节的要求布置。
-run_eagerly #是否使用eager模式进行推理。0表示不使用，1表示使用。默认为0。非eager模式也称为jit模式，即使用TFMM（TensorFlow2-MagicMind）进行推理，eager模式即基于TensorFlow框架的推理。支持外界直接传参。
-batch_size #推理时的batch大小，默认为128。支持外界直接传参。
-native_savedmodel_dir #该参数表示原生TensorFlow Keras原始模型（savedmodel格式）的存放路径，需要传入绝对路径
-converted_savedmodel_dir #该参数表示转换为TFMM模型（savemodel格式）的存放路径，需要传入绝对路径
-result_path #推理结果保存路径，需要为绝对路径
-net_name #网络名称，本仓库为ResNet50
-quant_precision #推理精度类型，默认为fp32，可选值为[fp16,fp32]其中之一。支持外界直接传参。
-
-```
-
-
-
-## 3.2.2 **模型推理其他参数说明**
-除了上述常用参数之外，还有如下参数可供使用与修改：
-```bash
-visible_devices #对于多卡用户，设置程序运行在哪张卡上，默认为 0
-warmup_count #正式推理之前的热身推理次数。初次推理通常需要进行一定的初始化工作，为使推理时统计的性能数据更精确，通常不会计入第一次推理耗时。默认为1。
------------------------------------
-#如下参数只在jit模式时被使用
-enable_dim_range #默认为 1，该参数仅在jit模式下有效。TFMM支持同一份模型使用不同的输入形状进行推理，当模型输入在某些维度长度可变时（例如batch,height,width,channel中的batch可变），开启该选项后可使推理性能达到更优。关于该参数更具体的解释与使用请参阅Cambricon-TensorFlow-MagicMind用户手册。
-opt_config #TF2MM模型优化性能选项，目前支持的输入为 [conv_scale_fold,type64to32_conversion] 如果想需要设置多个，用逗号 ',' 隔开
-}
-
-```
-若要在脚本中使用更多的参数，则需在`run_scripts/infer*.sh`脚本中新增对应的变量，再参照例如`enable_dim_range`的方式传入`resnet_infer.py`.
 
 # 4. **快速使用**
 下面将详细展示如何在 Cambricon TensorFlow2上完成ResNet50的训练与推理。
@@ -126,7 +90,7 @@ opt_config #TF2MM模型优化性能选项，目前支持的输入为 [conv_scale
 IMAGE_NAME=YOUR_IMAGE_NAME
 IMAGE_TAG=YOUR_IMAGE_TAG
 
-export MY_CONTAINER="resnet50_tensorflow_modelzoo"
+export MY_CONTAINER="resnet50_tensorflow2_modelzoo"
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
 echo $num
@@ -154,7 +118,7 @@ fi
 
 **c)下载项目代码**
 
-在容器内使用 `git clone` 下载本仓库代码并进入`tensorflow_modelzoo/tensorflow2/built-in/Classification/resnet50` 目录。
+在容器内使用 `git clone` 下载本仓库代码并进入`tensorflow_modelzoo/tensorflow2/built-in/Classification/resnet50_tf_model_official_v2.8.0/` 目录。
 
 **d)安装模型依赖项**
 
@@ -181,7 +145,7 @@ cd dir_for_docker_build
 # 2. 使用git clone下载tensorflow_modelzoo仓库
 
 # 3. 进入该网络目录
-cd tensorflow_modelzoo/tensorflow2/built-in/Classification/resnet50
+cd tensorflow_modelzoo/tensorflow2/built-in/Classification/resnet50_tf_model_official_v2.8.0
 
 # 4. 参考 前文 (1)基于base docker image的容器环境搭建 a)小节，获取基础镜像，假设镜像名字为cambricon_tensorflow2:vX.Y.Z-x86_64-ubuntu18.04
 
@@ -276,7 +240,7 @@ pushd "${work_dir}"
 
 source env.sh
 
-horovodrun -np 8 python3 resnet_trainer.py \
+horovodrun -np 8 python3 resnet_main.py \
     --model_dir=$model_dir \
     --data_dir=$DATA_DIR \
     --num_mlus=1 \
@@ -314,16 +278,14 @@ popd
 **注意**：使用预训练模型进行finetune训练时，`batch_size`，`np`，`use_amp`等超参需与from_scratch得到该预训练模型的超参一致，否则无法正常训练。
 
 ### 4.3.2 **一键执行推理脚本**
-为了遍历多种输入规模与精度类型以及推理模式，本仓库还提供了一键执行多种参数配置的脚本：`run_scripts/multi_infer_run.sh`，您可根据自己的需求修改该脚本内的`batch_size`，`quant_precision`，完成修改后，在`run_scripts/`目录内按照如下命令运行即可分别以不同的参数与推理模式（eager/jit）推理。
-
-目前支持的精度类型与推理模式组合以及运行环境如下所示：
+本仓库还提供了一键执行推理的脚本：`run_scripts/Infer_ResNet50_Float32_Bsz_128.sh`，您可根据自己的需求修改该脚本内的`batch_size`，`use_amp`，`checkpoint_dir`，完成修改后，在`run_scripts/`目录内按照如下命令运行即可进行推理。
 
 |Models  | Framework  | Supported MLU   | Supported Data Precision   | Eager Support| RUN |
 |----- | ----- | ----- | ----- | ----- | ----- |
-|ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager| bash infer_run_eager_fp32_bsz_128.sh |
-|ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit| bash infer_run_jit_fp32_bsz_128.sh |
-|ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Jit&Eager| bash multi_infer_run.sh |
+|ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_ResNet50_Float32_Bsz_128.sh |
+|ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP16| Eager| bash Infer_ResNet50_AMP_Bsz_128.sh |
 
+**注意：** 实际运行时，需要根据您的本地路径分别修改env.sh内的`SINGLE_FP32_CKPT_DIR`和`SINGLE_AMP_CKPT_DIR`的值，随后再运行`Infer_ResNet50_Float32_Bsz_128.sh` 与 `Infer_ResNet50_AMP_Bsz_128.sh`。
 
 # 5. **结果展示**
 
@@ -333,15 +295,14 @@ popd
 
 在MLU370-X4单卡上进行推理，推理结果如下：
 
-Models   | Jit/Eager   |  Data Precision|Batch Size  | top1/top5|
+Models   | Eager Support |  Data Precision|Batch Size  | top1/top5|
 ----- | ----- | ----- | ----- | -----
-ResNet50 | Eager |  FP32 | 128 |0.68/0.88
-ResNet50 | Eager |  FP16 | 128 | 0.68/0.88
-ResNet50 | Jit |  FP32 | 128 | 0.68/0.88
-ResNet50 | Jit |  FP16 | 128 | 0.68/0.88
+ResNet50 | Eager |  FP32 | 128 |0.758/0.93
+ResNet50 | Eager |  FP16 | 128 | 0.758/0.93
 
 # 6. 免责声明
 您明确了解并同意，以下链接中的软件、数据或者模型由第三方提供并负责维护。在以下链接中出现的任何第三方的名称、商标、标识、产品或服务并不构成明示或暗示与该第三方或其软件、数据或模型的相关背书、担保或推荐行为。您进一步了解并同意，使用任何第三方软件、数据或者模型，包括您提供的任何信息或个人数据（不论是有意或无意地），应受相关使用条款、许可协议、隐私政策或其他此类协议的约束。因此，使用链接中的软件、数据或者模型可能导致的所有风险将由您自行承担。
 
 # 7. Release_Notes
 @TODO
+

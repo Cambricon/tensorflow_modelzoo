@@ -162,9 +162,7 @@
     "resnet50_cmcc_infer": {
         "directory": "tensorflow2/built-in/Classification/resnet50_tf_model_official_v2.8.0",
         "testcases": [
-            "cd run_scripts/ci;bash infer_run_eager_fp32_bsz_128.sh",
-            "cd run_scripts/ci;bash infer_run_jit_fp32_bsz_128.sh",
-            "cd run_scripts/ci;bash infer_run_jit_fp32_bsz_128.sh -p fp16"
+            "cd run_scripts/ci;bash Infer_ResNet50_Float32.sh"
         ]
     }
 }

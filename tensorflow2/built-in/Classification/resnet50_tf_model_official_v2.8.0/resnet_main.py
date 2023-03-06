@@ -99,6 +99,12 @@ flags.DEFINE_string(
     "you need to set `profiler_dir` to save data",
 )
 
+flags.DEFINE_string(
+    "checkpoint_dir",
+    "./checkpoint_dir",
+    help="Must set checkpoint_dir when finetune or eval,",
+)
+
 
 def build_stats(runnable, time_callback):
     """Normalizes and returns dictionary of stats.
@@ -282,9 +288,17 @@ def run(flags_obj):
     summary_interval = steps_per_loop if flags_obj.enable_tensorboard else None
 
     checkpoint_manager = None
+
+    # added by cambricon:
+    ckpt_path = None
+    if flags_obj.checkpoint_dir is not None:
+        ckpt_path = flags_obj.checkpoint_dir
+    else:
+        ckpt_path = flags_obj.model_dir
+
     checkpoint_manager = tf.train.CheckpointManager(
         runnable.checkpoint,
-        directory=flags_obj.model_dir,
+        directory=ckpt_path,
         max_to_keep=10,
         step_counter=runnable.global_step,
         checkpoint_interval=checkpoint_interval,

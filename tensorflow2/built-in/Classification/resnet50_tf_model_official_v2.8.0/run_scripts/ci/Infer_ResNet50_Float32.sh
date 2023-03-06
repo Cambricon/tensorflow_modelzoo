@@ -1,33 +1,33 @@
 #!/bin/bash
 cur_path=$(pwd)
-work_dir="${cur_path}/../.."
+work_dir="${cur_path}/../../"
 timestamp=$(date +%Y%m%d%H%M)
-model_dir="${work_dir}/resnet50_model_${timestamp}"
+model_dir="${work_dir}/resnet50_model_ci_infer_fp32_${timestamp}"
 
 pushd "${work_dir}"
-set -e
 
 source env.sh
 
-horovodrun -np 4 python3 resnet_main.py \
+python3 resnet_main.py \
     --model_dir=${model_dir} \
+    --checkpoint_dir=${CKPT_DIR} \
     --data_dir=${DATA_DIR} \
-    --mode=train \
     --num_mlus=1 \
     --num_gpus=0 \
+    --mode=eval \
     --distribution_strategy=off \
     --batch_size=128 \
-    --steps_per_loop=1 \
+    --steps_per_loop=312 \
     --train_epochs=90 \
     --use_synthetic_data=False \
     --use_performance=False \
-    --use_amp=True \
-    --use_horovod=True \
+    --use_amp=False \
+    --use_horovod=False \
     --log_steps=1 \
     --run_eagerly=False \
     --enable_checkpoint_and_export=True \
     --base_learning_rate=0.1 \
-    --train_steps=10 \
+    --train_steps=0 \
     --use_profiler=False \
     --enable_tensorboard=False \
     --tf_mlu_thread_mode=mlu_private \
@@ -40,7 +40,6 @@ horovodrun -np 4 python3 resnet_main.py \
     --epochs_between_evals=4 \
     --host_tracer_level=2 \
     --device_tracer_level=1 \
-    --profiler_dir=${model_dir}
-
+    --profiler_dir=${model_dir} \
+    --enable_xla=False
 popd
-
