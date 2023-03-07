@@ -1,7 +1,7 @@
 cur_path=$(pwd)
 work_dir="${cur_path}/.."
 pushd "${work_dir}"
-python centernet_train.py\
+python centernet.py\
         --pipeline_config_path=./models/mlu_centernet_config.config\
        	--model_dir=mlu_model\
        	--checkpoint_dir=./mlu_model\
