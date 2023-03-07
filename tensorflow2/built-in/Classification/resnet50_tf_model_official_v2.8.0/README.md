@@ -138,7 +138,7 @@ if [ 0 -eq $num ];then
      --net=host \
      --privileged=true \
      --cap-add=sys_ptrace \
-     --shm-size="64g" \
+     --shm-size="16g" \
      -v /usr/bin/cnmon:/usr/bin/cnmon \
      -v /data:/data \
      --device=/dev/cambricon_dev0 \
@@ -163,7 +163,7 @@ fi
 pip install -r requirements.txt
 # 安装性能测试工具(可选)
 # 若不开启性能测试（use_performance为False），则无需安装。
-cd ../../tools/record_time/
+cd ../../../../tools/record_time/
 pip install .
 
 ```

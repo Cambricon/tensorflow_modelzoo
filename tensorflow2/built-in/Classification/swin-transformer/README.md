@@ -72,7 +72,7 @@ swin-transformer网络的训练参数在swin-trainer.py中均设置了默认值�
 
 ## 3.2 **模型推理参数说明**
 
-swin-transformer网络的训练参数在swin_infer.py中均设置了默认值，可通过run_scripts中的推理脚本传入相关参数值。
+swin-transformer网络的推理参数在swin_infer.py中均设置了默认值，可通过run_scripts中的推理脚本传入相关参数值。
 常用参数及含义如下表所示，更多参数可参考swin_infer.py。
 
 | 参数 | 作用 | 默认值 |
@@ -129,7 +129,7 @@ if [ 0 -eq $num ];then
      --net=host \
      --privileged=true \
      --cap-add=sys_ptrace \
-     --shm-size="64g" \
+     --shm-size="16g" \
      -v /usr/bin/cnmon:/usr/bin/cnmon \
      -v /data:/data \
      --device=/dev/cambricon_dev0 \
@@ -153,7 +153,7 @@ fi
 pip install -r requirements.txt
 # 安装性能测试工具(可选)
 # 若不开启性能测试（use_performance为False），则无需安装。
-cd ../../tools/record_time/
+cd ../../../../tools/record_time/
 pip install .
 
 ```

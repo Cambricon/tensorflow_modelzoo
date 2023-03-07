@@ -83,7 +83,7 @@ YOLOv3 | TensorFlow1  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 IMAGE_NAME=YOUR_IMAGE_NAME
 IMAGE_TAG=YOUR_IMAGE_TAG
 
-export MY_CONTAINER="tensorflow_modelzoo"
+export MY_CONTAINER="tf1_yolov3_tensorflow_modelzoo"
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
 echo $num
@@ -95,7 +95,7 @@ if [ 0 -eq $num ];then
      --net=host \
      --privileged=true \
      --cap-add=sys_ptrace \
-     --shm-size="64g" \
+     --shm-size="16g" \
      -v /usr/bin/cnmon:/usr/bin/cnmon \
      -v /data:/data \
      --device=/dev/cambricon_dev0 \
@@ -120,7 +120,7 @@ fi
 pip install -r requirements.txt
 # 安装性能测试工具(可选)
 # 若不开启性能测试（use_performance为False），则无需安装。
-cd ../../../../tensorflow2/built-in/tools/record_time/
+cd ../../../../tools/record_time/
 pip install .
 
 ```

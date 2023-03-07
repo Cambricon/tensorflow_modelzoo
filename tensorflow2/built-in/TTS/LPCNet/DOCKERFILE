@@ -8,6 +8,6 @@ WORKDIR /home/tensorflow_modelzoo/tensorflow2/built-in/TTS/LPCNet/
 
 RUN apt-get update && \
  apt-get install -y autoconf automake libtool sox ffmpeg && \
- cd ../../tools/record_time && pip install . \
+ cd ../../../../tools/record_time && pip install . \
  && cd - && cd models && ./autogen.sh && ./configure && make 
  

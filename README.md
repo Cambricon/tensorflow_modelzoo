@@ -39,6 +39,12 @@ CV：
 | [UNet_3D_Medical](tensorflow/built-in/Segmentation/UNet_3D_Medical) | TensorFlow1|FP32&&AMP |YES| CNNL | 
 | [UNet_Industrial](tensorflow/built-in/Segmentation/UNet_Industrial) | TensorFlow1|FP32&&AMP |YES| CNNL | 
 
+Graph Convolutional Network
+
+| MODELS                                         | FRAMEWORK   | Train Mode | Distributed Train | Infer  Mode |
+|------------------------------------------------|-------------|------------|-------------------|-------------| 
+| [GraphSAGE](tensorflow/built-in/GCN/GraphSAGE) | Tensorflow1 | FP32&&AMP  | NO                | CNNL        |
+
 NLP:
 
 | MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
@@ -46,22 +52,24 @@ NLP:
 | [transformer](tensorflow2/built-in/NaturalLanguageProcessing/transformer) | TensorFlow2|FP32 | YES | TFMM/CNNL |
 | [google_bert](tensorflow2/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow2|FP32&&AMP | YES | TFMM/CNNL | 
 | [BERT_ngc](tensorflow/built-in/NaturalLanguageProcessing/BERT_ngc) | TensorFlow1|FP32&&AMP | YES | CNNL |
+| [BERT_CRF](tensorflow/built-in/NaturalLanguageProcessing/bert/bert_crf) | TensorFlow1|FP32&&AMP | YES | CNNL |
 | [transformer_estimator](tensorflow/built-in/NaturalLanguageProcessing/Transformer/transformer_estimator/) | TensorFlow1|FP32/AMP | YES | CNNL |
+| [google_bert(tf1)](tensorflow/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow1|FP32&&AMP | YES | CNNL | 
 
 Recommendation:
 
 | MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
 | [DLRM](tensorflow2/built-in/Recommendation/DLRM) | TensorFlow2|FP32&&AMP | YES | CNNL|
+| [DeepFM](tensorflow/built-in/Recommendation/DeepFM) | TensorFlow1|FP32&&AMP | YES | CNNL|
 
 Speech:
 
 | MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
-| [Conformer](tensorflow2/built-in/ASR/Conformer) | TensorFlow2|FP32&&AMP|YES| CNNL |
-| [LPCNet](tensorflow2/built-in/TTS/LPCNet) | TensorFlow2|FP32&&AMP|YES| CNNL |
-
-
+| [Conformer](tensorflow2/built-in/ASR/Conformer) | TensorFlow2|FP32&&AMP|YES| CNNL | 
+| [LPCNet](tensorflow2/built-in/TTS/LPCNet) | TensorFlow2|FP32&&AMP|YES| CNNL | 
+| [Tacotron2](tensorflow/built-in/TTS/Tacotron-2) | TensorFlow1|FP32&&AMP|YES| CNNL | 
 
 
 ## issues/wiki/forum 跳转链接

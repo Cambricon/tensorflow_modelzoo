@@ -138,6 +138,15 @@
             "cd run_scripts/ci;bash Bert_Train_1MLU.sh",
             "cd run_scripts/ci;bash Bert_Train_Horovod_Float32.sh",
             "cd run_scripts/ci;bash Bert_Train_Horovod_AMP.sh",
+	    "cd run_scripts/ci;bash infer_run_eager_bert.sh"
+        ]
+    },
+    "google_bert": {
+        "directory": "tensorflow/built-in/NaturalLanguageProcessing/google_bert",
+        "testcases": [
+            "cd run_scripts/ci;bash Bert_Train_1MLU.sh",
+            "cd run_scripts/ci;bash Bert_Train_Horovod_Float32.sh",
+            "cd run_scripts/ci;bash Bert_Train_Horovod_AMP.sh",
 	        "cd run_scripts/ci;bash infer_run_eager_bert.sh"
         ]
     },
@@ -147,6 +156,49 @@
             "cd run_scripts/ci;bash Horovod_Retinanet_AMP_4MLUs.sh",
             "cd run_scripts/ci;bash Horovod_Retinanet_Float32_4MLUs.sh",
             "cd run_scripts/ci;bash Retinanet_Float32_1E_1MLU.sh"
+        ]
+    },
+    "tacotron2": {
+        "directory": "tensorflow/built-in/TTS/Tacotron-2",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_Tacotron2_AMP_4MLUs.sh; rm -rf logs-Tacotron-2",
+            "cd run_scripts/ci;bash Horovod_Tacotron2_Float32_4MLUs.sh; rm -rf logs-Tacotron-2",
+            "cd run_scripts/ci;bash Tacotron2_Float32_1MLU.sh; rm -rf logs-Tacotron-2",
+            "cd run_scripts/ci;bash Infer_Tacotron2_Float32_1MLU.sh"
+	]
+    },
+    "GraphSAGE": {
+        "directory": "tensorflow/built-in/GCN/GraphSAGE",
+        "testcases": [
+            "cd run_scripts/ci;bash GraphSAGE_Train_1MLU_Float32.sh",
+	    "cd run_scripts/ci;bash GraphSAGE_Train_1MLU_AMP.sh",
+            "cd run_scripts/ci;bash infer_run_eager_GraphSAGE.sh"
+        ]
+    },
+    "transformer_keras": {
+        "directory": "tensorflow/built-in/NaturalLanguageProcessing/Transformer/transformer_keras",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_Transformer_Float32_80S_4MLUs.sh",
+            "cd run_scripts/ci;bash Transformer_Float32_80S_1MLU.sh",
+            "cd run_scripts/ci;bash Infer_Transformer_Float32_1MLU.sh"
+        ]
+    },
+    "deepfm": {
+        "directory": "tensorflow/built-in/Recommendation/DeepFM",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_DeepFM_AMP_30E_4MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_DeepFM_Float32_30E_4MLUs.sh",
+            "cd run_scripts/ci;bash DeepFM_Float32_30E_1MLU.sh"
+	]
+    },
+
+    "bert_crf": {
+        "directory": "tensorflow/built-in/NaturalLanguageProcessing/bert/bert_crf",
+        "testcases": [
+            "cd run_scripts/ci;bash Horovod_BERT_CRF_Float32_1E_4MLUs.sh",
+            "cd run_scripts/ci;bash Horovod_BERT_CRF_AMP_1E_4MLUs.sh",
+            "cd run_scripts/ci;bash BERT_CRF_Float32_1E_1MLU.sh",
+            "cd run_scripts/ci;bash Infer_BERT_CRF_Float32.sh"
         ]
     }
 }

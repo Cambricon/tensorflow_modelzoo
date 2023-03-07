@@ -3,4 +3,4 @@ FROM ${FROM_IMAGE_NAME}
 COPY ./tensorflow_modelzoo /home/tensorflow_modelzoo
 WORKDIR /home/tensorflow_modelzoo/tensorflow2/built-in/NaturalLanguageProcessing/google_bert/
 
-RUN pip install sentencepiece -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install sentencepiece -i https://pypi.tuna.tsinghua.edu.cn/simple && cd ../../../../tools/record_time && pip install .

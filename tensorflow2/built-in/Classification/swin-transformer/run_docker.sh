@@ -6,7 +6,7 @@
 IMAGE_NAME=YOUR_DOCKER_IMAGE_NAME
 IMAGE_TAG=YOUR_DOCKER_IMAGE_TAG
 
-export MY_CONTAINER="tensorflow_modelzoo"
+export MY_CONTAINER="swin_tansformer_tensorflow_modelzoo"
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
 echo $num
@@ -18,7 +18,7 @@ if [ 0 -eq $num ];then
      --net=host \
      --privileged=true \
      --cap-add=sys_ptrace \
-     --shm-size="64g" \
+     --shm-size="16g" \
      -v /usr/bin/cnmon:/usr/bin/cnmon \
      -v /data:/data \
      --device=/dev/cambricon_dev0 \

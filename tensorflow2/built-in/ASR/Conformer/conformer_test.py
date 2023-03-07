@@ -19,7 +19,6 @@ from absl import flags
 
 cur_path = os.getcwd()
 models_path = cur_path + "/models/"
-sys.path.append(cur_path + "../../tools/record_time/")
 sys.path.append(models_path)
 
 from tensorflow_asr.utils import env_util

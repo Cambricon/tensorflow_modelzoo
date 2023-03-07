@@ -96,7 +96,7 @@ if [ 0 -eq $num ];then
      --net=host \
      --privileged=true \
      --cap-add=sys_ptrace \
-     --shm-size="64g" \
+     --shm-size="16g" \
      -v /usr/bin/cnmon:/usr/bin/cnmon \
      -v /data:/data \
      --device=/dev/cambricon_dev0 \
@@ -121,7 +121,7 @@ fi
 #安装依赖库, 需要有root权限进行apt install
 pip install -r requirements.txt
 # 安装性能测试工具，若不设置use_performance=True，则无需安装
-cd ../../tools/record_time/
+cd ../../../../tools/record_time/
 pip install .
 ```
 

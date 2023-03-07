@@ -1,0 +1,1 @@
+export DATA_DIR=/data/tensorflow/training/datasets/GraphSage_dataset/ppi
