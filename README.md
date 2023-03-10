@@ -13,15 +13,15 @@ CV：
 
 | MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
-| [resnet50_tf_model_official_v2.8.0](tensorflow2/built-in/Classification/resnet50_tf_model_official_v2.8.0) | TensorFlow2|FP32&&AMP|YES| TFMM/CNNL |
-| [vgg16](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP |YES| TFMM/CNNL | 
-| [vgg19](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL| 
-| [resnet18](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL | 
-| [resnet50](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL | 
-| [resnet101](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL | 
-| [densenet201](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL | 
+| [resnet50_tf_model_official_v2.8.0](tensorflow2/built-in/Classification/resnet50_tf_model_official_v2.8.0) | TensorFlow2|FP32&&AMP|YES| CNNL |
+| [vgg16](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP |YES| CNNL | 
+| [vgg19](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL| 
+| [resnet18](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL | 
+| [resnet50](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL | 
+| [resnet101](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL | 
+| [densenet201](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL | 
 | [swin-transformer](tensorflow2/built-in/Classification/swin-transformer/) | TensorFlow2|FP32&&AMP |YES| CNNL | 
-| [centernet](tensorflow2/built-in/Detection/centernet) | TensorFlow2|FP32&&AMP | YES|TFMM/CNNL| 
+| [centernet](tensorflow2/built-in/Detection/centernet) | TensorFlow2|FP32&&AMP | YES|CNNL| 
 | [Resnet50-v1.5](tensorflow/built-in/Classification/Resnet50-v1.5) | TensorFlow1|FP32&&AMP|YES|CNNL | 
 | [ResNet18](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL | 
 | [ResNet50](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL | 
@@ -49,8 +49,8 @@ NLP:
 
 | MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
-| [transformer](tensorflow2/built-in/NaturalLanguageProcessing/transformer) | TensorFlow2|FP32 | YES | TFMM/CNNL |
-| [google_bert](tensorflow2/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow2|FP32&&AMP | YES | TFMM/CNNL | 
+| [transformer](tensorflow2/built-in/NaturalLanguageProcessing/transformer) | TensorFlow2|FP32 | YES | CNNL |
+| [google_bert](tensorflow2/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow2|FP32&&AMP | YES | CNNL | 
 | [BERT_ngc](tensorflow/built-in/NaturalLanguageProcessing/BERT_ngc) | TensorFlow1|FP32&&AMP | YES | CNNL |
 | [BERT_CRF](tensorflow/built-in/NaturalLanguageProcessing/bert/bert_crf) | TensorFlow1|FP32&&AMP | YES | CNNL |
 | [transformer_estimator](tensorflow/built-in/NaturalLanguageProcessing/Transformer/transformer_estimator/) | TensorFlow1|FP32/AMP | YES | CNNL |
@@ -75,6 +75,21 @@ Speech:
 ## issues/wiki/forum 跳转链接
 
 ## contrib 指引和链接
+
+## Change Log
+---------- 2023年3月31日 ---------- 
+
+将tensorflow2/built-in 内使用 TFMM 进行推理的网络改为使用 CNNL 进行推理，涉及到的网络如下：
+[vgg16](tensorflow2/built-in/Classification/common_networks) 
+[vgg19](tensorflow2/built-in/Classification/common_networks) 
+[resnet18](tensorflow2/built-in/Classification/common_networks) 
+[resnet50](tensorflow2/built-in/Classification/common_networks) 
+[resnet101](tensorflow2/built-in/Classification/common_networks) 
+[densenet201](tensorflow2/built-in/Classification/common_networks)
+[centernet](tensorflow2/built-in/Detection/centernet)
+[transformer](tensorflow2/built-in/NaturalLanguageProcessing/transformer) 
+[google_bert](tensorflow2/built-in/NaturalLanguageProcessing/google_bert)
+
 
 ## LICENSE
 
