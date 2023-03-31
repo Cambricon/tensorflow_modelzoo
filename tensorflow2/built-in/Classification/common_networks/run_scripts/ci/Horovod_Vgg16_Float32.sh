@@ -9,7 +9,7 @@ pushd "${work_dir}"
 
 source env.sh
 
-horovodrun -np 4 python3 classifier_trainer.py \
+horovodrun -np 4 python3 classifier.py \
     --dataset=imagenet \
     --model_type=vgg16 \
     --mode=train_and_eval \

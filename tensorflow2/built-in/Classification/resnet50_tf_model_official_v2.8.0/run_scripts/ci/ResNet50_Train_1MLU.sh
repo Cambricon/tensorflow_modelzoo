@@ -8,9 +8,9 @@ pushd "${work_dir}"
 set -e
 source env.sh
 
-python3 resnet_trainer.py \
-    --model_dir=$model_dir \
-    --data_dir=$DATA_DIR \
+python3 resnet_main.py \
+    --model_dir=${model_dir} \
+    --data_dir=${DATA_DIR} \
     --num_mlus=1 \
     --mode=train \
     --num_gpus=0 \
@@ -40,5 +40,5 @@ python3 resnet_trainer.py \
     --epochs_between_evals=4 \
     --host_tracer_level=2 \
     --device_tracer_level=1 \
-    --profiler_dir=$model_dir
+    --profiler_dir=${model_dir} 
 popd
