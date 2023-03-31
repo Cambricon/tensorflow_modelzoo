@@ -17,11 +17,11 @@ horovodrun -np 8 python transformer_main.py \
  --mode=train \
  --batch_size=4096 \
  --max_length=64 \
- --bleu_source=$bleu_src \
- --bleu_ref=$bleu_ref \
- --data_dir=$DATA_DIR \
- --vocab_file=$vocab_file \
- --model_dir=$model_dir \
+ --bleu_source=${bleu_src} \
+ --bleu_ref=${bleu_ref} \
+ --data_dir=${DATA_DIR} \
+ --vocab_file=${vocab_file} \
+ --model_dir=${model_dir}\
  --num_gpus=0 \
  --num_mlus=1 \
  --distribution_strategy=off \

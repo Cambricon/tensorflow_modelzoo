@@ -1,7 +1,7 @@
 cur_path=$(pwd)
 work_dir="${cur_path}/.."
 pushd "${work_dir}"
-horovodrun -np 8 python centernet_train.py\
+horovodrun -np 8 python centernet.py\
     --mode=train\
     --num_workers=1\
     --checkpoint_every_n=1000\

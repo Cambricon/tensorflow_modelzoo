@@ -3,7 +3,7 @@ set -e
 cur_path=$(pwd)
 work_dir="${cur_path}/../.."
 pushd "${work_dir}"
-horovodrun -np 4 python centernet_train.py\
+horovodrun -np 4 python centernet.py\
     --mode=train\
     --num_workers=1\
     --checkpoint_every_n=1000\
