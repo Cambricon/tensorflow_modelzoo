@@ -288,10 +288,9 @@ def check_or_make_ckpt_dir(FLAGS, config):
             os.makedirs(ckpt_head)
 
 
-def construct_model(FLAGS, config, speech_featurizer, text_featurizer, bsz_tuple):
+def construct_model(FLAGS, config, speech_featurizer, text_featurizer, bsz_tuple, strategy_scope):
     batch_size = bsz_tuple[0]
     global_batch_size = bsz_tuple[1]
-    strategy_scope = get_strategy_scope(FLAGS)
     if not FLAGS.static_length:
         speech_featurizer.reset_length()
         text_featurizer.reset_length()
@@ -358,7 +357,7 @@ def get_callbacks(FLAGS, config):
     return callbacks
 
 
-def train_model(FLAGS, config):
+def train_model(FLAGS, config, strategy_scope):
     speech_featurizer, text_featurizer = get_featurizer(FLAGS, config)
     batch_size = get_batch_size(FLAGS, config)
     global_batch_size = get_global_batch_size(FLAGS, batch_size)
@@ -380,7 +379,7 @@ def train_model(FLAGS, config):
     )
 
     conformer = construct_model(
-        FLAGS, config, speech_featurizer, text_featurizer, bsz_tuple
+        FLAGS, config, speech_featurizer, text_featurizer, bsz_tuple, strategy_scope
     )
 
     # prepare for train
@@ -421,6 +420,8 @@ def main(argv):
 
     tf.config.optimizer.set_experimental_options({"auto_mixed_precision": FLAGS.mxp})
     config = get_config(FLAGS)
+    strategy_scope = get_strategy_scope(FLAGS)
+
     from tensorflow_asr.datasets import asr_dataset
     from tensorflow_asr.featurizers import speech_featurizers, text_featurizers
     from tensorflow_asr.models.transducer.conformer import Conformer
@@ -432,7 +433,7 @@ def main(argv):
     global Conformer
     global TransformerSchedule
     check_or_make_ckpt_dir(FLAGS, config)
-    train_model(FLAGS, config)
+    train_model(FLAGS, config, strategy_scope)
 
 
 if __name__ == "__main__":
