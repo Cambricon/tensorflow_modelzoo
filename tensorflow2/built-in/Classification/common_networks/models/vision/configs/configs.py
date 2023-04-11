@@ -24,7 +24,6 @@ from models.vision import dataset_factory
 from models.vision.configs import base_configs
 from models.vision.efficientnet import efficientnet_config
 from models.vision.resnet import resnet_config
-from models.vision.inceptionv2 import inceptionv2_config
 from models.vision.inceptionv3 import inceptionv3_config
 
 
@@ -154,36 +153,6 @@ class ResNet18_101_ImagenetConfig(base_configs.ExperimentConfig):
   model: base_configs.ModelConfig = resnet_config.ResNet18_101_ModelConfig()
 
 @dataclasses.dataclass
-class InceptionV2ImagenetConfig(base_configs.ExperimentConfig):
-  """Base configuration to train resnet-50 on ImageNet."""
-  export: base_configs.ExportConfig = base_configs.ExportConfig()
-  runtime: base_configs.RuntimeConfig = base_configs.RuntimeConfig()
-  train_dataset: dataset_factory.DatasetConfig = \
-      dataset_factory.ImageNetConfig(split='train',
-                                     one_hot=False,
-                                     mean_subtract=True,
-                                     standardize=True)
-  validation_dataset: dataset_factory.DatasetConfig = \
-      dataset_factory.ImageNetConfig(split='validation',
-                                     one_hot=False,
-                                     mean_subtract=True,
-                                     standardize=True)
-  train: base_configs.TrainConfig = base_configs.TrainConfig(
-      resume_checkpoint=True,
-      epochs=100,
-      steps=None,
-      callbacks=base_configs.CallbacksConfig(enable_checkpoint_and_export=True,
-                                             enable_tensorboard=True),
-      metrics=['accuracy', 'top_5'],
-      time_history=base_configs.TimeHistoryConfig(log_steps=100),
-      tensorboard=base_configs.TensorboardConfig(track_lr=True,
-                                                 write_model_weights=False))
-  evaluation: base_configs.EvalConfig = base_configs.EvalConfig(
-      epochs_between_evals=1,
-      steps=None)
-  model: base_configs.ModelConfig = inceptionv2_config.InceptionV2ModelConfig()
-
-@dataclasses.dataclass
 class InceptionV3ImagenetConfig(base_configs.ExperimentConfig):
   """Base configuration to train resnet-50 on ImageNet."""
   export: base_configs.ExportConfig = base_configs.ExportConfig()
@@ -220,11 +189,8 @@ def get_config(model: str, dataset: str) -> base_configs.ExperimentConfig:
           'efficientnet': EfficientNetImageNetConfig(),
           'resnet50': ResNetImagenetConfig(),
           'densenet201': DenseNetImagenetConfig(),
-          'vgg16': ResNet18_101_ImagenetConfig(),
           'vgg19': ResNet18_101_ImagenetConfig(),
-          'resnet18': ResNet18_101_ImagenetConfig(),
           'resnet101': ResNet18_101_ImagenetConfig(),
-          'inceptionv2': InceptionV2ImagenetConfig(),
           'inceptionv3': InceptionV3ImagenetConfig(),
       }
   }

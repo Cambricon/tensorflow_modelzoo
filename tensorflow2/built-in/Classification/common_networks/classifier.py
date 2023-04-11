@@ -43,11 +43,9 @@ from models.vision.configs import configs
 from models.vision.efficientnet import efficientnet_model
 from models.vision.resnet import common
 from models.vision.resnet import resnet_model
-from models.vision.inceptionv2 import inceptionv2_model
 from models.vision.inceptionv3 import inceptionv3_model
 from models.vision.vgg import vgg_model
 from models.vision.densenet import densenet
-from models.vision.resnet import resnet18_model
 from models.vision.resnet import resnet101_model
 
 
@@ -57,11 +55,8 @@ def get_models() -> Mapping[str, tf.keras.Model]:
       'efficientnet': efficientnet_model.EfficientNet.from_name,
       'resnet50': resnet_model.resnet50,
       'densenet201': densenet.DenseNet201,
-      'vgg16': vgg_model.vgg16,
       'vgg19': vgg_model.vgg19,
       'resnet101': resnet101_model.resnet101,
-      'resnet18': resnet18_model.resnet18,
-      'inceptionv2': inceptionv2_model.inceptionv2,
       'inceptionv3': inceptionv3_model.inceptionv3,
   }
 
@@ -274,7 +269,7 @@ def initialize(params: base_configs.ExperimentConfig,
   keras_utils.set_session_config(enable_xla=params.runtime.enable_xla)
   performance.set_mixed_precision_policy(dataset_builder.dtype,
                                          get_loss_scale(params))
-  if tf.config.list_physical_devices('GPU') and params.model.model_name not in ['densenet201', 'inceptionv2', 'inceptionv3']:
+  if tf.config.list_physical_devices('GPU') and params.model.model_name not in ['densenet201', 'inceptionv3']:
     data_format = 'channels_first'
   else:
     data_format = 'channels_last'
