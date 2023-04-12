@@ -67,7 +67,6 @@ Vgg19 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 | model_dir | 指向保存checkpoint的路径 |
 | data_dir | 指向数据集的路径 |
 | epochs | 更改训练的epoch数目 |
-| use_profiler | 为True则开启tensorboard |
 | use_amp | 控制是否使用amp进行混合精度训练或验证 |
 | skip_eval | 是否跳过推理阶段 |
 | finetune_checkpoint | 预训练模型的路径。若进行推理时，此参数指向用于推理的已训练好的checkpoint文件 |
