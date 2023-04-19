@@ -4,10 +4,10 @@ from __future__ import print_function
 
 import os
 import tensorflow as tf
-from tensorflow.python.keras import backend
-from tensorflow.python.keras import initializers
-from tensorflow.python.keras import models
-from tensorflow.python.keras import regularizers
+from tensorflow.keras import backend
+from tensorflow.keras import initializers
+from tensorflow.keras import models
+from tensorflow.keras import regularizers
 from models.vision.resnet import imagenet_preprocessing
 
 L2_WEIGHT_DECAY = 1e-4
@@ -41,7 +41,7 @@ def block1(x, filters, kernel_size=3, stride=1,
     bn_axis = 3 if backend.image_data_format() == 'channels_last' else 1
 
     if conv_shortcut is True:
-        shortcut = layers.Conv2D(4 * filters, 1, strides=stride, 
+        shortcut = layers.Conv2D(4 * filters, 1, strides=stride,
                                  padding='same',use_bias=False, kernel_initializer='he_normal',
                                  kernel_regularizer=_gen_l2_regularizer(use_l2_regularizer),
                                  name=name + '_0_conv')(x)
@@ -66,7 +66,7 @@ def block1(x, filters, kernel_size=3, stride=1,
                                   name=name + '_2_bn')(x)
     x = layers.Activation('relu', name=name + '_2_relu')(x)
 
-    x = layers.Conv2D(4 * filters, 1, 
+    x = layers.Conv2D(4 * filters, 1,
                       padding='same',use_bias=False, kernel_initializer='he_normal',
                       kernel_regularizer=_gen_l2_regularizer(use_l2_regularizer),
                       name=name + '_3_conv')(x)

@@ -29,10 +29,10 @@ from __future__ import print_function
 
 import tensorflow as tf
 
-from tensorflow.python.keras import backend
-from tensorflow.python.keras import initializers
-from tensorflow.python.keras import models
-from tensorflow.python.keras import regularizers
+from tensorflow.keras import backend
+from tensorflow.keras import initializers
+from tensorflow.keras import models
+from tensorflow.keras import regularizers
 from models.vision.resnet import imagenet_preprocessing
 
 layers = tf.keras.layers

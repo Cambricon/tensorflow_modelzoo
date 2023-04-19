@@ -1,4 +1,5 @@
 SoundFile==0.10.3.post1
+tensorflow-metadata==1.12.0
 tensorflow_datasets==4.4.0
 nltk==3.6.2
 numpy>=1.19.5

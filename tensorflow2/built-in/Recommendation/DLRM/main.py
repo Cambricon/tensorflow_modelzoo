@@ -161,8 +161,8 @@ def init_tf(FLAGS):
         tf.config.experimental.set_visible_devices(devs[hvd.local_rank()], dev)
 
     if FLAGS.amp:
-        policy = tf.keras.mixed_precision.experimental.Policy("mixed_float16", loss_scale=FLAGS.loss_scale)
-        tf.keras.mixed_precision.experimental.set_policy(policy)
+        policy = tf.keras.mixed_precision.Policy("mixed_float16")
+        tf.keras.mixed_precision.set_global_policy(policy)
 
     tf.config.run_functions_eagerly(FLAGS.run_eagerly)
 

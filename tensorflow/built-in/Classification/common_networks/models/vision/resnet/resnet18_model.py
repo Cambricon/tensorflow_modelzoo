@@ -277,7 +277,7 @@ def resnet18(num_classes,
       stage=2,
       block='b',
       use_l2_regularizer=use_l2_regularizer)
-  
+
   x = conv_block(
       x,
       3, [128, 128],
@@ -290,7 +290,7 @@ def resnet18(num_classes,
       stage=3,
       block='b',
       use_l2_regularizer=use_l2_regularizer)
-  
+
   x = conv_block(
       x,
       3, [256, 256],
@@ -303,7 +303,7 @@ def resnet18(num_classes,
       stage=4,
       block='b',
       use_l2_regularizer=use_l2_regularizer)
-  
+
   x = conv_block(
       x,
       3, [512, 512],
@@ -316,7 +316,7 @@ def resnet18(num_classes,
       stage=5,
       block='b',
       use_l2_regularizer=use_l2_regularizer)
-  
+
   x = layers.GlobalAveragePooling2D()(x)
   x = layers.Dense(
       num_classes,

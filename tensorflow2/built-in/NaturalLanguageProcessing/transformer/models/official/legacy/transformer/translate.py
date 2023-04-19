@@ -110,7 +110,7 @@ def translate_file(model,
       if distribution_strategy:
         for j in range(batch_size - len(lines)):
           lines.append([tokenizer.EOS_ID])
-      batch = tf.keras.preprocessing.sequence.pad_sequences(
+      batch = tf.keras.utils.pad_sequences(
           lines,
           maxlen=params["decode_max_length"],
           dtype="int32",

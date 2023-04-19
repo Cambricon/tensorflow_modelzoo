@@ -20,14 +20,13 @@ from __future__ import print_function
 
 import os
 
-from tensorflow.python.keras import backend
-from tensorflow.python.keras import initializers
-from tensorflow.python.keras import models
-from tensorflow.python.keras import regularizers
-from tensorflow.python.keras import layers
-from tensorflow.python.keras.engine import training
-from tensorflow.python.keras.utils import data_utils
-from tensorflow.python.keras.utils import layer_utils
+from tensorflow import keras
+from tensorflow.keras import backend
+from tensorflow.keras import initializers
+from tensorflow.keras import models
+from tensorflow.keras import regularizers
+from tensorflow.keras import layers
+from tensorflow.keras import utils
 from models.vision import imagenet_tools
 
 
@@ -259,11 +258,11 @@ def VGG19(
   # Ensure that the model takes into account
   # any potential predecessors of `input_tensor`.
   if input_tensor is not None:
-    inputs = layer_utils.get_source_inputs(input_tensor)
+    inputs = utils.get_source_inputs(input_tensor)
   else:
     inputs = img_input
   # Create model.
-  model = training.Model(inputs, x, name='vgg19')
+  model = keras.Model(inputs, x, name='vgg19')
 
   return model
 
