@@ -42,5 +42,6 @@ python swin_trainer.py                 \
       --num_mlus=1                     \
       --num_gpus=0                     \
       --use_amp=True                   \
-      --distribution_strategy=mirrored
+      --distribution_strategy=mirrored \
+      --enable_xla=False
 popd
