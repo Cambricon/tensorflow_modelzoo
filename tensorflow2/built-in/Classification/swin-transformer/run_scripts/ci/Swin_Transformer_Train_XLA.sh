@@ -41,5 +41,5 @@ horovodrun -np 4 python swin_trainer.py   \
          --num_gpus=0                     \
          --use_amp=True                   \
          --distribution_strategy=mirrored \
-         --enable_xla=False
+         --enable_xla=True
 popd

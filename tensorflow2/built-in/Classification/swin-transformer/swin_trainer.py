@@ -204,7 +204,10 @@ def define_classifier_flags():
       'initialize_checkpoint',
       default=None,
       help="Initializer the path of ckpt. " )
-
+    flags.DEFINE_bool(
+      name="enable_xla",
+      default=False,
+      help="Whether to enable XLA auto jit compilation")
 
 def build_model(model_name, pretrained, pretrained_ckpt=None, use_hvd=False, horovod=None):
     img_adjust_layer = tf.keras.layers.Lambda(lambda data:
@@ -226,6 +229,11 @@ def build_model(model_name, pretrained, pretrained_ckpt=None, use_hvd=False, hor
 def train_and_eval(params):
     """Runs the train and eval path using compile/fit."""
     logging.info('Running train and eval.')
+
+    if params.enable_xla:
+        os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
+            " --tf_xla_auto_jit=2 --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=1 ")
+        os.environ['XLA_MLU_DISABLE_BITCAST_OPT'] = 'true'
 
     if params.use_performance and params.use_profiler:
         raise ValueError("You can only set use_profiler or use_performance, \

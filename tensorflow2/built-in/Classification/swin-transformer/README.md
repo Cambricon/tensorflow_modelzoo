@@ -8,7 +8,7 @@
 * [1.模型概述](#1-模型概述)
 * [2.模型支持情况](#2-模型支持情况)
   * [2.1训练模型支持情况](#21-训练模型支持情况)
-  * [2.2推理模型支持情况](#22-推理模型支持情况)  
+  * [2.2推理模型支持情况](#22-推理模型支持情况)
 * [3.默认参数说明](#3-默认参数说明)
   * [3.1模型训练参数说明](#31-模型训练参数说明)
   * [3.2模型推理参数说明](#32-模型推理参数说明)
@@ -16,9 +16,9 @@
   * [4.1依赖项检查](#41-依赖项检查)
   * [4.2环境准备](#42-环境准备)
   * [4.3运行Run脚本](#43-运行Run脚本)
-* [5.结果展示](#5-结果展示)  
+* [5.结果展示](#5-结果展示)
   * [5.1推理结果展示](#51-推理结果展示)
-* [6.免责声明](#6-免责声明) 
+* [6.免责声明](#6-免责声明)
 * [7.Release_Notes](#7-Release_Notes)
 
 
@@ -30,14 +30,14 @@ Swin-Transformer网络结构的代码实现可参考：[这里](https://github.c
 # 2. 模型支持情况
 ## 2.1 **训练模型支持情况**
 
-Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes
------ | ----- | ----- | ----- | ----- | ----- |
-Swin-Transformer | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
+Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes | XLA Support |
+----- | ----- | ----- | ----- | ----- | ----- | ----- |
+Swin-Transformer | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested | Yes |
 
 ## 2.2 **推理模型支持情况**
 
-Models  | Framework  | Supported MLU   | Supported Data Precision  | Jit/Eager Support 
------ | ----- | ----- | ----- | ----- | 
+Models  | Framework  | Supported MLU   | Supported Data Precision  | Jit/Eager Support
+----- | ----- | ----- | ----- | ----- |
 Swin-Transformer | TensorFlow2  | MLU370X4/X8/S4  | FP32  |  Eager
 
 # 3. 默认参数说明
@@ -60,13 +60,14 @@ swin-transformer网络的训练参数在swin-trainer.py中均设置了默认值�
 | one_hot  | 是否只输出top1的精度值 | False |
 | skip_eval  | 是否跳过推理部分 | False |
 | validation_steps  | 推理步数设置 | None |
-| use_horovod  | 训练是否使用horovod模式 | false |
-| use_profiler | 为true则开启tensorboard | false |
-| use_performance | 为true则开启性能测试模式 | false |
-| use_dummy_synthetic_data | 是否使用合成数据集 | false |
+| use_horovod  | 训练是否使用horovod模式 | False |
+| use_profiler | 为true则开启tensorboard | False |
+| use_performance | 为true则开启性能测试模式 | False |
+| use_dummy_synthetic_data | 是否使用合成数据集 | False |
 | num_mlus | 使用mlu卡的数量 | 1 |
 | num_gpus | 使用gpu卡的数量 | 1 |
-| use_amp | 控制是否使用amp进行混合精度训练 | false |
+| use_amp | 控制是否使用amp进行混合精度训练 | False |
+| enable_xla | 是否使能xla | False |
 | distribution_strategy | 基础分布式模式 | None |
 
 
@@ -84,7 +85,7 @@ swin-transformer网络的推理参数在swin_infer.py中均设置了默认值，
 | data_dir | 指向数据集的路径 | None |
 | model_name  | 预加载的权重  | swin_large_224 |
 
- 
+
 # 4. **快速使用**
 下面将详细展示如何在 Cambricon TensorFlow2上完成Swin-Transformer的训练与推理。
 ## 4.1 **依赖项检查**
@@ -100,12 +101,12 @@ swin-transformer网络的推理参数在swin_infer.py中均设置了默认值，
 
 **(1)基于base docker image的容器环境搭建**
 
-**a)导入镜像**  
+**a)导入镜像**
 
 下载Cambricon TensorFlow2 docker镜像并参考如下命令加载镜像：
 ` docker load -i Your_Cambricon_TensorFlow2_Image.tar.gz`
 
-**b)启动容器**  
+**b)启动容器**
 
 `run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`变量后再运行`bash run_docker.sh`即可启动容器。
 ```bash
@@ -160,7 +161,7 @@ pip install .
 
 **(2)基于DOCKERFILE的容器环境搭建**
 
-**a)构建镜像**  
+**a)构建镜像**
 
 由于本仓库包含各类网络，如ASR类，NLP类，为避免网络之间可能的依赖项冲突，您可基于DOCKERFILE构建当前网络专属的镜像。详细步骤如下所示：
 ```bash
@@ -173,7 +174,7 @@ cd dir_for_docker_build
 git clone https://gitee.com/cambricon/tensorflow_modelzoo.git
 
 # 3. 进入该网络目录
-cd tensorflow_modelzoo/tensorflow2/built-in/Classification/swin-transformer 
+cd tensorflow_modelzoo/tensorflow2/built-in/Classification/swin-transformer
 
 # 4. 参考 前文 (1)基于base docker image的容器环境搭建 a)小节，获取基础镜像，假设镜像名字为cambricon_tensorflow2:vX.Y.Z-x86_64-ubuntu18.04
 
@@ -185,7 +186,7 @@ docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 
 ```
 
-**b)创建并启动容器**  
+**b)创建并启动容器**
 
 上一步成功运行后，本地便生成了一个名为`swin-transformer_network_image`的docker镜像，后续即可基于该镜像创建容器。
 ```bash
@@ -237,8 +238,8 @@ ILSVRC2012_val_00000004.JPEG n04263257
 Models  | Framework  | MLU   | Data Precision  | Cards  | Run
 ----- | ----- | ----- | ----- | ----- | ----- |
 Swin-Transformer  | TensorFlow2  | MLU370-X8  | FP32  | 8  | Horovod_Swin-Transformer_Float32_12E_8MLUs.sh
-Swin-Transformer  | TensorFlow2  | MLU370-X8  | AMP | 8  | Horovod_Swin-Transformer_AMP_12E_8MLUs.sh 
-Swin-Transformer  | TensorFlow2  | MLU370-X8  | FP32 | 1  | Swin-Transformer_Float32_12E_1MLU.sh 
+Swin-Transformer  | TensorFlow2  | MLU370-X8  | AMP | 8  | Horovod_Swin-Transformer_AMP_12E_8MLUs.sh
+Swin-Transformer  | TensorFlow2  | MLU370-X8  | FP32 | 1  | Swin-Transformer_Float32_12E_1MLU.sh
 
 根据您的实际环境与需求，修改脚本内数据集的路径及其他参数的值，如`data_dir`，`batch_size`，`epochs`，`np`等，按照如下命令即可开始from_scratch的分布式训练：
 ```bash
@@ -304,7 +305,7 @@ popd
 目前支持的精度类型与推理模式组合以及运行环境如下所示：
 
 |Models  | Framework  | Supported MLU   | Supported Data Precision   | Eager Support| RUN |
-|----- | ----- | ----- | ----- | ----- | ----- | 
+|----- | ----- | ----- | ----- | ----- | ----- |
 Swin-Transformer   | TensorFlow2  | MLU370-X4/X8/S4  | FP16/FP32   | Eager| bash infer_run_eager_fp32_bsz_12.sh |
 
 
@@ -316,8 +317,8 @@ Swin-Transformer   | TensorFlow2  | MLU370-X4/X8/S4  | FP16/FP32   | Eager| bash
 
 在MLU370-X4单卡上进行推理，推理结果如下：
 
-Models   | Jit/Eager   |  Data Precision|Batch Size  | top1| 
------ | ----- | ----- | ----- | -----  
+Models   | Jit/Eager   |  Data Precision|Batch Size  | top1|
+----- | ----- | ----- | ----- | -----
 Swin-Transformer | Eager |  FP32 | 12 | 0.8521|
 
 # 6. 免责声明
