@@ -1,12 +1,4 @@
 {
-    "resnet18": {
-        "directory": "tensorflow/built-in/Classification/common_networks",
-        "testcases": [
-            "cd run_scripts/ci;bash Horovod_ResNet18_AMP_8MLUs.sh",
-            "cd run_scripts/ci;bash Horovod_ResNet18_Float32_8MLUs.sh",
-            "cd run_scripts/ci;bash ResNet18_Float32_1MLU.sh"
-        ]
-    },
     "resnet50": {
         "directory": "tensorflow/built-in/Classification/common_networks",
         "testcases": [
@@ -23,22 +15,6 @@
             "cd run_scripts/ci;bash ResNet101_Float32_1MLU.sh"
         ]
     },
-    "alexnet": {
-        "directory": "tensorflow/built-in/Classification/common_networks",
-        "testcases": [
-            "cd run_scripts/ci;bash Horovod_AlexNet_AMP_8MLUs.sh",
-            "cd run_scripts/ci;bash Horovod_AlexNet_Float32_8MLUs.sh",
-            "cd run_scripts/ci;bash AlexNet_Float32_1MLU.sh"
-        ]
-    },
-    "vgg16": {
-        "directory": "tensorflow/built-in/Classification/common_networks",
-        "testcases": [
-            "cd run_scripts/ci;bash Horovod_Vgg16_AMP_8MLUs.sh",
-            "cd run_scripts/ci;bash Horovod_Vgg16_Float32_8MLUs.sh",
-            "cd run_scripts/ci;bash Vgg16_Float32_1MLU.sh"
-        ]
-    },
     "vgg19": {
         "directory": "tensorflow/built-in/Classification/common_networks",
         "testcases": [
@@ -53,14 +29,6 @@
             "cd run_scripts/ci;bash Horovod_DenseNet201_AMP_8MLUs.sh",
             "cd run_scripts/ci;bash Horovod_DenseNet201_Float32_8MLUs.sh",
             "cd run_scripts/ci;bash DenseNet201_Float32_1MLU.sh"
-        ]
-    },
-    "inceptionv2": {
-        "directory": "tensorflow/built-in/Classification/common_networks",
-        "testcases": [
-            "cd run_scripts/ci;bash Horovod_InceptionV2_AMP_8MLUs.sh",
-            "cd run_scripts/ci;bash Horovod_InceptionV2_Float32_8MLUs.sh",
-            "cd run_scripts/ci;bash InceptionV2_Float32_1MLU.sh"
         ]
     },
     "inceptionv3": {
@@ -87,14 +55,6 @@
             "cd run_scripts/ci;bash Transformer_Train_Float32_4MLUs.sh",
             "cd run_scripts/ci;bash Transformer_Infer.sh"
         ]
-    },
-    "resnet50-ngc": {
-        "directory": "tensorflow/built-in/Classification/Resnet50-v1.5",
-        "testcases": [
-            "cd run_scripts/ci;bash ResNet50_Train_1MLU.sh",
-            "cd run_scripts/ci;bash ResNet50_Train_Horovod_Float32.sh",
-            "cd run_scripts/ci;bash ResNet50_Train_Horovod_AMP.sh"
-	]
     },
     "unet2d": {
         "directory": "tensorflow/built-in/Segmentation/UNet_Industrial",
@@ -191,7 +151,6 @@
             "cd run_scripts/ci;bash DeepFM_Float32_30E_1MLU.sh"
 	]
     },
-
     "bert_crf": {
         "directory": "tensorflow/built-in/NaturalLanguageProcessing/bert/bert_crf",
         "testcases": [

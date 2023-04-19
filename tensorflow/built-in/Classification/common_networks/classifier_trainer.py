@@ -39,13 +39,10 @@ from models.vision import dataset_factory
 from models.vision import optimizer_factory
 from models.vision.configs import base_configs
 from models.vision.configs import configs
-from models.vision.inceptionv2 import common
+from models.vision.inceptionv3 import common
 from models.vision.resnet import resnet_model
-from models.vision.inceptionv2 import inceptionv2_model
 from models.vision.inceptionv3 import inceptionv3_model
-from models.vision.resnet import resnet18_model
 from models.vision.vgg import vgg_model
-from models.vision.alexnet import alexnet_model
 from models.vision.resnet import resnet101_model
 from models.vision.mobilenet import mobilenetv2_model
 from models.vision.densenet import densenet_model
@@ -55,13 +52,9 @@ def get_models() -> Mapping[str, tf.keras.Model]:
   """Returns the mapping from model type name to Keras model."""
   return  {
       'resnet': resnet_model.resnet50,
-      'inceptionv2': inceptionv2_model.inceptionv2,
       'inceptionv3': inceptionv3_model.inceptionv3,
-      'resnet18': resnet18_model.resnet18,
       'resnet50': resnet_model.resnet50,
-      'vgg16': vgg_model.vgg16,
       'vgg19': vgg_model.vgg19,
-      'alexnet': alexnet_model.alexnet,
       'resnet101': resnet101_model.resnet101,
       'mobilenetv2': mobilenetv2_model.mobilenetv2,
       'densenet201':densenet_model.densenet201,
