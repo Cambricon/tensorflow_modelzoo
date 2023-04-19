@@ -27,7 +27,7 @@ from models.staging.training import utils
 from models.utils.flags import core as flags_core
 from models.vision.vgg import common
 from models.vision.vgg import imagenet_preprocessing
-from models.vision.vgg_model import vgg16
+from models.vision.vgg_model import vgg19
 
 
 class ResnetRunnable(standard_runnable.StandardTrainable,
@@ -70,7 +70,7 @@ class ResnetRunnable(standard_runnable.StandardTrainable,
     else:
       self.input_fn = imagenet_preprocessing.input_fn
 
-    self.model = vgg_model.vgg16(
+    self.model = vgg_model.vgg19(
         num_classes=imagenet_preprocessing.NUM_CLASSES,
         batch_size=flags_obj.batch_size,
         use_l2_regularizer=not flags_obj.single_l2_loss_op)
