@@ -22,9 +22,9 @@ import warnings
 
 import numpy as np
 
-from tensorflow.python.keras import activations
-from tensorflow.python.keras import backend
-from tensorflow.python.keras.utils import data_utils
+from tensorflow.keras import activations
+from tensorflow.keras import backend
+from tensorflow.keras import utils
 from tensorflow.python.util.tf_export import keras_export
 
 
@@ -142,7 +142,7 @@ def decode_predictions(preds, top=5):
                      '(i.e. a 2D array of shape (samples, 1000)). '
                      'Found array with shape: ' + str(preds.shape))
   if CLASS_INDEX is None:
-    fpath = data_utils.get_file(
+    fpath = utils.get_file(
         'imagenet_class_index.json',
         CLASS_INDEX_PATH,
         cache_subdir='models',

@@ -111,6 +111,27 @@ def load_weights(args, model):
     model.load_weights(filename)
     return model
 
+def resize(a, new_shape):
+    if isinstance(new_shape, (int, np.integer)):
+        new_shape = (new_shape,)
+    a = np.ravel(a)
+    Na = len(a)
+    total_size = np.multiply.reduce(new_shape)
+    if Na == 0 or total_size == 0:
+        return np.zeros(new_shape, a.dtype)
+
+    n_copies = int(total_size / Na)
+    extra = total_size % Na
+
+    if extra != 0:
+        n_copies = n_copies + 1
+        extra = Na - extra
+
+    a = np.concatenate((a,) * n_copies)
+    if extra > 0:
+        a = a[:-extra]
+
+    return np.reshape(a, new_shape)
 
 def process_features(args, model):
     nb_frames = 1
@@ -119,7 +140,7 @@ def process_features(args, model):
     frame_size = model.frame_size
 
     features = np.fromfile(feature_file, dtype="float32")
-    features = np.resize(features, (-1, nb_features))
+    features = resize(features, (-1, nb_features))
     feature_chunk_size = features.shape[0]
     features = np.reshape(features, (nb_frames, feature_chunk_size, nb_features))
 

@@ -513,7 +513,7 @@ def inceptionv2(include_top=True,
             x = GlobalAveragePooling2D()(x)
         elif pooling == 'max':
             x = GlobalMaxPooling2D()(x)
-    
+
     # Ensure that the model takes into account any potential preecessors of 'input_tensor'.
     if input_tensor is not None:
         inputs = layer_utils.get_source_inputs(input_tensor)

@@ -21,7 +21,7 @@ from __future__ import print_function
 
 import tensorflow.compat.v1 as tf
 
-from tensorflow.python.keras.applications import resnet
+from tensorflow.keras.applications import resnet
 from object_detection.core import freezable_batch_norm
 from object_detection.models.keras_models import model_utils
 

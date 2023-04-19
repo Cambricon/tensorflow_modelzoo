@@ -28,7 +28,6 @@ import tensorflow as tf
 import sys
 sys.path.append('./models')
 from models.utils.misc import distribution_utils
-from tensorflow.python.keras.utils import losses_utils
 
 from models.common import distribute_utils
 from models.modeling import hyperparams
@@ -618,7 +617,7 @@ def eval(
     if one_hot:
       loss_obj = tf.keras.losses.CategoricalCrossentropy(
           label_smoothing=params.model.loss.label_smoothing,
-          reduction=losses_utils.ReductionV2.SUM_OVER_BATCH_SIZE)
+          reduction=tf.keras.losses.Reduction.SUM_OVER_BATCH_SIZE)
           #reduction=tf.keras.losses.Reduction.NONE)
     else:
       loss_obj = tf.keras.losses.SparseCategoricalCrossentropy()

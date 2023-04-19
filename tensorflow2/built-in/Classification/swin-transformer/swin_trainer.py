@@ -20,9 +20,9 @@ from absl import app
 from absl import flags
 from absl import logging
 import tensorflow as tf
-from tensorflow.python.keras.utils import losses_utils
+from tensorflow.keras import losses as losses_utils
 from model import callbacks as custom_callbacks
-from model.model import CFGS, SwinTransformer  
+from model.model import CFGS, SwinTransformer
 from model import distribution_utils
 from model import common
 from model import imagenet_preprocessing
@@ -207,12 +207,12 @@ def define_classifier_flags():
 
 
 def build_model(model_name, pretrained, pretrained_ckpt=None, use_hvd=False, horovod=None):
-    img_adjust_layer = tf.keras.layers.Lambda(lambda data: 
+    img_adjust_layer = tf.keras.layers.Lambda(lambda data:
              tf.keras.applications.imagenet_utils.preprocess_input(
                 tf.cast(data, tf.float32), mode="tf"), input_shape=[224, 224, 3])
 
     pretrained_model = SwinTransformer(model_name, num_classes=imagenet_preprocessing.NUM_CLASSES,
-                       include_top=False, pretrained=pretrained, pretrained_checkpoint=pretrained_ckpt, 
+                       include_top=False, pretrained=pretrained, pretrained_checkpoint=pretrained_ckpt,
                        use_hvd=use_hvd, horovod=horovod)
 
     model = tf.keras.Sequential([
@@ -270,14 +270,14 @@ def train_and_eval(params):
              strategy.num_replicas_in_sync if strategy is not None else 1)
 
     train_dataset = get_dataset(is_training=True, data_dir=params.data_dir,
-            batch_size=params.batch_size, use_sync=params.use_dummy_synthetic_data, 
+            batch_size=params.batch_size, use_sync=params.use_dummy_synthetic_data,
             hvd=hvd if params.use_horovod else None)
 
     validation_dataset = get_dataset(is_training=False, data_dir=params.data_dir,
             batch_size=params.batch_size, use_sync=params.use_dummy_synthetic_data)
 
     if params.model_name in CFGS.keys():
-        model_name = params.model_name 
+        model_name = params.model_name
     else:
         raise Warning("Not Found Model!")
 
@@ -290,7 +290,7 @@ def train_and_eval(params):
     validation_steps = imagenet_preprocessing.NUM_IMAGES["validation"] / params.batch_size
 
     with strategy_scope:
-        model = build_model(model_name, pretrained, pretrained_ckpt, use_hvd=params.use_horovod, 
+        model = build_model(model_name, pretrained, pretrained_ckpt, use_hvd=params.use_horovod,
                             horovod=hvd if params.use_horovod else None)
 
         metrics_map = _get_metrics(params.one_hot)
@@ -299,7 +299,7 @@ def train_and_eval(params):
         if params.one_hot:
             loss_obj = tf.keras.losses.CategoricalCrossentropy(
                 label_smoothing=params.model.loss.label_smoothing,
-                reduction=losses_utils.ReductionV2.SUM_OVER_BATCH_SIZE)
+                reduction=losses_utils.Reduction.SUM_OVER_BATCH_SIZE)
         else:
             loss_obj = tf.keras.losses.SparseCategoricalCrossentropy()
 
@@ -329,7 +329,7 @@ def train_and_eval(params):
     callbacks = []
     if (params.use_horovod and (hvd.rank() == 0)) or not params.use_horovod:
         callbacks = common.get_callbacks(
-                   FLAGS=params, enable_checkpoint_and_export=True, 
+                   FLAGS=params, enable_checkpoint_and_export=True,
                    model_dir=params.model_dir, use_profiler=params.use_profiler)
     if params.use_horovod:
         callbacks.append(hvd.callbacks.BroadcastGlobalVariablesCallback(0))
@@ -403,5 +403,5 @@ if __name__ == '__main__':
     flags.mark_flag_as_required('data_dir')
     flags.mark_flag_as_required('mode')
     flags.mark_flag_as_required('dataset')
-    
+
     app.run(main)

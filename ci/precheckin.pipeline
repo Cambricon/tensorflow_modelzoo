@@ -5,7 +5,7 @@ cnpipe {
 
     def triggerPhase = env.gitlabTriggerPhrase.split(" ")
     def docker_image_tf1 = package.properties("http://daily.software.cambricon.com/daily/tensorflow/docker/master/latest").get("x86_64-ubuntu18.04-py3")
-    def docker_image_tf2 = package.properties("http://daily.software.cambricon.com/daily/tensorflow2/docker/18.04/r2.5_cambricon/latest").get("docker")
+    def docker_image_tf2 = package.properties("http://daily.software.cambricon.com/daily/tensorflow2/docker/20.04/r2.10_cambricon/latest").get("docker")
     def test_mode = ""
     def network_list = ""
     if (triggerPhase.size() == 1) {

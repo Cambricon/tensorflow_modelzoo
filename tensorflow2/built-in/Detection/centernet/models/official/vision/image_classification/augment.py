@@ -28,8 +28,7 @@ import math
 import tensorflow as tf
 from typing import Any, Dict, List, Optional, Text, Tuple
 
-from tensorflow.python.keras.layers.preprocessing import image_preprocessing as image_ops
-
+from models.official.vision.image_classification import transform_utils
 # This signifies the max integer that the controller RNN could predict for the
 # augmentation scheme.
 _MAX_LEVEL = 10.
@@ -171,7 +170,7 @@ def transform(image: tf.Tensor, transforms) -> tf.Tensor:
   if transforms.shape.rank == 1:
     transforms = transforms[None]
   image = to_4d(image)
-  image = image_ops.transform(
+  image = transform_utils.transform(
       images=image, transforms=transforms, interpolation='nearest')
   return from_4d(image, original_ndims)
 
