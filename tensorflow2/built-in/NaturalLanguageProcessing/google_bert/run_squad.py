@@ -1162,13 +1162,6 @@ def validate_flags_or_throw(bert_config):
 
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
-  if FLAGS.enable_xla:
-    os.environ["TF_XLA_FLAGS"] = (os.environ.get(
-      "TF_XLA_FLAGS", "") +
-      " --tf_xla_auto_jit=2" +
-      " --tf_xla_enable_lazy_compilation=false" +
-      " --tf_xla_async_io_level=1")
-    os.environ["XLA_MLU_DISABLE_BITCAST_OPT"] = "True"
 
   if FLAGS.use_horovod:
     import horovod.tensorflow as hvd
@@ -1420,4 +1413,15 @@ if __name__ == "__main__":
   flags.mark_flag_as_required("vocab_file")
   flags.mark_flag_as_required("bert_config_file")
   flags.mark_flag_as_required("output_dir")
+
+  flags_obj = flags.FLAGS
+  flags_obj(sys.argv)
+  if flags_obj.enable_xla:
+    os.environ["TF_XLA_FLAGS"] = (os.environ.get(
+      "TF_XLA_FLAGS", "") +
+      " --tf_xla_auto_jit=2" +
+      " --tf_xla_enable_lazy_compilation=false" +
+      " --tf_xla_async_io_level=1")
+    os.environ["XLA_MLU_DISABLE_BITCAST_OPT"] = "True"
+
   tf.app.run()
