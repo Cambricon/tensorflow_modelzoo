@@ -369,7 +369,7 @@ def layer_norm(input_tensor, name=None):
     from fused_layer_norm import fused_layer_norm
     return fused_layer_norm(
         inputs=input_tensor, begin_norm_axis=-1, begin_params_axis=-1, scope=name,
-        use_fused_batch_norm=False)
+        use_fused_batch_norm=True)
   except ImportError:
     return tf.contrib.layers.layer_norm(
         inputs=input_tensor, begin_norm_axis=-1, begin_params_axis=-1, scope=name)
