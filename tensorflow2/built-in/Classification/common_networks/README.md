@@ -36,12 +36,12 @@ Vgg19网络结构的代码实现可参考：[这里](https://github.com/keras-te
 # 2. 模型支持情况
 ## 2.1 **训练模型支持情况**
 
-Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes
------ | ----- | ----- | ----- | ----- | ----- |
-ResNet50 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
-ResNet101 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
-DenseNet201 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
-Vgg19 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
+Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes | XLA Support |
+----- | ----- | ----- | ----- | ----- | ----- | ----- |
+ResNet50 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested | Yes |
+ResNet101 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested | Yes |
+DenseNet201 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested | Yes |
+Vgg19 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested | Yes |
 
 
 ## 2.2 **推理模型支持情况**
@@ -73,7 +73,7 @@ Vgg19 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 | enable_tensorboard | 控制是否开启tensorboard，并记录性能 |
 | distribution_strategy | 控制是否开启原生分布式，原生分布式不能与Horovod分布式同时开启 |
 | num_mlus，num_gpus | 联合控制网络运行的设备，在mlu设备上运行需设置num_mlus=1,num_gpus=0；在gpu设备上运行需设置num_mlus=0,num_gpus=1 |
-
+| enable_xla | 是否使能XLA，默认设置为False |
 
 
 # 4.快速使用

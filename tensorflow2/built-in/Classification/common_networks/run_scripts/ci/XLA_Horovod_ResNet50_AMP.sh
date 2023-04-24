@@ -29,7 +29,7 @@ horovodrun -np 4 python3 classifier.py \
     --finetune_checkpoint="" \
     --enable_tensorboard=False \
     --datasets_num_private_threads=0 \
-    --enable_xla=False
+    --enable_xla=True
 popd
 
 

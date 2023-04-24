@@ -28,7 +28,8 @@ python3 classifier.py \
     --finetune_steps=10 \
     --finetune_checkpoint="" \
     --enable_tensorboard=False \
-    --datasets_num_private_threads=0
+    --datasets_num_private_threads=0 \
+    --enable_xla=False
 popd
 
 
