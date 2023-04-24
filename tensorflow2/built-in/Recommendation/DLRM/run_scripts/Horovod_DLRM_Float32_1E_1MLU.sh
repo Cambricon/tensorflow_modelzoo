@@ -23,7 +23,7 @@ horovodrun -np 1 python3 main.py \
     --synthetic_dataset_train_batches=64008 \
     --synthetic_dataset_valid_batches=1350 \
     --use_amp=False \
-    --xla=False \
+    --enable_xla=False \
     --loss_scale=1024 \
     --prefetch_batches=10 \
     --auc_thresholds=8000 \

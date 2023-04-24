@@ -60,7 +60,7 @@ def define_command_line_flags():
 
     flags.DEFINE_bool("amp", default=False, help="Enable automatic mixed precision")
     flags.DEFINE_bool("use_amp", default=False, help="Enable automatic mixed precision on MLU")
-    flags.DEFINE_bool("xla", default=False, help="Enable XLA")
+    flags.DEFINE_bool("enable_xla", default=False, help="Whether to enable XLA auto jit compilation")
 
     flags.DEFINE_integer("loss_scale", default=1024, help="Static loss scale to use with mixed precision training")
 
@@ -128,9 +128,9 @@ FLAGS = flags.FLAGS
 app.define_help_flags()
 app.parse_flags_with_usage(sys.argv)
 FLAGS.amp=FLAGS.use_amp
-
-if FLAGS.xla:
-    os.environ['TF_XLA_FLAGS'] = '--tf_xla_auto_jit=fusible'
+if FLAGS.enable_xla:
+    os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
+        " --tf_xla_auto_jit=2 --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=1 ")
 
 import time
 from models.lr_scheduler import LearningRateScheduler
@@ -171,10 +171,6 @@ def init_tf(FLAGS):
 
     if FLAGS.intra_op_parallelism:
         tf.config.threading.set_intra_op_parallelism_threads(FLAGS.intra_op_parallelism)
-
-    if FLAGS.xla:
-        os.environ['TF_XLA_FLAGS'] = '--tf_xla_auto_jit=fusible'
-
 
 def compute_eval_points(train_batches, evals_per_epoch):
     eval_points = np.linspace(0, train_batches - 1, evals_per_epoch + 1)[1:]

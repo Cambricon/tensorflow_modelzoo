@@ -89,7 +89,7 @@ def initialize_common_flags():
   flags_core.define_base(
       num_gpu=True, model_dir=False, data_dir=False, batch_size=False)
   flags_core.define_distribution(worker_hosts=True, task_index=True)
-  flags_core.define_performance(all_reduce_alg=True, num_packs=True)
+  flags_core.define_performance(all_reduce_alg=True, num_packs=True, enable_xla=True)
 
   # Reset the default value of num_gpus to zero.
   FLAGS.num_gpus = 0

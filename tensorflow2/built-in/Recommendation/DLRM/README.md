@@ -25,9 +25,9 @@ DLRM网络结构的代码实现可参考：[这里](https://github.com/NVIDIA/De
 
 # 2. **模型支持情况**
 
-Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes
------ | ----- | ----- | ----- | ----- | ----- |
-DLRM | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
+Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes | XLA Support |
+----- | ----- | ----- | ----- | ----- | ----- | ----- |
+DLRM | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested | Yes |
 
 
 # 3. **默认参数说明**
@@ -49,7 +49,7 @@ DLRM | TensorFlow2  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 | profiler_start_step | 使用性能分析工具时，从指定的step数开始保存数据 | 1 |
 | profiler_steps | 使用性能分析工具时，指定保存数据的step数,默认保存1step的性能数据 | 1 |
 | profiled_rank | 使用性能分析工具时，指定保存数据的卡号（默认为0卡，该参数主要用于性能测试） | 0 |
-
+| enable_xla | 使能xla | False |
   
 # 4. **快速使用**
 下面将详细展示如何在 Cambricon TensorFlow2上完成DLRM的训练与推理。
