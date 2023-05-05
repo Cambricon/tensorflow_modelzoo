@@ -95,28 +95,33 @@ def main():
             write_json("summary", params.batch_size * hvd.size(), time_hooks.times)
 
     if "evaluate" in params.exec_mode:
-        eval_hooks = get_hooks(params, logger)
         need_record_flag = False
+        real_batch_size = 0
         if params.use_performance:
             if params.use_horovod:
                 if hvd.rank() == 0:
                     need_record_flag = True
+                    real_batch_size = params.batch_size * hvd.size()
             else:
                 need_record_flag = True
+                real_batch_size = params.batch_size
         if need_record_flag != False:
+            eval_hooks = get_hooks(params, logger)
             time_hooks = TimeHook()
             eval_hooks.append(time_hooks)
+            result = estimator.evaluate(
+                input_fn=dataset.eval_fn, steps=dataset.eval_size, hooks=eval_hooks
+            )
+        else:
+            result = estimator.evaluate(
+                input_fn=dataset.eval_fn, steps=dataset.eval_size 
+            )
 
-        result = estimator.evaluate(
-            input_fn=dataset.eval_fn, steps=dataset.eval_size, hooks=eval_hooks
-        )
         data = parse_evaluation_results(result)
         if hvd.rank() == 0:
             logger.log(step=(), data=data)
-        if need_record_flag == 1:
-            write_json("summary", params.batch_size * hvd.size(), time_hooks.times)
-        elif need_record_flag == 2:
-            write_json("summary", params.batch_size, time_hooks.times)
+        if need_record_flag == True:
+            write_json("summary", real_batch_size, time_hooks.times)
 
     if "predict" == params.exec_mode:
         inference_hooks = get_hooks(params, logger)
