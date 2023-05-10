@@ -1,4 +1,4 @@
-# TensorFlow ModelZoo 
+# TensorFlow ModelZoo
 
 ## 介绍
 
@@ -11,65 +11,57 @@ TensorFlow是时下最流行的AI框架，寒武纪对其进行了定制化开�
 
 CV：
 
-| MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
-| ------------- | ------------- | ------------- | ------------- | ------------- | 
-| [resnet50_tf_model_official_v2.8.0](tensorflow2/built-in/Classification/resnet50_tf_model_official_v2.8.0) | TensorFlow2|FP32&&AMP|YES| CNNL |
-| [vgg16](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP |YES| CNNL | 
-| [vgg19](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL| 
-| [resnet18](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL | 
-| [resnet50](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL | 
-| [resnet101](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL | 
-| [densenet201](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL | 
-| [swin-transformer](tensorflow2/built-in/Classification/swin-transformer/) | TensorFlow2|FP32&&AMP |YES| CNNL | 
-| [centernet](tensorflow2/built-in/Detection/centernet) | TensorFlow2|FP32&&AMP | YES|CNNL| 
-| [Resnet50-v1.5](tensorflow/built-in/Classification/Resnet50-v1.5) | TensorFlow1|FP32&&AMP|YES|CNNL | 
-| [ResNet18](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL | 
-| [ResNet50](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL | 
-| [ResNet101](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL | 
-| [DenseNet201](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL | 
-| [Vgg16](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL | 
-| [Vgg19](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL | 
-| [InceptionV2](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL | 
-| [InceptionV3](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL | 
-| [AlexNet](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL | 
-| [MobilenetV2](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL | 
-| [SSD](tensorflow/built-in/Detection/SSD) | TensorFlow1|FP32&&AMP |YES| CNNL | 
-| [YOLOv3](tensorflow/built-in/Detection/YOLOv3) | TensorFlow1|FP32&&AMP |YES| CNNL | 
-| [retinanet](tensorflow/built-in/Detection/retinanet) | TensorFlow1|FP32&&AMP |YES| CNNL | 
-| [UNet_3D_Medical](tensorflow/built-in/Segmentation/UNet_3D_Medical) | TensorFlow1|FP32&&AMP |YES| CNNL | 
-| [UNet_Industrial](tensorflow/built-in/Segmentation/UNet_Industrial) | TensorFlow1|FP32&&AMP |YES| CNNL | 
+| MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode | XLA Support |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| [vgg19](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL|YES|
+| [resnet50](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL |YES|
+| [resnet101](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL |YES|
+| [densenet201](tensorflow2/built-in/Classification/common_networks) | TensorFlow2|FP32&&AMP | YES|CNNL |YES|
+| [swin-transformer](tensorflow2/built-in/Classification/swin-transformer/) | TensorFlow2|FP32&&AMP |YES| CNNL |YES|
+| [centernet](tensorflow2/built-in/Detection/centernet) | TensorFlow2|FP32&&AMP | YES|CNNL|NO|
+| [ResNet50](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL |NO|
+| [ResNet101](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL |NO|
+| [DenseNet201](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP | YES|CNNL |NO|
+| [Vgg19](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL |NO|
+| [InceptionV3](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL |NO|
+| [MobilenetV2](tensorflow/built-in/Classification/common_networks) | TensorFlow1|FP32&&AMP |YES| CNNL |NO|
+| [SSD](tensorflow/built-in/Detection/SSD) | TensorFlow1|FP32&&AMP |YES| CNNL |NO|
+| [YOLOv3](tensorflow/built-in/Detection/YOLOv3) | TensorFlow1|FP32&&AMP |YES| CNNL |NO|
+| [retinanet](tensorflow/built-in/Detection/retinanet) | TensorFlow1|FP32&&AMP |YES| CNNL |NO|
+| [UNet_3D_Medical](tensorflow/built-in/Segmentation/UNet_3D_Medical) | TensorFlow1|FP32&&AMP |YES| CNNL |NO|
+| [UNet_Industrial](tensorflow/built-in/Segmentation/UNet_Industrial) | TensorFlow1|FP32&&AMP |YES| CNNL |NO|
 
 Graph Convolutional Network
 
-| MODELS                                         | FRAMEWORK   | Train Mode | Distributed Train | Infer  Mode |
-|------------------------------------------------|-------------|------------|-------------------|-------------| 
-| [GraphSAGE](tensorflow/built-in/GCN/GraphSAGE) | Tensorflow1 | FP32&&AMP  | NO                | CNNL        |
+| MODELS                                         | FRAMEWORK   | Train Mode | Distributed Train | Infer  Mode | XLA Support |
+|------------------------------------------------|-------------|------------|-------------------|-------------|-------------|
+| [GraphSAGE](tensorflow/built-in/GCN/GraphSAGE) | Tensorflow1 | FP32&&AMP  | NO                | CNNL        |NO           |
 
 NLP:
 
-| MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
-| ------------- | ------------- | ------------- | ------------- | ------------- | 
-| [transformer](tensorflow2/built-in/NaturalLanguageProcessing/transformer) | TensorFlow2|FP32 | YES | CNNL |
-| [google_bert](tensorflow2/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow2|FP32&&AMP | YES | CNNL | 
-| [BERT_ngc](tensorflow/built-in/NaturalLanguageProcessing/BERT_ngc) | TensorFlow1|FP32&&AMP | YES | CNNL |
-| [BERT_CRF](tensorflow/built-in/NaturalLanguageProcessing/bert/bert_crf) | TensorFlow1|FP32&&AMP | YES | CNNL |
-| [transformer_estimator](tensorflow/built-in/NaturalLanguageProcessing/Transformer/transformer_estimator/) | TensorFlow1|FP32/AMP | YES | CNNL |
-| [google_bert(tf1)](tensorflow/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow1|FP32&&AMP | YES | CNNL | 
+| MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode | XLA Support |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| [transformer](tensorflow2/built-in/NaturalLanguageProcessing/transformer) | TensorFlow2|FP32 | YES | CNNL | YES |
+| [google_bert](tensorflow2/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow2|FP32&&AMP | YES | CNNL | YES |
+| [BERT_ngc](tensorflow/built-in/NaturalLanguageProcessing/BERT_ngc) | TensorFlow1|FP32&&AMP | YES | CNNL | NO |
+| [BERT_CRF](tensorflow/built-in/NaturalLanguageProcessing/bert/bert_crf) | TensorFlow1|FP32&&AMP | YES | CNNL | NO |
+| [transformer_estimator](tensorflow/built-in/NaturalLanguageProcessing/Transformer/transformer_estimator/) | TensorFlow1|FP32/AMP | YES | CNNL | NO |
+| [google_bert(tf1)](tensorflow/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow1|FP32&&AMP | YES | CNNL | NO |
 
 Recommendation:
 
-| MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
-| ------------- | ------------- | ------------- | ------------- | ------------- | 
-| [DLRM](tensorflow2/built-in/Recommendation/DLRM) | TensorFlow2|FP32&&AMP | YES | CNNL|
-| [DeepFM](tensorflow/built-in/Recommendation/DeepFM) | TensorFlow1|FP32&&AMP | YES | CNNL|
+| MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode | XLA Support |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| [DLRM](tensorflow2/built-in/Recommendation/DLRM) | TensorFlow2|FP32&&AMP | YES | CNNL| YES |
+| [DeepFM](tensorflow/built-in/Recommendation/DeepFM) | TensorFlow1|FP32&&AMP | YES | CNNL| NO |
 
 Speech:
 
-| MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode
-| ------------- | ------------- | ------------- | ------------- | ------------- | 
-| [Conformer](tensorflow2/built-in/ASR/Conformer) | TensorFlow2|FP32&&AMP|YES| CNNL | 
-| [LPCNet](tensorflow2/built-in/TTS/LPCNet) | TensorFlow2|FP32&&AMP|YES| CNNL | 
-| [Tacotron2](tensorflow/built-in/TTS/Tacotron-2) | TensorFlow1|FP32&&AMP|YES| CNNL | 
+| MODELS | FRAMEWORK | Train Mode |Distributed Train| Infer  Mode | XLA Support |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| [Conformer](tensorflow2/built-in/ASR/Conformer) | TensorFlow2|FP32&&AMP|YES| CNNL | No |
+| [LPCNet](tensorflow2/built-in/TTS/LPCNet) | TensorFlow2|FP32&&AMP|YES| CNNL | No |
+| [Tacotron2](tensorflow/built-in/TTS/Tacotron-2) | TensorFlow1|FP32&&AMP|YES| CNNL | No |
 
 
 ## issues/wiki/forum 跳转链接
@@ -77,17 +69,22 @@ Speech:
 ## contrib 指引和链接
 
 ## Change Log
+---------- 2023年5月9日 ----------
+
+- 支持网络列表删除了tensorflow1中的Resnet18,Alexnet,Vgg16,Inceptionv2,Resnet50-1.5，删除了tensorflow2中的resnet50_tf_model_official_v2.8.0,vgg16,resnet18。
+- 添加了网络是否支持XLA模式的说明。
+
 ---------- 2023年3月31日 ---------- 
 
 将tensorflow2/built-in 内使用 TFMM 进行推理的网络改为使用 CNNL 进行推理，涉及到的网络如下：
-[vgg16](tensorflow2/built-in/Classification/common_networks) 
-[vgg19](tensorflow2/built-in/Classification/common_networks) 
-[resnet18](tensorflow2/built-in/Classification/common_networks) 
-[resnet50](tensorflow2/built-in/Classification/common_networks) 
-[resnet101](tensorflow2/built-in/Classification/common_networks) 
+[vgg16](tensorflow2/built-in/Classification/common_networks)
+[vgg19](tensorflow2/built-in/Classification/common_networks)
+[resnet18](tensorflow2/built-in/Classification/common_networks)
+[resnet50](tensorflow2/built-in/Classification/common_networks)
+[resnet101](tensorflow2/built-in/Classification/common_networks)
 [densenet201](tensorflow2/built-in/Classification/common_networks)
 [centernet](tensorflow2/built-in/Detection/centernet)
-[transformer](tensorflow2/built-in/NaturalLanguageProcessing/transformer) 
+[transformer](tensorflow2/built-in/NaturalLanguageProcessing/transformer)
 [google_bert](tensorflow2/built-in/NaturalLanguageProcessing/google_bert)
 
 
