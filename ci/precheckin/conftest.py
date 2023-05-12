@@ -38,7 +38,7 @@ def pytest_generate_tests(metafunc):
             for idx, testcase in enumerate(testcase_configs[cur_key]["testcases"]):
                 testcase_dict["{}: {}".format(cur_key, testcase)] = [
                     "pushd {}".format(testcase_configs[cur_key]["directory"]),
-                    "if [ -f requirements.txt ]; then pip install -r requirements.txt; fi",
+                    "if [ -f requirements.txt ]; then pip install -r requirements.txt ; fi",
                     testcase,
                     "popd"
                 ]
