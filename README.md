@@ -43,6 +43,7 @@ NLP:
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | [transformer](tensorflow2/built-in/NaturalLanguageProcessing/transformer) | TensorFlow2|FP32 | YES | CNNL | YES |
 | [google_bert](tensorflow2/built-in/NaturalLanguageProcessing/google_bert) | TensorFlow2|FP32&&AMP | YES | CNNL | YES |
+| [tf_models_bert](tensorflow2/built-in/NaturalLanguageProcessing/tf_models_bert) | TensorFlow2|FP32 | YES | CNNL | NO |
 | [BERT_ngc](tensorflow/built-in/NaturalLanguageProcessing/BERT_ngc) | TensorFlow1|FP32&&AMP | YES | CNNL | NO |
 | [BERT_CRF](tensorflow/built-in/NaturalLanguageProcessing/bert/bert_crf) | TensorFlow1|FP32&&AMP | YES | CNNL | NO |
 | [transformer_estimator](tensorflow/built-in/NaturalLanguageProcessing/Transformer/transformer_estimator/) | TensorFlow1|FP32/AMP | YES | CNNL | NO |
@@ -69,6 +70,10 @@ Speech:
 ## contrib 指引和链接
 
 ## Change Log
+---------- 2023年5月17日 ---------- 
+
+- 向 tensorflow2 目录内添加了 tf_models_bert 网络 
+
 ---------- 2023年5月9日 ----------
 
 - 支持网络列表删除了tensorflow1中的Resnet18,Alexnet,Vgg16,Inceptionv2,Resnet50-1.5，删除了tensorflow2中的resnet50_tf_model_official_v2.8.0,vgg16,resnet18。
