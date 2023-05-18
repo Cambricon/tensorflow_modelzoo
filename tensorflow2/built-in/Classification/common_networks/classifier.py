@@ -28,7 +28,6 @@ import tensorflow as tf
 import sys
 sys.path.append('./models')
 from models.utils.misc import distribution_utils
-from tensorflow.python.keras.utils import losses_utils
 
 from models.common import distribute_utils
 from models.modeling import hyperparams
@@ -43,11 +42,9 @@ from models.vision.configs import configs
 from models.vision.efficientnet import efficientnet_model
 from models.vision.resnet import common
 from models.vision.resnet import resnet_model
-from models.vision.inceptionv2 import inceptionv2_model
 from models.vision.inceptionv3 import inceptionv3_model
 from models.vision.vgg import vgg_model
 from models.vision.densenet import densenet
-from models.vision.resnet import resnet18_model
 from models.vision.resnet import resnet101_model
 
 
@@ -57,11 +54,8 @@ def get_models() -> Mapping[str, tf.keras.Model]:
       'efficientnet': efficientnet_model.EfficientNet.from_name,
       'resnet50': resnet_model.resnet50,
       'densenet201': densenet.DenseNet201,
-      'vgg16': vgg_model.vgg16,
       'vgg19': vgg_model.vgg19,
       'resnet101': resnet101_model.resnet101,
-      'resnet18': resnet18_model.resnet18,
-      'inceptionv2': inceptionv2_model.inceptionv2,
       'inceptionv3': inceptionv3_model.inceptionv3,
   }
 
@@ -271,10 +265,9 @@ def resume_from_checkpoint(model: tf.keras.Model, model_dir: str,
 def initialize(params: base_configs.ExperimentConfig,
                dataset_builder: dataset_factory.DatasetBuilder):
   """Initializes backend related initializations."""
-  keras_utils.set_session_config(enable_xla=params.runtime.enable_xla)
   performance.set_mixed_precision_policy(dataset_builder.dtype,
                                          get_loss_scale(params))
-  if tf.config.list_physical_devices('GPU') and params.model.model_name not in ['densenet201', 'inceptionv2', 'inceptionv3']:
+  if tf.config.list_physical_devices('GPU') and params.model.model_name not in ['densenet201', 'inceptionv3']:
     data_format = 'channels_first'
   else:
     data_format = 'channels_last'
@@ -381,7 +374,6 @@ def train_and_eval(
     strategy_override: tf.distribute.Strategy) -> Mapping[str, Any]:
   """Runs the train and eval path using compile/fit."""
   logging.info('Running train and eval.')
-
   if params.use_horovod:
     import horovod.tensorflow.keras as hvd
     global hvd
@@ -623,7 +615,7 @@ def eval(
     if one_hot:
       loss_obj = tf.keras.losses.CategoricalCrossentropy(
           label_smoothing=params.model.loss.label_smoothing,
-          reduction=losses_utils.ReductionV2.SUM_OVER_BATCH_SIZE)
+          reduction=tf.keras.losses.Reduction.SUM_OVER_BATCH_SIZE)
           #reduction=tf.keras.losses.Reduction.NONE)
     else:
       loss_obj = tf.keras.losses.SparseCategoricalCrossentropy()
@@ -735,6 +727,12 @@ if __name__ == '__main__':
   flags.mark_flag_as_required('mode')
   flags.mark_flag_as_required('model_type')
   flags.mark_flag_as_required('dataset')
+  flags_obj = flags.FLAGS
+  flags_obj(sys.argv)
+  if flags_obj.enable_xla:
+    os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
+        " --tf_xla_auto_jit=2 --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=1 ")
+    os.environ['XLA_MLU_DISABLE_BITCAST_OPT'] = 'true'
 
   app.run(main)
 

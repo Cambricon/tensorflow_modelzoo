@@ -2,6 +2,11 @@
 cur_path=$(pwd)
 work_dir="${cur_path}/../"
 
+export TF_MLU_ALLOW_GROWTH=false
+export TF_MLU_THREAD_MODE="mlu_private"
+export TF_MLU_THREAD_COUNT=2
+export HOROVOD_FUSION_THRESHOLD=$((32*1024*1024))
+
 pushd $work_dir
 source env.sh
 horovodrun -np 8  python run_squad.py \

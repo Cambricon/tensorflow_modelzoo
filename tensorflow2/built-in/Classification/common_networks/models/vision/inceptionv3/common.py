@@ -21,8 +21,8 @@ import os
 
 from absl import flags
 import tensorflow as tf
+from tensorflow.keras import optimizers
 
-from tensorflow.python.keras.optimizer_v2 import gradient_descent as gradient_descent_v2
 import tensorflow_model_optimization as tfmot
 from models.utils.flags import core as flags_core
 from models.utils.misc import keras_utils
@@ -104,7 +104,7 @@ class PiecewiseConstantDecayWithWarmup(
 def get_optimizer(learning_rate=0.1):
   """Returns optimizer to use."""
   # The learning_rate is overwritten at the beginning of each step by callback.
-  return gradient_descent_v2.SGD(learning_rate=learning_rate, momentum=0.9)
+  return optimizers.experimental.SGD(learning_rate=learning_rate, momentum=0.9)
 
 
 def get_callbacks(

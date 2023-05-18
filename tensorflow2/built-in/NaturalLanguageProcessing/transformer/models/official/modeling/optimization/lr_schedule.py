@@ -85,8 +85,9 @@ PolynomialDecayWithOffset = _make_offset_wrapper(
 ExponentialDecayWithOffset = _make_offset_wrapper(
     "ExponentialDecayWithOffset",
     tf.keras.optimizers.schedules.ExponentialDecay)
-CosineDecayWithOffset = _make_offset_wrapper("CosineDecayWithOffset",
-                                             tf.keras.experimental.CosineDecay)
+CosineDecayWithOffset = _make_offset_wrapper(
+    "CosineDecayWithOffset",
+    tf.keras.optimizers.schedules.CosineDecay)
 
 
 class LinearWarmup(tf.keras.optimizers.schedules.LearningRateSchedule):

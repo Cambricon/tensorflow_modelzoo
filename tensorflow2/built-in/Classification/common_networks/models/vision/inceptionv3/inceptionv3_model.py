@@ -25,12 +25,12 @@ from __future__ import print_function
 
 import os
 import tensorflow as tf
-from tensorflow.python.keras import backend
-from tensorflow.python.keras import initializers
-from tensorflow.python.keras import models
-from tensorflow.python.keras import regularizers
-from tensorflow.python.keras import layers
-from tensorflow.python.keras.engine import training
+from tensorflow import keras
+from tensorflow.keras import backend
+from tensorflow.keras import initializers
+from tensorflow.keras import models
+from tensorflow.keras import regularizers
+from tensorflow.keras import layers
 from models.vision import imagenet_tools
 #from tensorflow.python.keras.utils import data_utils
 #from tensorflow.python.keras.utils import layer_utils
@@ -328,7 +328,7 @@ def InceptionV3(
   # any potential predecessors of `input_tensor`.
   inputs = img_input
   # Create model.
-  model = training.Model(inputs, x, name='inception_v3')
+  model = keras.Model(inputs, x, name='inception_v3')
 
   # Load weights.
   if weights:
@@ -381,7 +381,7 @@ def conv2d_bn(x,
       use_bias=False,
       name=conv_name)(
           x)
-  x = layers.BatchNormalization(axis=bn_axis, 
+  x = layers.BatchNormalization(axis=bn_axis,
       momentum=BATCH_NORM_DECAY,
       epsilon=BATCH_NORM_EPSILON,
       scale=False, name=bn_name)(x)

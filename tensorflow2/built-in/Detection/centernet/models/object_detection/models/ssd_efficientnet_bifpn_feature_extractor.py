@@ -23,7 +23,7 @@ from six.moves import range
 from six.moves import zip
 import tensorflow.compat.v2 as tf
 
-from tensorflow.python.keras import backend as keras_backend
+from tensorflow.keras import backend as keras_backend
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import bidirectional_feature_pyramid_generators as bifpn_generators
 from object_detection.utils import ops

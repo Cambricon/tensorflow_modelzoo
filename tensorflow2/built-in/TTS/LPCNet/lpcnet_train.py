@@ -262,7 +262,10 @@ def get_opt(args):
         opt = Adam(lr, decay=decay, beta_2=0.99)
 
     if args.use_amp:
-        opt = tf.train.experimental.enable_mixed_precision_graph_rewrite(opt)
+        policy = tf.keras.mixed_precision.Policy(
+            'mixed_float16')
+        tf.keras.mixed_precision.set_global_policy(policy)
+        opt = tf.keras.mixed_precision.LossScaleOptimizer(opt)
 
     return opt
 

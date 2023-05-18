@@ -11,8 +11,9 @@ source env.sh
 mkdir $model_dir
 
 horovodrun -np 4 python3 main.py \
-    --dataset_type=raw \
-    --dataset_path=$DATA_DIR  \
+    --mode=train \
+    --dataset_type=synthetic \
+    --dataset_path=$DATA_DIR \
     --save_checkpoint_path=$model_dir/ \
     --batch_size=65536 \
     --valid_batch_size=65536 \
@@ -24,7 +25,7 @@ horovodrun -np 4 python3 main.py \
     --synthetic_dataset_train_batches=64008 \
     --synthetic_dataset_valid_batches=1350 \
     --use_amp=True \
-    --enable_xla=False \
+    --enable_xla=True \
     --loss_scale=1024 \
     --prefetch_batches=10 \
     --auc_thresholds=8000 \
@@ -56,4 +57,5 @@ horovodrun -np 4 python3 main.py \
     --use_horovod=True \
     --use_profiler=False \
     --use_performance=False
+
 popd

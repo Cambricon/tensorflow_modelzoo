@@ -23,14 +23,14 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from tensorflow.python.keras import backend
-from tensorflow.python.keras.applications import imagenet_utils
-from tensorflow.python.keras.engine import training
-from tensorflow.python.keras.layers import VersionAwareLayers
-from tensorflow.python.keras.utils import data_utils
-from tensorflow.python.keras.utils import layer_utils
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import backend
+from tensorflow.keras import utils
+from tensorflow.keras.applications import imagenet_utils
 from tensorflow.python.lib.io import file_io
 from tensorflow.python.util.tf_export import keras_export
+from models.vision import imagenet_tools
 
 """
 BASE_WEIGTHS_PATH = ('https://storage.googleapis.com/tensorflow/'
@@ -51,10 +51,9 @@ DENSENET201_WEIGHT_PATH_NO_TOP = (
     BASE_WEIGTHS_PATH +
     'densenet201_weights_tf_dim_ordering_tf_kernels_notop.h5')
 """
-layers = VersionAwareLayers()
 
 
-#layers = tf.keras.layers
+layers = tf.keras.layers
 L2_WEIGHT_DECAY = 1e-4
 BATCH_NORM_DECAY = 0.9
 BATCH_NORM_EPSILON = 1e-5
@@ -211,7 +210,7 @@ def DenseNet(
                      ' as true, `classes` should be 1000')
 
   # Determine proper input shape
-  input_shape = imagenet_utils.obtain_input_shape(
+  input_shape = imagenet_tools.obtain_input_shape(
       input_shape,
       default_size=224,
       min_size=32,
@@ -253,7 +252,7 @@ def DenseNet(
   if include_top:
     x = layers.GlobalAveragePooling2D(name='avg_pool')(x)
 
-    imagenet_utils.validate_activation(classifier_activation, weights)
+    imagenet_tools.validate_activation(classifier_activation, weights)
     x = layers.Dense(classes, activation=classifier_activation,
                      name='predictions')(x)
     # Add by JIRA [TENSORFLOW-2984]
@@ -267,22 +266,22 @@ def DenseNet(
   # Ensure that the model takes into account
   # any potential predecessors of `input_tensor`.
   if input_tensor is not None:
-    inputs = layer_utils.get_source_inputs(input_tensor)
+    inputs = utils.get_source_inputs(input_tensor)
   else:
     inputs = img_input
 
   # Create model.
   if blocks == [6, 12, 24, 16]:
-    model = training.Model(inputs, x, name='densenet121')
+    model = keras.Model(inputs, x, name='densenet121')
   elif blocks == [6, 12, 32, 32]:
-    model = training.Model(inputs, x, name='densenet169')
+    model = keras.Model(inputs, x, name='densenet169')
   elif blocks == [6, 12, 48, 32]:
-    model = training.Model(inputs, x, name='densenet201')
+    model = keras.Model(inputs, x, name='densenet201')
   else:
-    model = training.Model(inputs, x, name='densenet')
+    model = keras.Model(inputs, x, name='densenet')
 
   # Load weights.
-  
+
   return model
 
 
@@ -338,12 +337,6 @@ def preprocess_input(x, data_format=None):
 def decode_predictions(preds, top=5):
   return imagenet_utils.decode_predictions(preds, top=top)
 
-
-preprocess_input.__doc__ = imagenet_utils.PREPROCESS_INPUT_DOC.format(
-    mode='',
-    ret=imagenet_utils.PREPROCESS_INPUT_RET_DOC_TORCH,
-    error=imagenet_utils.PREPROCESS_INPUT_ERROR_DOC)
-decode_predictions.__doc__ = imagenet_utils.decode_predictions.__doc__
 
 DOC = """
 

@@ -23,13 +23,20 @@ def configure_optimizer(optimizer,
                         use_graph_rewrite=False,
                         loss_scale='dynamic'):
   """Configures optimizer object with performance options."""
+  is_dynamic = False
+  initial_scale = None
+  if loss_scale == 'dynamic':
+    is_dynamic = True
+  else:
+    initial_scale = loss_scale
+
   if use_float16:
     # Wraps optimizer with a LossScaleOptimizer. This is done automatically
     # in compile() with the "mixed_float16" policy, but since we do not call
     # compile(), we must wrap the optimizer manually.
     optimizer = (
-        tf.keras.mixed_precision.experimental.LossScaleOptimizer(
-            optimizer, loss_scale=loss_scale))
+        tf.keras.mixed_precision.LossScaleOptimizer(
+            optimizer, dynamic=is_dynamic, initial_scale=initial_scale))
   if use_graph_rewrite:
     # Note: the model dtype must be 'float32', which will ensure
     # tf.ckeras.mixed_precision and
@@ -43,13 +50,13 @@ def configure_optimizer(optimizer,
 def set_mixed_precision_policy(dtype, loss_scale=None):
   """Sets mix precision policy."""
   if dtype == tf.float16:
-    policy = tf.keras.mixed_precision.experimental.Policy(
-        'mixed_float16', loss_scale=loss_scale)
-    tf.keras.mixed_precision.experimental.set_policy(policy)
+    policy = tf.keras.mixed_precision.Policy(
+        'mixed_float16')
+    tf.keras.mixed_precision.set_global_policy(policy)
   elif dtype == tf.bfloat16:
-    policy = tf.keras.mixed_precision.experimental.Policy('mixed_bfloat16')
-    tf.keras.mixed_precision.experimental.set_policy(policy)
+    policy = tf.keras.mixed_precision.Policy('mixed_bfloat16')
+    tf.keras.mixed_precision.set_global_policy(policy)
   elif dtype == tf.float32:
-    tf.keras.mixed_precision.experimental.set_policy('float32')
+    tf.keras.mixed_precision.set_global_policy('float32')
   else:
     raise ValueError('Unexpected dtype: %s' % dtype)

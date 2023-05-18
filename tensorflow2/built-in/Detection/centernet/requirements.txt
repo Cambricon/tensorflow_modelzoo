@@ -1,3 +1,4 @@
+typing_extensions==4.4.0
 six
 google-api-python-client>=1.6.7
 google-cloud-bigquery>=0.31.0
@@ -10,7 +11,8 @@ py-cpuinfo>=3.3.0
 scipy>=0.19.1
 tensorflow-hub>=0.6.0
 tensorflow-model-optimization>=0.4.1
-tensorflow-datasets
+tensorflow-metadata==1.12.0
+tensorflow_datasets==4.8.3
 tensorflow-addons
 dataclasses;python_version<"3.7"
 gin-config

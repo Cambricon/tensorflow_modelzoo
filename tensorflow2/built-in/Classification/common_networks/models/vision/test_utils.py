@@ -18,9 +18,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from tensorflow.python.keras import backend
-from tensorflow.python.keras import layers
-from tensorflow.python.keras import models
+from tensorflow.keras import backend
+from tensorflow.keras import layers
+from tensorflow.keras import models
 
 
 def trivial_model(num_classes):

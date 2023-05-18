@@ -4,6 +4,10 @@ set -x
 cur_path=$(pwd)
 work_dir="${cur_path}/../"
 pushd $work_dir
+
+export TF_MLU_THREAD_MODE="mlu_private"
+export TF_MLU_THREAD_COUNT=4
+
 source env.sh
 horovodrun -np 8  python lpcnet_train.py \
  --num_mlus=1 \

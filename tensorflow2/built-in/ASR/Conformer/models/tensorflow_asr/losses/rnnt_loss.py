@@ -153,7 +153,7 @@ def forward_dp(
     """
     :return: forward variable alpha with shape batch_size x input_max_len x target_max_len
     """
-
+    batch_size = tf.shape(bp_diags)[1]
     def next_state(x, trans_probs):
         blank_probs = trans_probs[0]
         truth_probs = trans_probs[1]

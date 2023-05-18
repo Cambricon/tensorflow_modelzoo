@@ -1,6 +1,6 @@
 **ResNet50 (TensorFlow1)**
 
-本仓库是在MLU上基于TensorFlow1框架实现的网络，共支持ResNet18、ResNet50、ResNet101、DenseNet201、Vgg16、Vgg19、InceptionV2、InceptionV3、AlexNet、MobilenetV2十种模型，支持训练与推理。
+本仓库是在MLU上基于TensorFlow1框架实现的网络，共支持ResNet50、ResNet101、DenseNet201、Vgg19、InceptionV3、MobilenetV2十种模型，支持训练与推理。
 
 ------------
 
@@ -21,22 +21,17 @@
 # 1. 模型概述
 
 
-ResNet18、ResNet50、ResNet101网络都是残差卷积网络，原始论文为[Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385)。
+ResNet50、ResNet101网络都是残差卷积网络，原始论文为[Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385)。
 ResNet网络结构的代码实现可参考：[这里](https://github.com/tensorflow/models/tree/master/model/legacy/image_classification/resnet)。
 
 DenseNet201网络是密集连接卷积网络，原始论文为[Deep Residual Learning for Image Recognition](https://arxiv.org/pdf/1608.06993.pdf)。
 DenseNet201网络结构的代码实现可参考：[这里](https://github.com/keras-team/keras/blob/master/keras/applications/densenet.py)。
 
 Vgg16与Vgg19网络的原始论文为[Deep Residual Learning for Image Recognition](https://arxiv.org/pdf/1409.1556.pdf)。
-Vgg16网络结构的代码实现可参考：[这里](https://github.com/keras-team/keras/blob/master/keras/applications/vgg16.py)。
 Vgg19网络结构的代码实现可参考：[这里](https://github.com/keras-team/keras/blob/master/keras/applications/vgg19.py)。
 
 InceptionV2与InceptionV3网络的原始论文为[Rethinking the Inception Architecture for Computer Vision](https://arxiv.org/pdf/1512.00567.pdf)。
-InceptionV2网络结构的代码实现可参考：[这里](https://github.com/keras-team/keras/blob/master/keras/applications/inception_resnet_v2.py)。
 InceptionV3网络结构的代码实现可参考：[这里](https://github.com/keras-team/keras/blob/master/keras/applications/inception_v3.py)。
-
-AlexNet网络的原始论文为[ImageNet Classification with Deep Convolutional Neural Networks](https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf)。
-AlexNet网络结构的代码实现可参考：[这里](https://github.com/tensorflow/models/blob/238922e98dd0e8254b5c0921b241a1f5a151782f/research/slim/nets/alexnet.py)。
 
 MobilenetV2网络的原始论文为[MobileNetV2: Inverted Residuals and Linear Bottlenecks](https://arxiv.org/pdf/1801.04381.pdf)。
 MobilenetV2网络结构的代码实现可参考：[这里](https://github.com/keras-team/keras/blob/master/keras/applications/mobilenet_v2.py)。
@@ -46,29 +41,21 @@ MobilenetV2网络结构的代码实现可参考：[这里](https://github.com/ke
 
 Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes
 ----- | ----- | ----- | ----- | ----- | ----- |
-ResNet18 | TensorFlow1  | MLU370-X8  | FP16/FP32| Yes  | Not Tested
 ResNet50 | TensorFlow1  | MLU370-X8  | FP16/FP32| Yes  | Not Tested
 ResNet101 | TensorFlow1  | MLU370-X8  | FP16/FP32| Yes  | Not Tested
 DenseNet201 | TensorFlow1  | MLU370-X8  | FP16/FP32| Yes  | Not Tested
-Vgg16 | TensorFlow1  | MLU370-X8  | FP16/FP32| Yes  | Not Tested
 Vgg19 | TensorFlow1  | MLU370-X8  | FP16/FP32| Yes  | Not Tested
-InceptionV2 | TensorFlow1  | MLU370-X8  | FP16/FP32| Yes  | Not Tested
 InceptionV3 | TensorFlow1  | MLU370-X8  | FP16/FP32| Yes  | Not Tested
-AlexNet | TensorFlow1  | MLU370-X8  |   FP16/FP32| Yes  | Not Tested
-MobilenetV2 | TensorFlow1  | MLU370-X8  | FP16/FP32| Yes  | Not Tested 
+MobilenetV2 | TensorFlow1  | MLU370-X8  | FP16/FP32| Yes  | Not Tested
 
 ## 2.2 **推理模型支持情况**
 Models  | Framework  | Supported MLU   | Supported Data Precision  | Jit/Eager Support
 ----- | ----- | ----- | ----- | ----- | ----- |
-ResNet18 | TensorFlow1  | MLU370-X4/X8  | FP32| Eager
 ResNet50 | TensorFlow1  | MLU370-X4/X8  | FP32| Eager
 ResNet101 | TensorFlow1  | MLU370-X4/X8  | FP32| Eager
 ResNet201 | TensorFlow1  | MLU370-X4/X8  | FP32| Eager
-Vgg16 | TensorFlow1  | MLU370-X4/X8  | FP32| Eager
 Vgg19 | TensorFlow1  | MLU370-X4/X8  | FP32| Eager
-InceptionV2 | TensorFlow1  | MLU370-X4/X8  | FP32| Eager
 InceptionV3 | TensorFlow1  | MLU370-X4/X8  | FP32| Eager
-AlexNet| TensorFlow1  | MLU370-X4/X8  | FP32| Eager
 MobilenetV2| TensorFlow1  | MLU370-X4/X8  | FP32| Eager
 
 
@@ -77,7 +64,7 @@ MobilenetV2| TensorFlow1  | MLU370-X4/X8  | FP32| Eager
 | 参数 | 作用 |
 |------|------|
 | batch_size | 更改训练的batch_size |
-| model_type | 修改训练的网络名称，选项有resnet18、resnet50、resnet101、vgg16、vgg19、alexnet、inceptionv2、inceptionv3、mobilenetv2、densenet201 |
+| model_type | 修改训练的网络名称，选项有resnet50、resnet101、vgg19、inceptionv3、mobilenetv2、densenet201 |
 | model_dir | 指向保存checkpoint的路径 |
 | data_dir | 指向数据集的路径 |
 | epochs | 更改训练的epoch数目 |
@@ -92,7 +79,7 @@ MobilenetV2| TensorFlow1  | MLU370-X4/X8  | FP32| Eager
 | inter_op_threads | 设置OP间并发线程数 |
 | intra_op_threads | 设置OP内并发线程数 |
 | finetune_checkpoint | 指向加载checkpoint训练的路径 |
-| finetune_steps | 与finetune_checkpoint连用，控制网络finetune的步数 |  
+| finetune_steps | 与finetune_checkpoint连用，控制网络finetune的步数 |
 
 
 # 4.快速使用
@@ -110,12 +97,12 @@ MobilenetV2| TensorFlow1  | MLU370-X4/X8  | FP32| Eager
 
 **(1)基于base docker image的容器环境搭建**
 
-**a)导入镜像**  
+**a)导入镜像**
 
 下载Cambricon TensorFlow1 docker镜像并参考如下命令加载镜像：
 ` docker load -i Your_Cambricon_TensorFlow1_Image.tar.gz`
 
-**b)启动容器**  
+**b)启动容器**
 
 `run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`和`IMAGE_TAG`变量后再运行`bash run_docker.sh`即可启动容器。
 ```bash
@@ -171,7 +158,7 @@ pip install .
 
 **(2)基于DOCKERFILE的容器环境搭建**
 
-**a)构建镜像**  
+**a)构建镜像**
 
 由于本仓库包含各类网络，如ASR类，NLP类，为避免网络之间可能的依赖项冲突，您可基于DOCKERFILE构建当前网络专属的镜像。详细步骤如下所示：
 ```bash
@@ -194,7 +181,7 @@ docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 
 ```
 
-**b)创建并启动容器**  
+**b)创建并启动容器**
 
 上一步成功运行后，本地便生成了一个名为`common_networks_image`的docker镜像，后续即可基于该镜像创建容器。
 ```bash
@@ -227,33 +214,21 @@ bash run_docker.sh
 
 Models  | Framework  | MLU   | Data Precision  | Cards  | Run
 ----- | ----- | ----- | ----- | ----- | ----- |
-ResNet18  | TensorFlow1  | MLU370-X8  | FP32  | 1  | bash ResNet18_Float32_100E_1MLU.sh
-ResNet18  | TensorFlow1  | MLU370-X8  | FP32  | 8  | bash Horovod_ResNet18_Float32_100E_8MLUs.sh
-ResNet18  | TensorFlow1  | MLU370-X8  | AMP  | 8  | bash Horovod_ResNet18_AMP_100E_8MLUs.sh
 ResNet50  | TensorFlow1  | MLU370-X8  | FP32  | 1  | bash ResNet50_Float32_100E_1MLU.sh
 ResNet50  | TensorFlow1  | MLU370-X8  | FP32  | 8  | bash Horovod_ResNet50_Float32_100E_8MLUs.sh
 ResNet50  | TensorFlow1  | MLU370-X8  | AMP  | 8  | bash Horovod_ResNet50_AMP_100E_8MLUs.sh
 ResNet101  | TensorFlow1  | MLU370-X8  | FP32  | 1  | bash ResNet101_Float32_100E_1MLU.sh
 ResNet101  | TensorFlow1  | MLU370-X8  | FP32  | 8  | bash Horovod_ResNet101_Float32_100E_8MLUs.sh
 ResNet101  | TensorFlow1  | MLU370-X8  | AMP | 8  | bash Horovod_ResNet101_AMP_100E_8MLUs.sh
-Vgg16  | TensorFlow1  | MLU370-X8  | FP32  | 1  | bash Vgg16_Float32_100E_1MLU.sh
-Vgg16  | TensorFlow1 | MLU370-X8  | FP32  | 8  | bash Horovod_Vgg16_Float32_100E_8MLUs.sh
-Vgg16  | TensorFlow1  | MLU370-X8  | AMP  | 8  | bash Horovod_Vgg16_AMP_100E_8MLUs.sh
 Vgg19  | TensorFlow1  | MLU370-X8  | FP32  | 1  | bash Vgg19_Float32_100E_1MLU.sh
 Vgg19  | TensorFlow1  | MLU370-X8  | FP32  | 8  | bash Horovod_Vgg19_Float32_100E_8MLUs.sh
 Vgg19  | TensorFlow1  | MLU370-X8  | AMP  | 8  | bash Horovod_Vgg19_AMP_100E_8MLUs.sh
 DenseNet201  | TensorFlow1  | MLU370-X8  | FP32  | 1  | bash DenseNet201_Float32_140E_1MLU.sh
 DenseNet201  | TensorFlow1  | MLU370-X8  | FP32  | 8  | bash Horovod_DenseNet201_Float32_140E_8MLUs.sh
 DenseNet201  | TensorFlow1  | MLU370-X8  | AMP | 8  | bash Horovod_DenseNet201_AMP_140E_8MLUs.sh
-InceptionV2  | TensorFlow1  | MLU370-X8  | FP32  | 1  | bash InceptionV2_Float32_100E_1MLU.sh
-InceptionV2  | TensorFlow1  | MLU370-X8  | FP32  | 8  | bash Horovod_InceptionV2_Float32_100E_8MLUs.sh
-InceptionV2  | TensorFlow1  | MLU370-X8  | AMP | 8  | bash Horovod_InceptionV2_AMP_100E_8MLUs.sh
 InceptionV3  | TensorFlow1  | MLU370-X8  | FP32  | 1  | bash InceptionV3_Float32_100E_1MLU.sh
 InceptionV3  | TensorFlow1  | MLU370-X8  | FP32  | 8  | bash Horovod_InceptionV3_Float32_100E_8MLUs.sh
 InceptionV3  | TensorFlow1  | MLU370-X8  | AMP | 8  | bash Horovod_InceptionV3_AMP_100E_8MLUs.sh
-AlexNet  | TensorFlow1  | MLU370-X8  | FP32  | 1  | bash AlexNet_Float32_100E_1MLU.sh
-AlexNet  | TensorFlow1  | MLU370-X8  | FP32  | 8  | bash Horovod_AlexNet_Float32_100E_8MLUs.sh
-AlexNet  | TensorFlow1  | MLU370-X8  | AMP | 8  | bash Horovod_AlexNet_AMP_100E_8MLUs.sh
 MobilenetV2  | TensorFlow1  | MLU370-X8  | FP32  | 1  | bash MobilenetV2_Float32_120E_1MLU.sh
 MobilenetV2  | TensorFlow1  | MLU370-X8  | FP32  | 8  | bash Horovod_MobilenetV2_Float32_120E_8MLUs.sh
 MobilenetV2  | TensorFlow1  | MLU370-X8  | AMP | 8  | bash Horovod_MobilenetV2_AMP_120E_8MLUs.sh
@@ -263,7 +238,7 @@ MobilenetV2  | TensorFlow1  | MLU370-X8  | AMP | 8  | bash Horovod_MobilenetV2_A
 
 训练完成后，程序会输出训练精度`accuracy`，并将训练过程中产生的模型文件及权重保存至`model_dir`指定的目录内。
 
-若您想基于已有的预训练模型进行训练，则可参考如下命令，修改脚本内的参数（以`Horovod_ResNet18_Float32_8MLUs.sh`为例）：
+若您想基于已有的预训练模型进行训练，则可参考如下命令，修改脚本内的参数（以`Horovod_ResNet101_Float32_8MLUs.sh`为例）：
 ```bash
 # 使用8卡MLU370-X8，加载已经训练了50个epoch的checkpoint文件进行finetune，训练1000 step
 # 则finetune_steps应设为1000，epochs应设为51
@@ -272,7 +247,7 @@ MobilenetV2  | TensorFlow1  | MLU370-X8  | AMP | 8  | bash Horovod_MobilenetV2_A
 cur_path=$(pwd)
 work_dir="${cur_path}/.."
 timestamp=$(date +%Y%m%d%H%M)
-model_dir="${work_dir}/resnet18_model_${timestamp}"
+model_dir="${work_dir}/resnet101_model_${timestamp}"
 
 pushd "${work_dir}"
 
@@ -280,7 +255,7 @@ source env.sh
 
 horovodrun -np 8 python3 classifier_trainer.py \
     --dataset=imagenet \
-    --model_type=resnet18 \
+    --model_type=resnet101 \
     --mode=train_and_eval \
     --model_dir=$model_dir \
     --data_dir=$DATA_DIR \
@@ -308,10 +283,10 @@ popd
 
 
 ### 4.3.2 **一键执行推理脚本**
-为了遍历多种网络与输入规模，本仓库还提供了一键执行多种参数配置的脚本：`run_scripts/infer_run_eager_networks.sh`，需要用户手动传入`model_type`和`model_dir`两个参数，其中`model_dir`默认以`tensorflow_modelzoo/tensorflow/built-in/Classification/common_networks`为当前目录。具体参见`3. 默认参数配置`，以resnet18为例，具体示例如下：
+为了遍历多种网络与输入规模，本仓库还提供了一键执行多种参数配置的脚本：`run_scripts/infer_run_eager_networks.sh`，需要用户手动传入`model_type`和`model_dir`两个参数，其中`model_dir`默认以`tensorflow_modelzoo/tensorflow/built-in/Classification/common_networks`为当前目录。具体参见`3. 默认参数配置`，以resnet101为例，具体示例如下：
 ```bash
 cd run_scripts
-bash infer_run_eager_networks.sh --model_type resnet18 --model_dir=resnet18_model_dir
+bash infer_run_eager_networks.sh --model_type resnet101 --model_dir=resnet101_model_dir
 ```
 
 

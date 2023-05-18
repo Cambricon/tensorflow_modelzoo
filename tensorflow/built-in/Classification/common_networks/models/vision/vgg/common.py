@@ -278,10 +278,10 @@ def define_keras_flags(
       'TPU.')
 
   if model:
-    flags.DEFINE_string('model', 'vgg16',
+    flags.DEFINE_string('model', 'vgg19',
                         'Name of model preset. (mobilenet, resnet50_v1.5)')
   if optimizer:
-    flags.DEFINE_string('optimizer', 'vgg16',
+    flags.DEFINE_string('optimizer', 'vgg19',
                         'Name of optimizer preset. '
                         '(mobilenet_default, resnet50_default)')
     # TODO(kimjaehong): Replace as general hyper-params not only for mobilenet.

@@ -1,6 +1,6 @@
 **Common_networks (TensorFlow2)**
 
-本仓库是在MLU上基于TensorFlow框架实现的网络，共支持ResNet50、ResNet18、ResNet101、DenseNet201、Vgg16、Vgg19六种模型，支持训练与推理。
+本仓库是在MLU上基于TensorFlow框架实现的网络，共支持ResNet50、ResNet101、DenseNet201、Vgg19四种模型，支持训练与推理。
 
 ------------
 
@@ -24,37 +24,32 @@
 # 1. 模型概述
 
 
-ResNet18、ResNet50和ResNet101网络都是残差卷积网络，原始论文为[Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385)。
+ResNet50和ResNet101网络都是残差卷积网络，原始论文为[Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385)。
 ResNet网络结构的代码实现可参考：[这里](https://github.com/tensorflow/models/tree/master/model/legacy/image_classification/resnet)。
 
 DenseNet201网络是密集连接卷积网络，原始论文为[Deep Residual Learning for Image Recognition](https://arxiv.org/pdf/1608.06993.pdf)。
 DenseNet201网络结构的代码实现可参考：[这里](https://github.com/keras-team/keras/blob/master/keras/applications/densenet.py)。
 
-Vgg16与Vgg19网络的原始论文为[Deep Residual Learning for Image Recognition](https://arxiv.org/pdf/1409.1556.pdf)。
-Vgg16网络结构的代码实现可参考：[这里](https://github.com/keras-team/keras/blob/master/keras/applications/vgg16.py)。
+Vgg19网络的原始论文为[Deep Residual Learning for Image Recognition](https://arxiv.org/pdf/1409.1556.pdf)。
 Vgg19网络结构的代码实现可参考：[这里](https://github.com/keras-team/keras/blob/master/keras/applications/vgg19.py)。
 
 # 2. 模型支持情况
 ## 2.1 **训练模型支持情况**
 
-Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes
------ | ----- | ----- | ----- | ----- | ----- |
-ResNet18 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
-ResNet50 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
-ResNet101 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
-DenseNet201 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
-Vgg16 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
-Vgg19 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
+Models  | Framework  | Supported MLU   | Supported Data Precision  | Multi-GPUs  | Multi-Nodes | XLA Support |
+----- | ----- | ----- | ----- | ----- | ----- | ----- |
+ResNet50 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested | Yes |
+ResNet101 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested | Yes |
+DenseNet201 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested | Yes |
+Vgg19 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested | Yes |
 
 
 ## 2.2 **推理模型支持情况**
 
 |Models  | Framework  | Supported MLU   | Supported Data Precision   | Eager Support|
 |----- | ----- | ----- | ----- | ----- |
-|ResNet18   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager|
 |ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager|
 |ResNet101   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager|
-|Vgg16   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager|
 |Vgg19   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager|
 |Densenet201   | TensorFlow2  | MLU370-S4/X4/X8  | FP16/FP32   | Eager|
 
@@ -72,16 +67,15 @@ Vgg19 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 | model_dir | 指向保存checkpoint的路径 |
 | data_dir | 指向数据集的路径 |
 | epochs | 更改训练的epoch数目 |
-| use_profiler | 为True则开启tensorboard |
 | use_amp | 控制是否使用amp进行混合精度训练或验证 |
 | skip_eval | 是否跳过推理阶段 |
 | finetune_checkpoint | 预训练模型的路径。若进行推理时，此参数指向用于推理的已训练好的checkpoint文件 |
 | enable_tensorboard | 控制是否开启tensorboard，并记录性能 |
 | distribution_strategy | 控制是否开启原生分布式，原生分布式不能与Horovod分布式同时开启 |
 | num_mlus，num_gpus | 联合控制网络运行的设备，在mlu设备上运行需设置num_mlus=1,num_gpus=0；在gpu设备上运行需设置num_mlus=0,num_gpus=1 |
+| enable_xla | 是否使能XLA，默认设置为False |
 
 
-  
 # 4.快速使用
 下面将详细展示如何在 Cambricon TensorFlow2上完成分类网络的训练与推理。
 ## 4.1 **依赖项检查**
@@ -97,12 +91,12 @@ Vgg19 | TensorFlow  | MLU370-X8  | FP16/FP32  | Yes  | Not Tested
 
 **(1)基于base docker image的容器环境搭建**
 
-**a)导入镜像**  
+**a)导入镜像**
 
 下载Cambricon TensorFlow2 docker镜像并参考如下命令加载镜像：
 ` docker load -i Your_Cambricon_TensorFlow2_Image.tar.gz`
 
-**b)启动容器**  
+**b)启动容器**
 
 `run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`变量后再运行`bash run_docker.sh`即可启动容器。
 ```bash
@@ -158,7 +152,7 @@ pip install .
 
 **(2)基于DOCKERFILE的容器环境搭建**
 
-**a)构建镜像**  
+**a)构建镜像**
 
 由于本仓库包含各类网络，如ASR类，NLP类，为避免网络之间可能的依赖项冲突，您可基于DOCKERFILE构建当前网络专属的镜像。详细步骤如下所示：
 ```bash
@@ -181,7 +175,7 @@ docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 
 ```
 
-**b)创建并启动容器**  
+**b)创建并启动容器**
 
 上一步成功运行后，本地便根据您的命名生成了一个名为`your_docker_image_name`的docker镜像，后续即可基于该镜像创建容器。
 ```bash
@@ -214,18 +208,12 @@ bash run_docker.sh
 
 Models  | Framework  | MLU   | Data Precision  | Cards  | Run
 ----- | ----- | ----- | ----- | ----- | ----- |
-ResNet18  | TensorFlow  | MLU370-X8  | FP32  | 1  | bash ResNet18_Float32_100E_1MLU.sh
-ResNet18  | TensorFlow  | MLU370-X8  | FP32  | 8  | bash Horovod_ResNet18_Float32_100E_8MLUs.sh
-ResNet18  | TensorFlow  | MLU370-X8  | AMP  | 8  | bash Horovod_ResNet18_AMP_100E_8MLUs.sh
 ResNet50  | TensorFlow  | MLU370-X8  | FP32  | 1  | bash ResNet50_Float32_90E_1MLU.sh
 ResNet50  | TensorFlow  | MLU370-X8  | FP32  | 8  | bash Horovod_ResNet50_Float32_90E_8MLUs.sh
 ResNet50  | TensorFlow  | MLU370-X8  | AMP  | 8  | bash Horovod_ResNet50_AMP_90E_8MLUs.sh
 ResNet101  | TensorFlow  | MLU370-X8  | FP32  | 1  | bash ResNet101_Float32_100E_1MLU.sh
 ResNet101  | TensorFlow  | MLU370-X8  | FP32  | 8  | bash Horovod_ResNet101_Float32_100E_8MLUs.sh
 ResNet101  | TensorFlow  | MLU370-X8  | AMP | 8  | bash Horovod_ResNet101_AMP_100E_8MLUs.sh
-Vgg16  | TensorFlow  | MLU370-X8  | FP32  | 1  | bash Vgg16_Float32_100E_1MLU.sh
-Vgg16  | TensorFlow  | MLU370-X8  | FP32  | 8  | bash Horovod_Vgg16_Float32_100E_8MLUs.sh
-Vgg16  | TensorFlow  | MLU370-X8  | AMP  | 8  | bash Horovod_Vgg16_AMP_100E_8MLUs.sh
 Vgg19  | TensorFlow  | MLU370-X8  | FP32  | 1  | bash Vgg19_Float32_100E_1MLU.sh
 Vgg19  | TensorFlow  | MLU370-X8  | FP32  | 8  | bash Horovod_Vgg19_Float32_100E_8MLUs.sh
 Vgg19  | TensorFlow  | MLU370-X8  | AMP  | 8  | bash Horovod_Vgg19_AMP_100E_8MLUs.sh
@@ -281,22 +269,18 @@ popd
 **注意**：使用预训练模型进行finetune训练时，`batch_size`，`np`，`use_amp`等超参需与from_scratch得到该预训练模型的超参一致，否则无法正常训练。
 
 
-### 4.3.2 **一键执行推理脚本**  
+### 4.3.2 **一键执行推理脚本**
 
-本仓库提供了常用分类网络的推理脚本：`run_scripts/Infer_${network_name}_*.sh`，您可根据自己的需求修改该脚本内的`batch_size`，`use_amp`，并根据您的本地实际路径，修改`../env.sh`内相关的预训练模型(如`VGG16_CKPT`，`VGG19_CKPT`)路径。完成修改后，按照如下命令运行即可分别以不同的参数推理。
+本仓库提供了常用分类网络的推理脚本：`run_scripts/Infer_${network_name}_*.sh`，您可根据自己的需求修改该脚本内的`batch_size`，`use_amp`，并根据您的本地实际路径，修改`../env.sh`内相关的预训练模型(如`VGG19_CKPT`)路径。完成修改后，按照如下命令运行即可分别以不同的参数推理。
 
 目前支持的精度类型与推理模式组合以及运行环境如下所示：
 
 |Models  | Framework  | Supported MLU   | Supported Data Precision   | Eager Support| RUN |
-|----- | ----- | ----- | ----- | ----- | ----- | 
-|ResNet18   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_ResNet18_Eager_Float32_Bsz_128.sh |
-|ResNet18   | TensorFlow2  | MLU370-S4/X4/X8  | FP16   | Eager| bash Infer_ResNet18_Eager_AMP_Bsz_128.sh |
+|----- | ----- | ----- | ----- | ----- | ----- |
 |ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_ResNet50_Eager_Float32_Bsz_128.sh |
 |ResNet50   | TensorFlow2  | MLU370-S4/X4/X8  | FP16   | Eager| bash Infer_ResNet50_Eager_AMP_Bsz_128.sh |
 |ResNet101   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_ResNet101_Eager_Float32_Bsz_128.sh |
 |ResNet101   | TensorFlow2  | MLU370-S4/X4/X8  | FP16   | Eager| bash Infer_ResNet101_Eager_AMP_Bsz_128.sh |
-|Vgg16   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_Vgg16_Eager_Float32_Bsz_128.sh |
-|Vgg16   | TensorFlow2  | MLU370-S4/X4/X8  | FP16   | Eager| bash Infer_Vgg16_Eager_AMP_Bsz_128.sh |
 |Vgg19   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_Vgg19_Eager_Float32_Bsz_128.sh |
 |Vgg19   | TensorFlow2  | MLU370-S4/X4/X8  | FP16   | Eager| bash Infer_Vgg19_Eager_AMP_Bsz_128.sh |
 |Densenet201   | TensorFlow2  | MLU370-S4/X4/X8  | FP32   | Eager| bash Infer_Densenet201_Eager_Float32_Bsz_64.sh |
@@ -311,11 +295,9 @@ popd
 
 Models  | MLUs |  Mixed Precision Top1   | FP32 Top1
 ----- | ----- | ----- | ----- |
-ResNet18 | 8  | 0.6882 | 0.6867
 ResNet50 | 8  | 0.7542 | 0.7540
 ResNet101 | 8  | 0.7591 | 0.7662
 DenseNet201 | 8  | 0.6978 | 0.6972
-Vgg16 | 8  | 0.6836 | 0.6814
 Vgg19 | 8  | 0.6934 | 0.6957
 
 
@@ -324,7 +306,6 @@ Vgg19 | 8  | 0.6934 | 0.6957
 
 # 7. Release_Notes
 @TODO
-
 
 
 
