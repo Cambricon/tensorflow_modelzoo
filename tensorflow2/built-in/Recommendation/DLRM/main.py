@@ -285,7 +285,7 @@ def main(argv):
         for step, ((numerical_features, categorical_features), labels) in enumerate(train_pipeline):
             if FLAGS.use_profiler:
                 if step == FLAGS.profiler_start_step and hvd.rank() == FLAGS.profiled_rank:
-                    tf.profiler.experimental.start(FLAGS.save_checkpoint_path + "/train/")
+                    tf.profiler.experimental.start(FLAGS.save_checkpoint_path)
 
                 if step == FLAGS.profiler_start_step + FLAGS.profiler_steps and hvd.rank() == FLAGS.profiled_rank:
                     tf.profiler.experimental.stop()

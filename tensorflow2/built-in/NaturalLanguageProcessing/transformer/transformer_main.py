@@ -534,7 +534,7 @@ class TransformerTask(object):
     if params["use_horovod"]:
       callbacks.append(hvd.callbacks.BroadcastGlobalVariablesCallback(0))
     if params["use_profiler"] and ((params['use_horovod'] and hvd.rank() == 0) or (not params['use_horovod'])):
-      callbacks.append(tf.keras.callbacks.TensorBoard(log_dir=params["model_dir"]))
+      callbacks.append(tf.keras.callbacks.TensorBoard(log_dir=params["model_dir"], profile_batch=2))
     return callbacks
 
   def _load_weights_if_possible(self, model, init_weight_path=None):

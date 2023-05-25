@@ -533,7 +533,7 @@ def generate_callbacks(args):
             callbacks.append(time_callback)
 
     if args.enable_tensorboard:
-        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=args.model_dir)
+        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=args.model_dir, profile_batch=2)
         callbacks.append(tensorboard_callback)
 
     return callbacks
