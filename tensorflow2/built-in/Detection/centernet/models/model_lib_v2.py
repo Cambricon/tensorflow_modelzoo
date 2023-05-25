@@ -723,7 +723,7 @@ def train_loop(
             if use_profiler and ((FLAGS.use_horovod and hvd.rank() == 0) or (not FLAGS.use_horovod)):
               options = profiler.ProfilerOptions(host_tracer_level=host_tracer_level,
                                                 device_tracer_level=device_tracer_level)
-              profiler.start(log_dir, options=options)
+              profiler.start(model_dir, options=options)
               loss = _dist_train_step(train_input_iter)
               profiler.stop()
             else:

@@ -94,10 +94,10 @@ flags.DEFINE_bool(
 flags.DEFINE_bool(
     'use_performance', False, 'Use performance test tools or not. It should be True or False')
 flags.DEFINE_integer(
-    'host_tracer_level', 0, 'When using profiler for performance analysis, '
+    'host_tracer_level', 2, 'When using profiler for performance analysis, '
     'you need to set host tracer level.')
 flags.DEFINE_integer(
-    'device_tracer_level', 0, 'When using profiler for performance analysis, '
+    'device_tracer_level', 1, 'When using profiler for performance analysis, '
     'you need to set device tracer level.')
 
 FLAGS = flags.FLAGS
