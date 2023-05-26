@@ -130,7 +130,7 @@ app.parse_flags_with_usage(sys.argv)
 FLAGS.amp=FLAGS.use_amp
 if FLAGS.enable_xla:
     os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
-        " --tf_xla_auto_jit=2 --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=1 ")
+        " --tf_xla_auto_jit=fusible --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=0 ")
 
 import time
 from models.lr_scheduler import LearningRateScheduler
