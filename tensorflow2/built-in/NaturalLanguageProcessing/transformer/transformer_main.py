@@ -556,7 +556,7 @@ class TransformerTask(object):
     lr_schedule = optimizer.LearningRateSchedule(
         params["learning_rate"], params["hidden_size"],
         params["learning_rate_warmup_steps"])
-    opt = tf.keras.optimizers.Adam(
+    opt = tf.keras.optimizers.legacy.Adam(
         lr_schedule,
         params["optimizer_adam_beta1"],
         params["optimizer_adam_beta2"],

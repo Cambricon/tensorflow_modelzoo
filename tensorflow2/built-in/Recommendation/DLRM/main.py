@@ -129,6 +129,7 @@ app.define_help_flags()
 app.parse_flags_with_usage(sys.argv)
 FLAGS.amp=FLAGS.use_amp
 if FLAGS.enable_xla:
+    # The fusion strategy using fusible for dlrm is the best choice at present
     os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
         " --tf_xla_auto_jit=fusible --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=0 ")
 
@@ -225,7 +226,7 @@ def main(argv):
                     multi_mlu_metadata=multi_mlu_metadata)
 
     if FLAGS.optimizer == 'sgd':
-        embedding_optimizer = tf.keras.optimizers.SGD(lr=FLAGS.learning_rate, momentum=0)
+        embedding_optimizer = tf.keras.optimizers.legacy.SGD(lr=FLAGS.learning_rate, momentum=0)
         if FLAGS.amp:
             embedding_optimizer = LossScaleOptimizer(embedding_optimizer,
                                                      initial_scale=FLAGS.loss_scale,
