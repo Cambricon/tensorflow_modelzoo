@@ -166,7 +166,6 @@ fi
 ```bash
 # 安装requirements中的依赖库
 pip install -r requirements.txt
-pip install tensorflow-io~=0.18.0 --no-deps
 # 安装性能测试工具(可选)
 # 若不开启性能测试（use_performance为False），则无需安装。
 cd ../../../../tools/record_time/

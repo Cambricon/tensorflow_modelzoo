@@ -20,7 +20,7 @@
     "conformer_train": {
         "directory": "tensorflow2/built-in/ASR/Conformer",
         "testcases": [
-            "cd run_scripts/ci;bash prepare_env.sh && bash Conformer_Train_1MLU.sh",
+            "cd run_scripts/ci;bash Conformer_Train_1MLU.sh",
             "cd run_scripts/ci;bash Conformer_Train_Horovod_AMP.sh",
             "cd run_scripts/ci;bash Conformer_Train_Horovod_Float32.sh"
         ]
@@ -101,8 +101,8 @@
     "conformer_infer": {
         "directory": "tensorflow2/built-in/ASR/Conformer",
         "testcases": [
-            "cd run_scripts/ci;bash prepare_env.sh && bash Conformer_Infer_1MLU.sh",
-            "cd run_scripts/ci;bash prepare_env.sh && bash Conformer_Infer_1MLU_AMP.sh"
+            "cd run_scripts/ci;bash Conformer_Infer_1MLU.sh",
+            "cd run_scripts/ci;bash Conformer_Infer_1MLU_AMP.sh"
         ]
     }
 }
