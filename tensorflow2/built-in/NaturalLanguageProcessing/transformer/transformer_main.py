@@ -207,12 +207,9 @@ class TransformerTask(object):
     params["intra_op_parallelism_threads"] = flags_obj.intra_op_parallelism_threads
     params["horovod_fusion_threshold"] = flags_obj.horovod_fusion_threshold
 
-    if  flags_obj.enable_xla:
+    if flags_obj.enable_xla:
       # The input shape must be static when running with XLA.
       params['static_batch'] = True
-      os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
-          " --tf_xla_auto_jit=2 --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=1 ")
-      os.environ['XLA_MLU_DISABLE_BITCAST_OPT'] = 'true'
 
     if params["use_horovod"]:
        os.environ['HOROVOD_FUSION_THRESHOLD'] = str(flags_obj.horovod_fusion_threshold)
@@ -600,4 +597,12 @@ def main(_):
 if __name__ == "__main__":
   logging.set_verbosity(logging.INFO)
   misc.define_transformer_flags()
+
+  flags_obj = flags.FLAGS
+  flags_obj(sys.argv)
+  if flags_obj.enable_xla:
+    os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
+        " --tf_xla_auto_jit=2 --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=1 ")
+    os.environ['XLA_MLU_DISABLE_BITCAST_OPT'] = 'true'
+
   app.run(main)
