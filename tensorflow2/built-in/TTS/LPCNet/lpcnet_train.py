@@ -39,7 +39,6 @@ lpcnet = importlib.import_module("mlu_lpcnet")
 from dataloader import LPCNetLoader
 
 import numpy as np
-from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.python.client import device_lib
 
@@ -256,10 +255,10 @@ def get_lr_and_decay(args):
 def get_opt(args):
     lr, decay = get_lr_and_decay(args)
     if args.use_horovod:
-        opt = Adam(lr, decay=decay, beta_2=0.99)
+        opt = tf.keras.optimizers.legacy.Adam(lr, decay=decay, beta_2=0.99)
         opt = hvd.DistributedOptimizer(opt, sparse_as_dense=True)
     else:
-        opt = Adam(lr, decay=decay, beta_2=0.99)
+        opt = tf.keras.optimizers.legacy.Adam(lr, decay=decay, beta_2=0.99)
 
     if args.use_amp:
         policy = tf.keras.mixed_precision.Policy(
