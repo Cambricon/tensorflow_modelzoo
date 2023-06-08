@@ -23,11 +23,11 @@ os_name=NULL
 function checkOS() {
   os_version=$(cat /etc/os-release | awk -F '=' '{if ($1=="PRETTY_NAME") print $2}' | awk -F '"' '{print $2}')
   os_name=$(cat /etc/os-release | awk -F '=' '{if ($1=="NAME") print $2}' | awk -F '"' '{print $2}')
-  if [[ "$os_name" == "Ubuntu" ]] || [[ "$os_name" == "CentOS Linux" ]] || [[ "$os_name"  == "Debian GNU/Linux" ]]
+  if [[ "$os_name" == "Ubuntu" ]] || [[ "$os_name" == "CentOS Linux" ]] || [[ "$os_name"  == "Debian GNU/Linux" ]] || [[ "$os_name"  ==  "kylin" ]]
   then
     echo -e "\033[32m OS: $os_version\033[0m"
   else
-    echo -e "\033[31m ERROR: Only Support Ubuntu CentOs and Debian. But Running $os_version On The Machine.\033[0m"
+    echo -e "\033[31m ERROR: Only Support Ubuntu CentOs Debian and Kylin. But Running $os_version On The Machine.\033[0m"
     exit 1
   fi
 }
