@@ -12,7 +12,7 @@ python unet3d.py \
     --use_performance=False \
     --use_profiler=False \
     --augment=True \
-    --batch_size=1 \
+    --batch_size=2 \
     --use_amp=False \
     --benchmark=False \
     --warmup_steps=200 \

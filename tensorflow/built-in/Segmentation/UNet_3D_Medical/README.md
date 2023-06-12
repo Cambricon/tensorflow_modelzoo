@@ -27,7 +27,7 @@
 # 1. 模型概述
 UNet 3D 是一个 3D 图像分割网络模型，输入是 3D 图像，输出是分割结果。原始论文为[3D U-Net](https://arxiv.org/pdf/1606.06650.pdf).
 
-UNet 3D 网络的 NVIDIA 代码实现可参考：[这里](https://github.com/NVIDIA/DeepLearningExamples/tree/master/TensorFlow/Segmentation/UNet_3D_Medical)。
+UNet 3D 网络的 NVIDIA 代码实现可参考：[这里](https://github.com/NVIDIA/DeepLearningExamples/commit/79d4ced0bee74f1ada3070aa16a8b961b54fbe13)。
 # 2. 模型支持情况
 ## 2.1 **训练模型支持情况**
 
@@ -56,7 +56,7 @@ UNet 3D 模型的训练参数存在于`unet3d.py`内，同时受到`run_scripts/
 | 参数 | 作用 | 默认值 |
 |------|------|------|
 | exec_mode | 选择执行模式。| train |
-| batch_size | 训练的batch_size | 1   |
+| batch_size | 训练的batch_size | 2   |
 | data_dir | 训练数据集文件的路径| None |
 | model_dir | 模型输出文件的路径。| None |
 | max_steps | 最大的训练步数。 | 16000 |
@@ -75,7 +75,7 @@ UNet 3D 模型的推理参数存在于`unet3d.py`内，同时受到`run_scripts/
 | 参数 | 作用 | 举例 |
 |------|------|------|
 | exec_mode | 选择执行模式, 推理时需要修改为 evaluate。|  evaluate |
-| batch_size | 推理时使用的batch_size | 1   |
+| batch_size | 推理时使用的batch_size | 2   |
 | data_dir | 训练数据集文件的路径| None |
 | model_dir | 模型输出文件的路径。| None |
 | use_amp | 控制是否进行混合精度训练 | True |
