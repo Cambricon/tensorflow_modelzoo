@@ -412,4 +412,6 @@ if __name__ == '__main__':
         os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
             " --tf_xla_auto_jit=2 --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=1 ")
         os.environ['XLA_MLU_DISABLE_BITCAST_OPT'] = 'true'
+    os.environ['TF_MLU_SYNC_D2H'] = 'true'
+    os.environ['TF_MLU_SYNC_H2D'] = 'true'
     app.run(main)
