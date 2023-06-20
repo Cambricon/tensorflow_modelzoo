@@ -94,11 +94,11 @@ class Dataset:
         ds = tf.data.TFRecordDataset(filenames=self._train)
 
         ds = ds.shard(hvd.size(), hvd.rank())
-        
+        ds = ds.cache()
         ds = ds.shuffle(buffer_size=self._batch_size * 8, seed=self._seed)
         ds = ds.repeat()
 
-        ds = ds.map(self.parse, num_parallel_calls=2)
+        ds = ds.map(self.parse, num_parallel_calls=tf.data.experimental.AUTOTUNE)
 
         transforms = [
             RandomCrop3D((128, 128, 128)),
@@ -110,12 +110,12 @@ class Dataset:
         ]
         
         ds = ds.map(map_func=lambda x, y, mean, stdev: apply_transforms(x, y, mean, stdev, transforms=transforms),
-                    num_parallel_calls=2)
+                    num_parallel_calls=tf.data.experimental.AUTOTUNE)
 
         ds = ds.batch(batch_size=self._batch_size,
                       drop_remainder=True)
 
-        ds = ds.prefetch(buffer_size=2)
+        ds = ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
         
         return ds
 
@@ -123,7 +123,8 @@ class Dataset:
         ds = tf.data.TFRecordDataset(filenames=self._eval)
         assert len(self._eval) > 0, "Evaluation data not found. Did you specify --fold flag?"
 
-        ds = ds.map(self.parse, num_parallel_calls=1)
+        ds = ds.cache()
+        ds = ds.map(self.parse, num_parallel_calls=tf.data.experimental.AUTOTUNE)
 
         transforms = [
             CenterCrop((224, 224, 155)),
@@ -134,10 +135,10 @@ class Dataset:
         ]
 
         ds = ds.map(map_func=lambda x, y, mean, stdev: apply_transforms(x, y, mean, stdev, transforms=transforms),
-                    num_parallel_calls=1)
+                    num_parallel_calls=tf.data.experimental.AUTOTUNE)
         ds = ds.batch(batch_size=self._batch_size,
                       drop_remainder=False)
-        ds = ds.prefetch(buffer_size=100)
+        ds = ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
 
         return ds
 
@@ -146,7 +147,7 @@ class Dataset:
         assert len(self._eval) > 0, "Evaluation data not found. Did you specify --fold flag?"
 
         ds = ds.repeat(count)
-        ds = ds.map(self.parse_x, num_parallel_calls=1)
+        ds = ds.map(self.parse_x, num_parallel_calls=tf.data.experimental.AUTOTUNE)
 
         transforms = [
             CenterCrop((224, 224, 155)),
@@ -156,10 +157,10 @@ class Dataset:
         ]
 
         ds = ds.map(map_func=lambda x, mean, stdev: apply_test_transforms(x, mean, stdev, transforms=transforms),
-                    num_parallel_calls=1)
+                    num_parallel_calls=tf.data.experimental.AUTOTUNE)
         ds = ds.batch(batch_size=self._batch_size,
                       drop_remainder=drop_remainder)
-        ds = ds.prefetch(buffer_size=100)
+        ds = ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
 
         return ds
 
@@ -184,9 +185,9 @@ class Dataset:
         ]
 
         ds = ds.map(map_func=lambda x, y: apply_transforms(x, y, transforms),
-                    num_parallel_calls=1)
+                    num_parallel_calls=tf.data.experimental.AUTOTUNE)
         ds = ds.batch(self._batch_size)
-        ds = ds.prefetch(buffer_size=100)
+        ds = ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
 
         return ds
 
@@ -198,7 +199,7 @@ class Dataset:
         ds = tf.data.Dataset.from_tensors(inputs)
         ds = ds.repeat(count)
         ds = ds.batch(self._batch_size)
-        ds = ds.prefetch(buffer_size=100)
+        ds = ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
 
         return ds
 
