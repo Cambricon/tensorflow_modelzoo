@@ -51,8 +51,9 @@ class DataParallelSplitter:
 
         batch_sizes_per_gpu = [local_batch_size] * hvd.size()
         indices = tuple(np.cumsum([0] + list(batch_sizes_per_gpu)))
-        self.begin_idx = indices[hvd.rank()]
-        self.end_idx = indices[hvd.rank() + 1]
+        rank = hvd.rank()
+        self.begin_idx = indices[rank]
+        self.end_idx = indices[rank + 1]
 
     def __call__(self, x):
         x = x[self.begin_idx:self.end_idx]
