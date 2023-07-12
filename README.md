@@ -68,9 +68,16 @@ Speech:
 ## issues/wiki/forum 跳转链接
 
 ## contrib 指引和链接
-
 ## Change Log
----------- 2023年5月17日 ---------- 
+---------- v1.5.1 2023年7月12日 ---------- 
+
+- 修复了dlrm的一个 rank 的bug，更新了change log.
+
+---------- v1.5.0 2023年7月12日 ---------- 
+
+- 修复了一些bug，tf modelzoo v1.5.0与tf v1.19.0版本相对应
+
+---------- v1.4 2023年5月17日 ---------- 
 
 - 向 tensorflow2 目录内添加了 tf_models_bert 网络 
 
@@ -79,7 +86,7 @@ Speech:
 - 支持网络列表删除了tensorflow1中的Resnet18,Alexnet,Vgg16,Inceptionv2,Resnet50-1.5，删除了tensorflow2中的resnet50_tf_model_official_v2.8.0,vgg16,resnet18。
 - 添加了网络是否支持XLA模式的说明。
 
----------- 2023年3月31日 ---------- 
+---------- v1.3 2023年3月31日 ---------- 
 
 将tensorflow2/built-in 内使用 TFMM 进行推理的网络改为使用 CNNL 进行推理，涉及到的网络如下：
 [vgg16](tensorflow2/built-in/Classification/common_networks)
