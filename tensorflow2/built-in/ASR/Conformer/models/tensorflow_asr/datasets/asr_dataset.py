@@ -378,6 +378,7 @@ class ASRTFRecordDataset(ASRDataset):
         files_ds = tf.data.Dataset.list_files(pattern)
         ignore_order = tf.data.Options()
         ignore_order.experimental_deterministic = False
+        ignore_order.threading.private_threadpool_size = FLAGS.private_threadpool_size
         files_ds = files_ds.with_options(ignore_order)
         dataset = tf.data.TFRecordDataset(files_ds, compression_type="ZLIB", num_parallel_reads=AUTOTUNE)
 
@@ -401,4 +402,7 @@ class ASRSliceDataset(ASRDataset):
             return None
         dataset = tf.data.Dataset.from_tensor_slices(self.entries)
         dataset = dataset.map(self.load, num_parallel_calls=AUTOTUNE)
+        options = tf.data.Options()
+        options.threading.private_threadpool_size = FLAGS.private_threadpool_size
+        dataset = dataset.with_options(options)
         return self.process(dataset, batch_size)

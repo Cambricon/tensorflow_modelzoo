@@ -32,7 +32,7 @@ TRAIN_TOP_1 = 'training_accuracy_top_1'
 def get_optimizer(learning_rate=1e-5, epsilon=1e-8):
   """Returns optimizer to use."""
   # The learning_rate is overwritten at the beginning of each step by callback.
-  return tf.keras.optimizers.Adam(learning_rate=learning_rate, epsilon=epsilon)
+  return tf.keras.optimizers.legacy.Adam(learning_rate=learning_rate, epsilon=epsilon)
 
 
 def get_callbacks(FLAGS,

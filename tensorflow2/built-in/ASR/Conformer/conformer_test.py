@@ -56,6 +56,13 @@ def get_flags():
     flags.DEFINE_string("output", default="test.tsv", help="Result filepath")
     flags.DEFINE_bool("get_rtf", default=False, help="Generate infer performance(RTF) data.")
     flags.DEFINE_bool("mxp", default=False, help="Enable mixed precision")
+    flags.DEFINE_integer(
+        "private_threadpool_size",
+        default=4,
+        help="If set, the dataset will use a private threadpool of the given size. "
+        "The value 0 can be used to indicate that the threadpool size should be "
+        "determined at runtime based on the number of available CPU cores.",
+    )
     FLAGS = flags.FLAGS
     return FLAGS
 

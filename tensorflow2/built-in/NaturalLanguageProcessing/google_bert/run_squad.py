@@ -1319,7 +1319,7 @@ def main(_):
       training_hooks.append(time_hooks)
 
     if FLAGS.use_profiler and ((not FLAGS.use_horovod) or (FLAGS.use_horovod and hvd.rank() == 0)):
-      log_dir = os.path.join(FLAGS.output_dir, 'train')
+      log_dir = FLAGS.output_dir
       profiler.start(log_dir)
 
     estimator.train(input_fn=train_input_fn, hooks=training_hooks, max_steps=num_train_steps)

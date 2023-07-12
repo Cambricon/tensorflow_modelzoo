@@ -93,6 +93,13 @@ def get_flags():
 
     flags.DEFINE_string("pretrained", default=None, help="Path to pretrained model")
 
+    flags.DEFINE_integer(
+        "private_threadpool_size",
+        default=4,
+        help="If set, the dataset will use a private threadpool of the given size. "
+        "The value 0 can be used to indicate that the threadpool size should be "
+        "determined at runtime based on the number of available CPU cores.",
+    )
     FLAGS = flags.FLAGS
     return FLAGS
 
@@ -437,4 +444,6 @@ def main(argv):
 
 
 if __name__ == "__main__":
+    os.environ['TF_MLU_SYNC_D2H'] = 'true'
+    os.environ['TF_MLU_SYNC_H2D'] = 'true'
     tf.compat.v1.app.run()

@@ -20,17 +20,9 @@
     "conformer_train": {
         "directory": "tensorflow2/built-in/ASR/Conformer",
         "testcases": [
-            "cd run_scripts/ci;bash prepare_env.sh && bash Conformer_Train_1MLU.sh",
+            "cd run_scripts/ci;bash Conformer_Train_1MLU.sh",
             "cd run_scripts/ci;bash Conformer_Train_Horovod_AMP.sh",
             "cd run_scripts/ci;bash Conformer_Train_Horovod_Float32.sh"
-        ]
-    },
-    "lpcnet_train": {
-        "directory": "tensorflow2/built-in/TTS/LPCNet",
-        "testcases": [
-            "cd run_scripts/ci;bash prepare_env.sh && bash LPCNet_Train_1MLU.sh",
-            "cd run_scripts/ci;bash LPCNet_Train_Horovod_AMP.sh",
-            "cd run_scripts/ci;bash LPCNet_Train_Horovod_Float32.sh"
         ]
     },
     "densenet201": {
@@ -82,12 +74,6 @@
             "cd run_scripts/ci;bash XLA_Horovod_Train_DLRM_AMP.sh"
         ]
     },
-    "lpcnet_infer": {
-        "directory": "tensorflow2/built-in/TTS/LPCNet",
-        "testcases": [
-            "cd run_scripts/ci;bash prepare_env.sh && bash LPCNet_Infer_1MLU.sh"
-        ]
-    },
     "swin-transformer": {
         "directory": "tensorflow2/built-in/Classification/swin-transformer",
         "testcases": [
@@ -101,8 +87,15 @@
     "conformer_infer": {
         "directory": "tensorflow2/built-in/ASR/Conformer",
         "testcases": [
-            "cd run_scripts/ci;bash prepare_env.sh && bash Conformer_Infer_1MLU.sh",
-            "cd run_scripts/ci;bash prepare_env.sh && bash Conformer_Infer_1MLU_AMP.sh"
+            "cd run_scripts/ci;bash Conformer_Infer_1MLU.sh",
+            "cd run_scripts/ci;bash Conformer_Infer_1MLU_AMP.sh"
+        ]
+    },
+    "tf_models_bert": {
+        "directory": "tensorflow2/built-in/NaturalLanguageProcessing/tf_models_bert",
+        "testcases": [
+            "cd run_scripts/ci;bash prepare_env.sh && bash Bert_Train_Float32_1MLU.sh",
+            "cd run_scripts/ci;bash prepare_env.sh && bash Bert_Train_Float32_4MLUs.sh"
         ]
     }
 }

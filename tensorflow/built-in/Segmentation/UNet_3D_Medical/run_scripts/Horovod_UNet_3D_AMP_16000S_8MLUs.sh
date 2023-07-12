@@ -9,7 +9,7 @@ horovodrun -np 8 python unet3d.py \
     --use_amp=True \
     --data_dir=${DATA_DIR} \
     --max_steps=16000 \
-    --batch_size=1 \
+    --batch_size=2 \
     --use_horovod=True\
     --benchmark=False \
     --warmup_steps=200 \

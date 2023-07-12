@@ -1,0 +1,209 @@
+diff --git a/official/common/distribute_utils.py b/official/common/distribute_utils.py
+index 480bbf8c7..ff149116c 100644
+--- a/official/common/distribute_utils.py
++++ b/official/common/distribute_utils.py
+@@ -91,7 +91,7 @@ def tpu_initialize(tpu_address):
+ 
+ 
+ def get_distribution_strategy(distribution_strategy="mirrored",
+-                              num_gpus=0,
++                              num_mlus=0,
+                               all_reduce_alg=None,
+                               num_packs=1,
+                               tpu_address=None,
+@@ -106,7 +106,7 @@ def get_distribution_strategy(distribution_strategy="mirrored",
+       "off" means to use the default strategy which is obtained from
+       tf.distribute.get_strategy (for details on the default strategy, see
+       https://www.tensorflow.org/guide/distributed_training#default_strategy).
+-    num_gpus: Number of GPUs to run this model.
++    num_mlus: Number of GPUs to run this model.
+     all_reduce_alg: Optional. Specifies which algorithm to use when performing
+       all-reduce. For `MirroredStrategy`, valid values are "nccl" and
+       "hierarchical_copy". For `MultiWorkerMirroredStrategy`, valid values are
+@@ -122,12 +122,12 @@ def get_distribution_strategy(distribution_strategy="mirrored",
+     tf.distribute.DistibutionStrategy object.
+   Raises:
+     ValueError: if `distribution_strategy` is "off" or "one_device" and
+-      `num_gpus` is larger than 1; or `num_gpus` is negative or if
++      `num_mlus` is larger than 1; or `num_mlus` is negative or if
+       `distribution_strategy` is `tpu` but `tpu_address` is not specified.
+   """
+   del kwargs
+-  if num_gpus < 0:
+-    raise ValueError("`num_gpus` can not be negative.")
++  if num_mlus < 0:
++    raise ValueError("`num_mlus` can not be negative.")
+ 
+   if not isinstance(distribution_strategy, str):
+     msg = ("distribution_strategy must be a string but got: %s." %
+@@ -140,8 +140,8 @@ def get_distribution_strategy(distribution_strategy="mirrored",
+ 
+   distribution_strategy = distribution_strategy.lower()
+   if distribution_strategy == "off":
+-    if num_gpus > 1:
+-      raise ValueError(f"When {num_gpus} GPUs are specified, "
++    if num_mlus > 1:
++      raise ValueError(f"When {num_mlus} GPUs are specified, "
+                        "distribution_strategy flag cannot be set to `off`.")
+     # Return the default distribution strategy.
+     return tf.distribute.get_strategy()
+@@ -156,21 +156,21 @@ def get_distribution_strategy(distribution_strategy="mirrored",
+         communication=_collective_communication(all_reduce_alg))
+ 
+   if distribution_strategy == "one_device":
+-    if num_gpus == 0:
++    if num_mlus == 0:
+       return tf.distribute.OneDeviceStrategy("device:CPU:0")
+-    if num_gpus > 1:
++    if num_mlus > 1:
+       raise ValueError("`OneDeviceStrategy` can not be used for more than "
+                        "one device.")
+-    return tf.distribute.OneDeviceStrategy("device:GPU:0")
++    return tf.distribute.OneDeviceStrategy("device:MLU:0")
+ 
+   if distribution_strategy == "mirrored":
+-    if num_gpus == 0:
++    if num_mlus == 0:
+       devices = ["device:CPU:0"]
+     else:
+-      devices = ["device:GPU:%d" % i for i in range(num_gpus)]
++      devices = ["device:MLU:%d" % i for i in range(num_mlus)]
+     return tf.distribute.MirroredStrategy(
+         devices=devices,
+-        cross_device_ops=_mirrored_cross_device_ops(all_reduce_alg, num_packs))
++        cross_device_ops = tf.distribute.CnclAllReduce())
+ 
+   if distribution_strategy == "parameter_server":
+     cluster_resolver = tf.distribute.cluster_resolver.TFConfigClusterResolver()
+diff --git a/official/legacy/bert/model_training_utils.py b/official/legacy/bert/model_training_utils.py
+index f7c8e443b..0a67e0517 100644
+--- a/official/legacy/bert/model_training_utils.py
++++ b/official/legacy/bert/model_training_utils.py
+@@ -482,7 +482,7 @@ def run_customized_training_loop(
+       # Runs several steps in the host while loop.
+       steps = steps_to_run(current_step, steps_between_evals, steps_per_loop)
+ 
+-      if tf.config.list_physical_devices('GPU'):
++      if tf.config.list_physical_devices('MLU'):
+         # TODO(zongweiz): merge with train_steps once tf.while_loop
+         # GPU performance bugs are fixed.
+         for _ in range(steps):
+diff --git a/official/legacy/bert/run_squad.py b/official/legacy/bert/run_squad.py
+index ee63bc96f..9ecf3d9b3 100644
+--- a/official/legacy/bert/run_squad.py
++++ b/official/legacy/bert/run_squad.py
+@@ -35,6 +35,10 @@ from official.utils.misc import keras_utils
+ flags.DEFINE_string('vocab_file', None,
+                     'The vocabulary file that the BERT model was trained on.')
+ 
++flags.DEFINE_bool(
++    "use_performance", False,
++    "Whether to open performance.")
++flags.DEFINE_integer('num_mlus', default=1,help='How many MLUs to use to run model.')
+ # More flags can be found in run_squad_helper.
+ run_squad_helper.define_common_squad_flags()
+ 
+@@ -89,6 +93,11 @@ def export_squad(model_export_path, input_meta_data):
+ 
+ 
+ def main(_):
++  if FLAGS.use_performance:
++    from record_time import TimeHistoryRecord, write_json
++    global TimeHistoryRecord 
++    global write_json
++
+   gin.parse_config_files_and_bindings(FLAGS.gin_file, FLAGS.gin_param)
+ 
+   with tf.io.gfile.GFile(FLAGS.input_meta_data_path, 'rb') as reader:
+@@ -99,23 +108,30 @@ def main(_):
+     return
+ 
+   # Configures cluster spec for multi-worker distribution strategy.
+-  if FLAGS.num_gpus > 0:
++  if FLAGS.num_mlus > 0:
+     _ = distribute_utils.configure_cluster(FLAGS.worker_hosts, FLAGS.task_index)
+   strategy = distribute_utils.get_distribution_strategy(
+       distribution_strategy=FLAGS.distribution_strategy,
+-      num_gpus=FLAGS.num_gpus,
++      num_mlus=FLAGS.num_mlus,
+       all_reduce_alg=FLAGS.all_reduce_alg,
+       tpu_address=FLAGS.tpu)
+ 
+   if 'train' in FLAGS.mode:
+     if FLAGS.log_steps:
++      if FLAGS.num_mlus > 0:
++          total_batch_size = FLAGS.train_batch_size * FLAGS.num_mlus
++      else:
++          total_batch_size = FLAGS.train_batch_size 
+       custom_callbacks = [keras_utils.TimeHistory(
+-          batch_size=FLAGS.train_batch_size,
++          batch_size=total_batch_size,
+           log_steps=FLAGS.log_steps,
+           logdir=FLAGS.model_dir,
+       )]
+     else:
+       custom_callbacks = None
++    if FLAGS.use_performance:
++        time_history_record = TimeHistoryRecord()
++        custom_callbacks.append(time_history_record)
+ 
+     train_squad(
+         strategy,
+@@ -124,6 +140,17 @@ def main(_):
+         run_eagerly=FLAGS.run_eagerly,
+         sub_model_export_name=FLAGS.sub_model_export_name,
+     )
++
++    # added by cambricon 
++    if FLAGS.use_performance:
++        summary_dir = os.path.join(FLAGS.model_dir, 'summary_mlu')
++        os.mkdir(summary_dir)
++        if FLAGS.num_mlus > 0:
++            device_num = FLAGS.num_mlus 
++        else:
++            device_num = 1
++        write_json(summary_dir,FLAGS.train_batch_size*device_num,time_history_record.times)
++
+   if 'predict' in FLAGS.mode:
+     predict_squad(strategy, input_meta_data)
+   if 'eval' in FLAGS.mode:
+diff --git a/official/legacy/bert/run_squad_helper.py b/official/legacy/bert/run_squad_helper.py
+index be2e97dac..541d46496 100644
+--- a/official/legacy/bert/run_squad_helper.py
++++ b/official/legacy/bert/run_squad_helper.py
+@@ -89,6 +89,15 @@ def define_common_squad_flags():
+       'because the start and end predictions are not conditioned on one '
+       'another.')
+ 
++  flags.DEFINE_integer(
++      'steps_per_epoch', 0,
++      'The train steps assigned in each epoch,if not set, '
++      'it will be calculated in run_squad_helper.py')
++  flags.DEFINE_integer(
++      'warmup_steps', 0,
++      'The warmup steps for training,if not set, '
++      'it will be calculated in run_squad_helper.py')
++
+   common_flags.define_common_bert_flags()
+ 
+ 
+@@ -230,8 +239,17 @@ def train_squad(strategy,
+   epochs = FLAGS.num_train_epochs
+   num_train_examples = input_meta_data['train_data_size']
+   max_seq_length = input_meta_data['max_seq_length']
+-  steps_per_epoch = int(num_train_examples / FLAGS.train_batch_size)
+-  warmup_steps = int(epochs * num_train_examples * 0.1 / FLAGS.train_batch_size)
++
++  if FLAGS.steps_per_epoch>0:
++      steps_per_epoch = FLAGS.steps_per_epoch
++  else:
++      steps_per_epoch = int(num_train_examples / FLAGS.train_batch_size)
++
++  if FLAGS.warmup_steps>0:
++      warmup_steps = min(FLAGS.warmup_steps,steps_per_epoch)
++  else:
++      warmup_steps = min(int(epochs * num_train_examples * 0.1 / FLAGS.train_batch_size),steps_per_epoch)
++
+   train_input_fn = get_dataset_fn(
+       FLAGS.train_data_path,
+       max_seq_length,

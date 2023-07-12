@@ -207,12 +207,9 @@ class TransformerTask(object):
     params["intra_op_parallelism_threads"] = flags_obj.intra_op_parallelism_threads
     params["horovod_fusion_threshold"] = flags_obj.horovod_fusion_threshold
 
-    if  flags_obj.enable_xla:
+    if flags_obj.enable_xla:
       # The input shape must be static when running with XLA.
       params['static_batch'] = True
-      os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
-          " --tf_xla_auto_jit=2 --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=1 ")
-      os.environ['XLA_MLU_DISABLE_BITCAST_OPT'] = 'true'
 
     if params["use_horovod"]:
        os.environ['HOROVOD_FUSION_THRESHOLD'] = str(flags_obj.horovod_fusion_threshold)
@@ -534,7 +531,7 @@ class TransformerTask(object):
     if params["use_horovod"]:
       callbacks.append(hvd.callbacks.BroadcastGlobalVariablesCallback(0))
     if params["use_profiler"] and ((params['use_horovod'] and hvd.rank() == 0) or (not params['use_horovod'])):
-      callbacks.append(tf.keras.callbacks.TensorBoard(log_dir=params["model_dir"]))
+      callbacks.append(tf.keras.callbacks.TensorBoard(log_dir=params["model_dir"], profile_batch=2))
     return callbacks
 
   def _load_weights_if_possible(self, model, init_weight_path=None):
@@ -556,7 +553,7 @@ class TransformerTask(object):
     lr_schedule = optimizer.LearningRateSchedule(
         params["learning_rate"], params["hidden_size"],
         params["learning_rate_warmup_steps"])
-    opt = tf.keras.optimizers.Adam(
+    opt = tf.keras.optimizers.legacy.Adam(
         lr_schedule,
         params["optimizer_adam_beta1"],
         params["optimizer_adam_beta2"],
@@ -600,4 +597,12 @@ def main(_):
 if __name__ == "__main__":
   logging.set_verbosity(logging.INFO)
   misc.define_transformer_flags()
+
+  flags_obj = flags.FLAGS
+  flags_obj(sys.argv)
+  if flags_obj.enable_xla:
+    os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
+        " --tf_xla_auto_jit=2 --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=1 ")
+    os.environ['XLA_MLU_DISABLE_BITCAST_OPT'] = 'true'
+
   app.run(main)

@@ -5,13 +5,13 @@ timestamp=$(date +%Y%m%d%H%M)
 model_dir="${work_dir}/mlu_model_${timestamp}"
 
 pushd "${work_dir}"
-# fp32 8mlu
+# fp32 4mlu
 source env.sh
 
 bleu_src="${DATA_DIR}/newstest2014.en"
 bleu_ref="${DATA_DIR}/newstest2014.de"
 vocab_file="${DATA_DIR}/vocab.ende.32768"
-horovodrun -np 8 python transformer_main.py \
+horovodrun -np 4 python transformer_main.py \
  --mode=train \
  --batch_size=4096 \
  --max_length=64 \

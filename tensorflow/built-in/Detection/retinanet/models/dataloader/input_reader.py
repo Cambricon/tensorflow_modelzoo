@@ -26,7 +26,6 @@ from models.modeling.hyperparams import params_dict
 from models.dataloader import factory
 from models.dataloader import mode_keys as ModeKeys
 
-
 class InputFn(object):
   """Input function that creates dataset from files."""
 
@@ -87,10 +86,6 @@ class InputFn(object):
     dataset = tf.data.Dataset.list_files(
         self._file_pattern, shuffle=self._is_training)
 
-    if self._is_training:
-      # Large shuffle size is critical for 2vm input pipeline. Can use small
-      # value (e.g. 64) for 1vm.
-      dataset = dataset.shuffle(1000)
     if self._input_sharding and ctx and ctx.num_input_pipelines > 1:
       dataset = dataset.shard(ctx.num_input_pipelines, ctx.input_pipeline_id)
     if self._is_training:
@@ -101,10 +96,10 @@ class InputFn(object):
         num_parallel_calls=tf.data.experimental.AUTOTUNE)
     #dataset = dataset.cache()
 
-    #if self._is_training:
+    if self._is_training:
       # Large shuffle size is critical for 2vm input pipeline. Can use small
       # value (e.g. 64) for 1vm.
-      #dataset = dataset.shuffle(1000)
+      dataset = dataset.shuffle(1000)
     if self._num_examples > 0:
       dataset = dataset.take(self._num_examples)
 

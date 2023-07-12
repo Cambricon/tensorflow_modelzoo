@@ -230,11 +230,6 @@ def train_and_eval(params):
     """Runs the train and eval path using compile/fit."""
     logging.info('Running train and eval.')
 
-    if params.enable_xla:
-        os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
-            " --tf_xla_auto_jit=2 --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=1 ")
-        os.environ['XLA_MLU_DISABLE_BITCAST_OPT'] = 'true'
-
     if params.use_performance and params.use_profiler:
         raise ValueError("You can only set use_profiler or use_performance, \
                           not at the same time, otherwise the e2e time will be worse")
@@ -411,5 +406,12 @@ if __name__ == '__main__':
     flags.mark_flag_as_required('data_dir')
     flags.mark_flag_as_required('mode')
     flags.mark_flag_as_required('dataset')
-
+    flags_obj = flags.FLAGS
+    flags_obj(sys.argv)
+    if flags_obj.enable_xla:
+        os.environ['TF_XLA_FLAGS'] = (os.environ.get("TF_XLA_FLAGS", "") +
+            " --tf_xla_auto_jit=2 --tf_xla_enable_lazy_compilation=false --tf_xla_async_io_level=1 ")
+        os.environ['XLA_MLU_DISABLE_BITCAST_OPT'] = 'true'
+    os.environ['TF_MLU_SYNC_D2H'] = 'true'
+    os.environ['TF_MLU_SYNC_H2D'] = 'true'
     app.run(main)
