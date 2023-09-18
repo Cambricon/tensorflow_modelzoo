@@ -14,7 +14,7 @@
   * [4.1依赖项检查](#41-依赖项检查)
   * [4.2环境准备](#42-环境准备)
   * [4.3运行Run脚本](#43-运行Run脚本)
-* [5.免责声明](#5-免责声明) 
+* [5.免责声明](#5-免责声明)
 * [6.Release_Notes](#6-Release_Notes)
 
 
@@ -80,12 +80,12 @@ ResNet50-v1.5网络结构的代码实现可参考：[这里](https://github.com/
 
 **(1)基于base docker image的容器环境搭建**
 
-**a)导入镜像**  
+**a)导入镜像**
 
 下载Cambricon TensorFlow1 docker镜像并参考如下命令加载镜像：
 ` docker load -i Your_Cambricon_TensorFlow1_Image.tar.gz`
 
-**b)启动容器**  
+**b)启动容器**
 
 `run_docker.sh`示例如下，根据本地的镜像版本，修改如下示例中的`IMAGE_NAME`和`IMAGE_TAG`变量后再运行`bash run_docker.sh`即可启动容器。
 ```bash
@@ -141,7 +141,7 @@ pip install .
 
 **(2)基于DOCKERFILE的容器环境搭建**
 
-**a)构建镜像**  
+**a)构建镜像**
 
 由于本仓库包含各类网络，如ASR类，NLP类，为避免网络之间可能的依赖项冲突，您可基于DOCKERFILE构建当前网络专属的镜像。详细步骤如下所示：
 ```bash
@@ -164,7 +164,7 @@ docker build --network=host -t $IMAGE_NAME -f DOCKERFILE ../../../../../
 
 ```
 
-**b)创建并启动容器**  
+**b)创建并启动容器**
 
 上一步成功运行后，本地便生成了一个名为`resnet50_v1.5_image`的docker镜像，后续即可基于该镜像创建容器。
 ```bash
@@ -189,6 +189,11 @@ bash run_docker.sh
 ```
 完成数据集准备后，根据数据集实际路径修改`env.sh`内的`DATA_DIR`的值和`run_docker.sh`中需要拷贝进入docker容器内的数据集路径
 
+如需使用dali数据集，请先生成dali_index：
+```
+bash dali_index.sh PATH/ilsvrc12_tfrecord PATH/dali_index/
+备注：PATH/ilsvrc12_tfrecord是数据集tfrecord的路径，PATH/dali_index/是生成dali_index的路径。
+```
 
 ## 4.3 **运行Run脚本**
 
