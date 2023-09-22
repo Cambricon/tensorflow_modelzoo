@@ -213,6 +213,8 @@ def get_dataset(FLAGS, speech_featurizer, text_featurizer, dataset_config):
         cur_dataset = asr_dataset.ASRTFRecordDataset(
             speech_featurizer=speech_featurizer,
             text_featurizer=text_featurizer,
+            use_performance=FLAGS.use_performance,
+            steps=FLAGS.steps,
             **vars(dataset_config),
             indefinite=True
         )
@@ -220,6 +222,8 @@ def get_dataset(FLAGS, speech_featurizer, text_featurizer, dataset_config):
         cur_dataset = asr_dataset.ASRSliceDataset(
             speech_featurizer=speech_featurizer,
             text_featurizer=text_featurizer,
+            use_performance=FLAGS.use_performance,
+            steps=FLAGS.steps,
             **vars(dataset_config),
             indefinite=True
         )

@@ -55,6 +55,8 @@ class ASRDataset(BaseDataset):
         drop_remainder: bool = True,
         use_tf: bool = False,
         buffer_size: int = BUFFER_SIZE,
+        use_performance: bool = False,
+        steps: int = 60,
         **kwargs,
     ):
         super().__init__(
@@ -70,6 +72,8 @@ class ASRDataset(BaseDataset):
         )
         self.speech_featurizer = speech_featurizer
         self.text_featurizer = text_featurizer
+        self.use_performance = use_performance
+        self.steps = steps
 
     # -------------------------------- metadata -------------------------------------
 
@@ -220,9 +224,6 @@ class ASRDataset(BaseDataset):
         dataset = dataset.map(self.parse, num_parallel_calls=AUTOTUNE)
         self.total_steps = math_util.get_num_batches(self.total_steps, batch_size, drop_remainders=self.drop_remainder)
 
-        if self.cache:
-            dataset = dataset.cache()
-
         if FLAGS.use_horovod:
             import horovod.tensorflow.keras as hvd
             dataset = dataset.shard(hvd.size(), hvd.rank())
@@ -254,6 +255,12 @@ class ASRDataset(BaseDataset):
             ),
             drop_remainder=self.drop_remainder,
         )
+
+        if self.use_performance:
+            dataset = dataset.take(self.steps)
+
+        if self.cache:
+            dataset = dataset.cache()
 
         # PREFETCH to improve speed of input length
         dataset = dataset.prefetch(AUTOTUNE)
