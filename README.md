@@ -69,6 +69,10 @@ Speech:
 
 ## contrib 指引和链接
 ## Change Log
+---------- v1.6.0 2023年9月22日 ---------- 
+
+- 新增了tf1 resnet50_v1.5, 且tf modelzoo v1.6.0与tf v1.20.0版本相对应
+
 ---------- v1.5.1 2023年7月12日 ---------- 
 
 - 修复了dlrm的一个 rank 的bug，更新了change log.
