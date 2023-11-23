@@ -69,6 +69,11 @@ Speech:
 
 ## contrib 指引和链接
 ## Change Log
+
+---------- v1.7.0 2023年11月23日 ---------- 
+
+- 新增了zh-NER(bi-lstm)网络, 且tf modelzoo v1.7.0与tf v1.21.0版本相对应
+
 ---------- v1.6.0 2023年9月22日 ---------- 
 
 - 新增了tf1 resnet50_v1.5, 且tf modelzoo v1.6.0与tf v1.20.0版本相对应
