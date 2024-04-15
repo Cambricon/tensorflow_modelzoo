@@ -18,7 +18,13 @@ import math
 
 import tensorflow as tf
 import numpy as np
-from distributed_embeddings.python.layers import embedding
+
+from absl import flags
+FLAGS = flags.FLAGS
+if FLAGS.mlu:
+    from distributed_embeddings import embedding
+else:
+    from distributed_embeddings.python.layers import embedding
 
 from utils.checkpointing import get_variable_path
 
@@ -311,10 +317,16 @@ class DualEmbeddingGroup(tf.keras.layers.Layer):
             cpu_results = tf.cast(cpu_results, dtype=self.dtype)
             to_concat.append(cpu_results)
         # at least one gpu-based embedding
-        with tf.device('/GPU:0'):
-            gpu_indices = tf.stack(gpu_indices, axis=1)
-            gpu_results = self.gpu_embedding(gpu_indices)
-            to_concat.append(gpu_results)
+        if FLAGS.mlu:
+          with tf.device('/MLU:0'):
+              gpu_indices = tf.stack(gpu_indices, axis=1)
+              gpu_results = self.gpu_embedding(gpu_indices)
+              to_concat.append(gpu_results)
+        else:
+          with tf.device('/GPU:0'):
+              gpu_indices = tf.stack(gpu_indices, axis=1)
+              gpu_results = self.gpu_embedding(gpu_indices)
+              to_concat.append(gpu_results)
 
         result = tf.concat(to_concat, axis=1)
 

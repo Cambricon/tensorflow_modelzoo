@@ -19,7 +19,12 @@ import horovod.tensorflow as hvd
 import numpy as np
 import json
 
-from distributed_embeddings.python.layers import dist_model_parallel as dmp
+from absl import flags
+FLAGS = flags.FLAGS
+if FLAGS.mlu:
+    from distributed_embeddings import dist_model_parallel as dmp
+else:
+    from distributed_embeddings.python.layers import dist_model_parallel as dmp
 
 from utils.checkpointing import get_variable_path
 

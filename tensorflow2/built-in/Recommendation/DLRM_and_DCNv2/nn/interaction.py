@@ -31,6 +31,8 @@
 
 import tensorflow as tf
 
+from absl import flags
+FLAGS = flags.FLAGS
 
 class DotInteractionGather(tf.keras.layers.Layer):
     def __init__(self, num_features):
@@ -45,7 +47,10 @@ class DotInteractionGather(tf.keras.layers.Layer):
         interactions = tf.matmul(features, features, transpose_b=True)
         interactions = tf.reshape(interactions, shape=[-1, self.num_features * self.num_features])
 
-        x = tf.gather(params=interactions, indices=self.indices, axis=1)
+        if FLAGS.mlu:
+            x = tf.gather(params=interactions, indices=tf.constant(self.indices, dtype=tf.int64), axis=1)
+        else:
+            x = tf.gather(params=interactions, indices=self.indices, axis=1)
 
         if bottom_mlp_out is not None:
             x = tf.concat([bottom_mlp_out, x], axis=1)

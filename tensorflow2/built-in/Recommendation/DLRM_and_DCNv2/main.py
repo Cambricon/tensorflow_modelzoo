@@ -19,7 +19,6 @@ from absl import app, flags
 import os
 import sys
 import json
-from distributed_embeddings.python.layers import dist_model_parallel as dmp
 
 
 # Define the flags first before importing TensorFlow.
@@ -30,7 +29,7 @@ def define_common_flags():
                       ' and "eval" to run validation')
     # Debug parameters
     flags.DEFINE_bool("run_eagerly", default=False, help="Disable all tf.function decorators for debugging")
-    
+
     flags.DEFINE_bool("tfdata_debug", default=False, help="Run tf.data operations eagerly (experimental)")
 
     flags.DEFINE_integer("seed", default=None, help="Random seed")
@@ -66,6 +65,7 @@ def define_common_flags():
                               'Applies only to singleGPU at the moment.')
 
     flags.DEFINE_bool('cpu', default=False, help='Place the entire model on CPU')
+    flags.DEFINE_bool('mlu', default=False, help='Place the entire model on MLU')
 
     flags.DEFINE_bool("xla", default=False, help="Enable XLA")
 
@@ -140,6 +140,16 @@ import tensorflow as tf
 import tensorflow_addons as tfa
 import numpy as np
 import horovod.tensorflow as hvd
+
+hvd.init()
+if FLAGS.mlu:
+    from distributed_embeddings import dist_model_parallel as dmp
+    import embedding_table_plugin as etp
+    etp.init()
+else:
+    from distributed_embeddings.python.layers import dist_model_parallel as dmp
+
+
 from tensorflow.keras.mixed_precision import LossScaleOptimizer
 
 import dllogger
@@ -157,15 +167,23 @@ def init_tf(FLAGS):
     """
     Set global options for TensorFlow
     """
-    gpus = tf.config.experimental.list_physical_devices('GPU')
+    if FLAGS.mlu:
+        mlus = tf.config.experimental.list_physical_devices('MLU')
 
-    for gpu in gpus:
-        tf.config.experimental.set_memory_growth(gpu, True)
+        visible_mlus = []
+        if mlus and not FLAGS.cpu:
+            visible_mlus = mlus[hvd.local_rank()]
+        tf.config.experimental.set_visible_devices(visible_mlus, 'MLU')
+    else:
+        gpus = tf.config.experimental.list_physical_devices('GPU')
 
-    visible_gpus = []
-    if gpus and not FLAGS.cpu:
-        visible_gpus = gpus[hvd.local_rank()]
-    tf.config.experimental.set_visible_devices(visible_gpus, 'GPU')
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+
+        visible_gpus = []
+        if gpus and not FLAGS.cpu:
+            visible_gpus = gpus[hvd.local_rank()]
+        tf.config.experimental.set_visible_devices(visible_gpus, 'GPU')
 
     if FLAGS.amp:
         policy = tf.keras.mixed_precision.Policy("mixed_float16")
@@ -266,11 +284,15 @@ def validate_cmd_line_flags():
 def create_optimizers(flags):
     if flags.optimizer == 'sgd':
         embedding_optimizer = tf.keras.optimizers.legacy.SGD(learning_rate=flags.learning_rate, momentum=0)
+        if FLAGS.mlu:
+            origin_embedding_opt = embedding_optimizer
         if flags.amp:
             embedding_optimizer = LossScaleOptimizer(embedding_optimizer,
                                                      initial_scale=flags.loss_scale,
                                                      dynamic=False)
         mlp_optimizer = embedding_optimizer
+        if FLAGS.mlu:
+            embedding_optimizer = origin_embedding_opt
 
     elif flags.optimizer == 'adam':
         embedding_optimizer = tfa.optimizers.LazyAdam(learning_rate=flags.learning_rate,
@@ -286,7 +308,6 @@ def create_optimizers(flags):
 
 
 def main():
-    hvd.init()
     init_logging(log_path=FLAGS.log_path, params_dict=FLAGS.flag_values_dict(), enabled=hvd.rank()==0)
     init_tf(FLAGS)
 
@@ -327,6 +348,12 @@ def main():
 
     timer = IterTimer(train_batch_size=FLAGS.batch_size, test_batch_size=FLAGS.batch_size,
                       optimizer=embedding_optimizer, print_freq=FLAGS.print_freq, enabled=hvd.rank() == 0)
+
+    if FLAGS.mlu:
+        embedding_optimizer = etp.SparseOptimizer(embedding_optimizer)
+        timer = IterTimer(train_batch_size=FLAGS.batch_size, test_batch_size=FLAGS.batch_size,
+                          optimizer=mlp_optimizer, print_freq=FLAGS.print_freq, enabled=hvd.rank() == 0,
+                          benchmark_warmup_steps=5000)
 
     if FLAGS.mode == 'inference':
         inference_benchmark(validation_pipeline, model, timer, FLAGS)

@@ -1,0 +1,3 @@
+git+https://github.com/NVIDIA/dllogger#egg=dllogger
+tqdm
+tensorflow_addons

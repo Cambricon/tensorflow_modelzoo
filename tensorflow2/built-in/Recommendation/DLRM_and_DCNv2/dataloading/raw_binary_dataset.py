@@ -36,6 +36,8 @@ fspec_type_to_tf_type = {
     'int32': tf.int32
 }
 
+from absl import flags
+FLAGS = flags.FLAGS
 
 def create_reader(filename, bytes_per_batch):
     fd = os.open(filename, os.O_RDONLY)
@@ -158,10 +160,13 @@ class TfRawBinaryDataset:
         pipeline = tf.data.Dataset.zip((self._label, self._numerical, self._categorical))
         pipeline = pipeline.map(self.decode_batch, num_parallel_calls=tf.data.AUTOTUNE)
         pipeline = pipeline.batch(batch_size=1)
-        # Only one gpu is set to visible
-        pipeline = pipeline.apply(tf.data.experimental.prefetch_to_device(f'/gpu:0'))
         pipeline = pipeline.unbatch()
         pipeline = pipeline.repeat()
+        # Only one gpu is set to visible
+        if FLAGS.mlu:
+          pipeline = pipeline.apply(tf.data.experimental.prefetch_to_device(f'/mlu:0', 16))
+        else:
+          pipeline = pipeline.apply(tf.data.experimental.prefetch_to_device(f'/gpu:0'))
         return pipeline
 
     @tf.function

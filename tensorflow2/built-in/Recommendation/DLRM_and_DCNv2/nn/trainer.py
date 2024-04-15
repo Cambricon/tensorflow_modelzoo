@@ -17,8 +17,14 @@
 
 import tensorflow as tf
 import horovod.tensorflow as hvd
+import embedding_table_plugin as etp
 
-from distributed_embeddings.python.layers import dist_model_parallel as dmp
+from absl import flags
+FLAGS = flags.FLAGS
+if FLAGS.mlu:
+    from distributed_embeddings import dist_model_parallel as dmp
+else:
+    from distributed_embeddings.python.layers import dist_model_parallel as dmp
 
 from .nn_utils import create_inputs_dict
 
@@ -56,7 +62,7 @@ class Trainer:
 
     @tf.function
     def train_step(self):
-        device = '/CPU:0' if self.cpu else '/GPU:0'
+        device = '/CPU:0' if self.cpu else '/MLU:0' if FLAGS.mlu else '/GPU:0'
         with tf.device(device):
             self.lr_scheduler()
             with tf.name_scope("dataloading"):
@@ -70,9 +76,22 @@ class Trainer:
                 unscaled_loss = tf.math.reduce_mean(unscaled_loss)
                 scaled_loss = self.mlp_optimizer.get_scaled_loss(unscaled_loss) if self.amp else unscaled_loss
 
-            if hvd.size() > 1:
-                tape = dmp.DistributedGradientTape(tape)
-            gradients = tape.gradient(scaled_loss, self.model.trainable_variables)
+            # local embeddings should not communicate using AllReduce
+            # TODO(xupengfei): remove the following code when cnhorovod supports register_local_source
+            import horovod
+            if horovod.__version__ < '0.27.0':
+              all_gradients = tape.gradient(scaled_loss, self.model.trainable_variables)
+              gradients = []
+              for var, grad in zip(self.model.trainable_variables, all_gradients):
+                if hasattr(var, 'de_local') or hvd.size() <= 1:
+                  gradients.append(grad)
+                else:
+                  gradients.append(hvd.allreduce(grad, op=hvd.Average,
+                                   compression=hvd.compression.NoneCompressor))
+            else:
+              if hvd.size() > 1:
+                  tape = dmp.DistributedGradientTape(tape)
+              gradients = tape.gradient(scaled_loss, self.model.trainable_variables)
 
             self._weight_update(gradients)
 
